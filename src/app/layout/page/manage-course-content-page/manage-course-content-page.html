@@ -1,0 +1,34 @@
+<app-navbar></app-navbar>
+
+<div class="content-manage-root">
+  <div class="page-container">
+    @if (isLoading()) {
+      <div class="loading-wrapper">
+        <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading course content..."></app-loading-spinner>
+      </div>
+    } @else {
+      <app-course-content-header
+        [course]="course()"
+        [videosCount]="videos().length">
+      </app-course-content-header>
+
+      <app-video-reorder-list
+        [videos]="videos()"
+        [transcriptionStatuses]="transcriptionStatuses()"
+        (saveOrder)="onSaveOrder($event)">
+      </app-video-reorder-list>
+
+      <app-video-upload-form
+        [courseId]="courseId()"
+        [defaultOrder]="videos().length"
+        [isUploading]="isUploading()"
+        [uploadProgress]="uploadProgress()"
+        [progressBytes]="progressBytes()"
+        [uploadStatusMessage]="uploadStatusMessage()"
+        (uploadSubmit)="onUploadSubmit($event)">
+      </app-video-upload-form>
+    }
+  </div>
+</div>
+
+<app-footer></app-footer>

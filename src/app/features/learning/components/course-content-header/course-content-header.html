@@ -1,0 +1,25 @@
+<div class="content-header-card">
+  <div class="header-nav-row">
+    <a routerLink="/manage-courses" class="back-link">
+      <span>← Back to Courses</span>
+    </a>
+    <span class="course-id-badge">Course ID: {{ course()?.id }}</span>
+  </div>
+
+  <div class="header-main-row">
+    <div>
+      <h1 class="course-title">{{ course()?.name || course()?.title || 'Manage Course Content' }}</h1>
+      <p class="course-desc">{{ course()?.description || 'Manage and reorder lessons, inspect transcription status, and upload new videos.' }}</p>
+    </div>
+    <div class="stats-pills">
+      <div class="stat-pill">
+        <span class="stat-icon">🎥</span>
+        <span>{{ videosCount() }} videos</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-icon">💰</span>
+        <span>${{ (course()?.price || 0).toFixed(2) }}</span>
+      </div>
+    </div>
+  </div>
+</div>

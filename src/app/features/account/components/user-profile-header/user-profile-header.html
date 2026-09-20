@@ -1,0 +1,49 @@
+<div class="profile-hero-card">
+  <div class="profile-info-row">
+    <div class="avatar-col">
+      <div class="user-avatar">{{ userInitial() }}</div>
+    </div>
+
+    <div class="details-col">
+      <div class="name-status-row">
+        <h1 class="user-name">{{ user()?.name || 'Welcome' }}</h1>
+        <span class="active-badge">Active Account ✓</span>
+      </div>
+
+      <div class="contact-meta-row">
+        <span class="meta-item">
+          <i class="fa fa-envelope-o"></i> {{ user()?.email || 'No email provided' }}
+        </span>
+        @if (user()?.phoneNumber || user()?.mobile) {
+          <span class="meta-item">
+            <i class="fa fa-phone"></i> {{ user()?.phoneNumber || user()?.mobile }}
+          </span>
+        }
+      </div>
+
+      <div class="tags-row">
+        @if (schoolName() || user()?.schoolId) {
+          <span class="edu-tag">
+            <i class="fa fa-university"></i> {{ schoolName() || user()?.schoolId }}
+          </span>
+        }
+        @if (stageName() || user()?.stageId) {
+          <span class="edu-tag">
+            <i class="fa fa-graduation-cap"></i> {{ stageName() || user()?.stageId }}
+          </span>
+        }
+        @if (yearName() || user()?.yearId) {
+          <span class="edu-tag">
+            <i class="fa fa-calendar"></i> {{ yearName() || user()?.yearId }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div class="actions-col">
+      <button type="button" class="btn-logout" (click)="logout.emit()">
+        <i class="fa fa-sign-out"></i> Sign Out
+      </button>
+    </div>
+  </div>
+</div>

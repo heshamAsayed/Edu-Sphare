@@ -1,0 +1,77 @@
+<div class="courses-page bg-light" dir="ltr">
+
+  <!-- ================== Light School Header ================== -->
+  <div class="bg-white border-bottom">
+    <div class="container py-4">
+      <div class="d-flex align-items-center gap-3">
+        <img [src]="schoolImage || defaultSchoolImage" (error)="onSchoolImageError($event)"
+          class="rounded-3 border object-fit-cover bg-light" style="width: 64px; height: 64px;"
+          [alt]="schoolName()">
+        <div>
+          <h4 class="fw-bold text-heading mb-1">{{ schoolName() }}</h4>
+          <p class="text-muted small mb-0">{{ stageName }} - {{ yearName }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== Page Title (School / Stage / Year) ================== -->
+  <div class="bg-light border-bottom">
+    <div class="container py-3">
+      <p class="text-muted small mb-0">
+        {{ schoolName() }} <i class="fa fa-angle-right mx-1"></i>
+        {{ stageName }} <i class="fa fa-angle-right mx-1"></i>
+        <span class="text-brand fw-bold">{{ yearName }}</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ================== Courses Grid ================== -->
+  <div class="container py-5">
+
+    <!-- Loading Spinner Component -->
+    <app-loading-spinner [isLoading]="isLoadingCourses()" size="large" loadingText="Loading...">
+    </app-loading-spinner>
+
+    <!-- Courses Grid -->
+    @if (!isLoadingCourses()) {
+    <h5 class="fw-bold text-heading mb-4">{{ courses().length }} Courses Available</h5>
+
+    <div class="row g-4">
+      @for (course of pagedCourses(); track course.id) {
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card course-card h-100 shadow-sm border rounded-3" style="cursor: pointer;"
+          (click)="onCourseClick(course)">
+          <img [src]="course.imageUrl" (error)="onCourseImageError($event)"
+            class="card-img-top object-fit-cover bg-light" style="height: 170px;" [alt]="course.title">
+
+          <div class="card-body">
+            <h6 class="card-title fw-bold text-heading d-flex justify-content-between mb-2">
+              {{ course.title }}
+              <span class="course-price fw-bold">{{ course.price }}</span>
+            </h6>
+
+            <p class="text-muted small mb-3">
+              <i class="fa fa-user-circle-o me-1"></i> {{ course.teacherName }}
+            </p>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small">
+                <i class="fa fa-play-circle-o me-1"></i> {{ course.videosCount }} Videos
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Pagination Component -->
+    <app-pagination class="d-block mt-4" [items]="courses()" [itemsPerPage]="12" [(currentPage)]="currentPage"
+      (pagedItems)="onPagedCourses($event)">
+    </app-pagination>
+    }
+
+  </div>
+
+</div>

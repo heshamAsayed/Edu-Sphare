@@ -1,0 +1,144 @@
+.manage-courses-container {
+  width: 100%;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.course-manage-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  padding: 24px;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  min-height: 180px;
+  box-shadow: 0 4px 14px rgba(68, 73, 85, 0.05);
+}
+
+.course-manage-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(68, 73, 85, 0.18);
+  border-color: rgba(118, 217, 54, 0.4);
+}
+
+.card-top {
+  margin-bottom: 20px;
+}
+
+.course-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: rgb(68, 73, 85);
+  margin: 0 0 8px 0;
+}
+
+.card-hint {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.meta-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(68, 73, 85, 0.05);
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e5e7eb;
+  border-top-color: rgb(118, 217, 54);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  color: rgb(68, 73, 85);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.btn-create-course {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(176deg, rgb(118, 217, 54), rgb(68, 73, 85));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 11px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-create-course:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(68, 73, 85, 0.25);
+  color: #ffffff;
+}
+
+.btn-retry {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: rgb(68, 73, 85);
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.btn-retry:hover {
+  border-color: rgb(118, 217, 54);
+  color: rgb(118, 217, 54);
+}
+
+.error-msg {
+  color: #ef4444;
+  font-size: 14px;
+}

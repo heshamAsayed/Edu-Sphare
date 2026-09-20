@@ -1,0 +1,61 @@
+.restricted-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #040c0f;
+}
+
+.restricted-header {
+    padding: 20px 30px;
+}
+
+.restricted-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.restricted-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 44px 32px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.lock-icon {
+    font-size: 48px;
+    margin-bottom: 14px;
+}
+
+.eyebrow {
+    color: var(--warning);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+
+.restricted-card h1 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.restricted-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

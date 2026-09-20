@@ -1,0 +1,125 @@
+/* ================== General ================== */
+.app-footer {
+  background-color: #111827;
+  color: #d1d5db;
+}
+
+.footer-brand {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 22px;
+}
+
+.footer-description {
+  color: #9ca3af;
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 380px;
+}
+
+.footer-heading {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ================== Links ================== */
+.footer-links a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-links a i {
+  width: 16px;
+  color: #6366f1;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+/* ================== Social Icons ================== */
+.social-link {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d1d5db;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-link:hover {
+  background: #76d936;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* ================== Newsletter ================== */
+.newsletter-box .form-control {
+  border-radius: 8px 0 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 14px;
+}
+
+.newsletter-box .form-control::placeholder {
+  color: #9ca3af;
+}
+
+.newsletter-box .form-control:focus {
+  box-shadow: none;
+  border-color: #76d936;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-subscribe {
+  border-radius: 0 8px 8px 0;
+  background: #76d936;
+  color: #fff;
+  border: none;
+  padding: 0 18px;
+}
+
+.btn-subscribe:hover {
+  background: #444955;
+}
+
+/* ================== Bottom Bar ================== */
+.footer-bottom {
+  background-color: #0b0f19;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.copyright-text {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.bottom-link {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.bottom-link:hover {
+  color: #ffffff;
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 576px) {
+  .footer-brand {
+    font-size: 20px;
+  }
+}

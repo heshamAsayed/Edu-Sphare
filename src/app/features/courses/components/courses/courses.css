@@ -1,0 +1,206 @@
+/* ================== Page Title Bar ================== */
+.page-title-bar {
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.page-breadcrumb {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.page-breadcrumb .fa {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.current-year {
+  color: rgb(118, 217, 54);
+  font-weight: 700;
+}
+
+/* ================== Light School Header ================== */
+.school-header {
+  background: #ffffff;
+  border-bottom: 1px solid #eef0f5;
+    height: 40vh;
+    display: flex;
+
+}
+
+.school-header-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.school-header-name {
+  font-weight: 700;
+  color: rgb(68, 73, 85);
+  font-size: 20px;
+}
+
+.school-header-sub {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ================== Courses Section ================== */
+.courses-page {
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  padding-top: 2.5rem;
+}
+.container.py-4 {
+
+  min-height: 20rem;
+  display: flex;
+  
+}
+
+/* Container spacing (courses grid section) */
+.container.py-5 {
+  padding-top: 2.75rem !important;
+  padding-bottom: 3.5rem !important;
+}
+
+.courses-count {
+  color: rgb(68, 73, 85);
+  font-weight: 700;
+  margin-bottom: 1.75rem !important;
+}
+
+/* Grid gap between cards */
+.container.py-5 .row.g-4 {
+  --bs-gutter-y: 1.75rem;
+  --bs-gutter-x: 1.75rem;
+}
+
+/* ================== Course Cards ================== */
+.course-card {
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(68, 73, 85, 0.18);
+}
+
+.course-card .card-body {
+  padding: 1.15rem 1.3rem 1.4rem;
+}
+
+.course-img {
+  height: 170px;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+
+.course-name {
+  font-weight: 700;
+  color: rgb(68, 73, 85);
+  font-size: 16px;
+  margin-bottom: 0.6rem;
+}
+
+.course-teacher {
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 1rem !important;
+}
+
+.course-price {
+  font-weight: 800;
+  color: rgb(118, 217, 54);
+  font-size: 16px;
+}
+
+.course-videos {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* spacing above the action button row */
+.course-card .d-flex.justify-content-between {
+  margin-bottom: 1.1rem !important;
+}
+
+/* ================== Course Action Button (Pay / Continue) ================== */
+.course-action-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+  background: linear-gradient(176deg, rgb(118, 217, 54), rgb(68, 73, 85));
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.course-action-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(68, 73, 85, 0.3);
+  color: #ffffff;
+}
+
+.course-action-btn:active {
+  transform: translateY(0);
+}
+
+/* "Continue" state (user already logged in and paid) - same palette, reversed direction for a subtle distinction */
+.course-action-btn.is-continue {
+  background: linear-gradient(135deg, rgb(118, 217, 54), rgb(68, 73, 85));
+}
+
+/* Pagination spacing under the grid */
+.container.py-5 app-pagination {
+  display: block;
+  margin-top: 2.5rem;
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 576px) {
+  .school-header-img {
+    width: 52px;
+    height: 52px;
+  }
+
+  .school-header-name {
+    font-size: 17px;
+  }
+
+  .container.py-5 {
+    padding-top: 1.75rem !important;
+    padding-bottom: 2.25rem !important;
+  }
+
+  .container.py-5 .row.g-4 {
+    --bs-gutter-y: 1.25rem;
+    --bs-gutter-x: 1.25rem;
+  }
+
+  .course-card .card-body {
+    padding: 1rem 1.1rem 1.2rem;
+  }
+}
+
+
+.card-title{
+    display: flex;
+    justify-content: space-between;
+}
+
+.py-4 {
+    margin-top: auto !important;
+    
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}

@@ -1,0 +1,155 @@
+/* ================== General ================== */
+.education-section {
+  background-color: #f8f9fb;
+  min-height: 60vh;
+  padding-top: 160px;
+  padding-bottom: 160px;
+}
+
+.section-title {
+  font-weight: 700;
+  color: #222;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #4f46e5, #818cf8);
+}
+
+/* ================== Breadcrumb ================== */
+.custom-breadcrumb {
+  background: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.custom-breadcrumb .breadcrumb-item a {
+  text-decoration: none;
+  color: #6b7280;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.custom-breadcrumb .breadcrumb-item a:hover {
+  color: #4f46e5;
+}
+
+.active-crumb {
+  color: #4f46e5 !important;
+  font-weight: 700;
+}
+
+/* ================== School Cards ================== */
+.school-card {
+  cursor: pointer;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.school-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.18);
+}
+
+.school-card .card-img-top {
+  height: 160px;
+  object-fit: cover;
+}
+
+.school-card .card-title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* ================== Stage Cards ================== */
+.stage-card {
+  cursor: pointer;
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  background: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.stage-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.15);
+  background: #f5f4ff;
+}
+
+.stage-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+}
+
+.stage-icon-wrapper i {
+  font-size: 26px;
+  color: #4f46e5;
+}
+
+.stage-card .card-title {
+  font-weight: 600;
+  color: #374151;
+  font-size: 15px;
+}
+
+/* ================== Year Boxes (rectangles only, no image) ================== */
+.year-box {
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #1f2937;
+  transition: all 0.2s ease;
+}
+
+.year-box i {
+  color: #9ca3af;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.year-box:hover {
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
+}
+
+.year-box:hover i {
+  color: #fff;
+  transform: translateX(-4px);
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 576px) {
+  .stage-icon-wrapper {
+    width: 52px;
+    height: 52px;
+  }
+
+  .stage-icon-wrapper i {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,43 @@
+@if (!loading) {
+<div class="lesson-page">
+    <h1>{{ course?.title || course?.name || 'Lesson' }}</h1>
+
+    <div class="videos-list">
+        <ul>
+            @for (v of videos; track v.id) {
+            <li (click)="selectVideo(v)">
+                {{ v.title }}
+
+                @if (v.isWatched) {
+                <span>(watched)</span>
+                }
+            }
+        </ul>
+    </div>
+
+    @if (activeVideo) {
+    <div class="active-video">
+        <h2>{{ activeVideo.title }}</h2>
+        <p>{{ activeVideo.description }}</p>
+
+        @if (activeVideo.bunnyVideoId) {
+        <div>
+            <iframe
+                [src]="'https://iframe.bunny.net/' + activeVideo.bunnyVideoId"
+                width="800"
+                height="450">
+            </iframe>
+        </div>
+        }
+
+        <button (click)="markWatched(activeVideo)">
+            Mark watched
+        </button>
+    </div>
+    }
+</div>
+}
+
+@if (loading) {
+<div>Loading...</div>
+}

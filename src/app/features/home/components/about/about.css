@@ -1,0 +1,146 @@
+/* ================== General ================== */
+.about-section {
+  background-color: #ffffff;
+}
+
+.section-eyebrow {
+  display: inline-block;
+  color: #76d936;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.section-title-main {
+  font-weight: 800;
+  font-size: 34px;
+  color: #111827;
+}
+
+.section-description {
+  max-width: 640px;
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ================== Stats ================== */
+.stat-card {
+  background: #f8f9fb;
+  border-radius: 16px;
+  padding: 28px 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.1);
+}
+
+.stat-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+}
+
+.stat-icon-wrapper i {
+  font-size: 22px;
+  color: #76d936;
+}
+
+.stat-value {
+  font-weight: 800;
+  font-size: 26px;
+  color: #111827;
+}
+
+.stat-label {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ================== Mission / Vision / Values ================== */
+.value-card {
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.12);
+}
+
+.value-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+}
+
+.value-icon-wrapper i {
+  font-size: 26px;
+  color: #76d936;
+}
+
+.value-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ================== Team ================== */
+.team-title {
+  font-weight: 700;
+  color: #111827;
+}
+
+.team-card {
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.12);
+}
+
+.team-avatar {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.team-role {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 576px) {
+  .section-title-main {
+    font-size: 26px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+}

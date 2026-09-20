@@ -1,0 +1,65 @@
+<div class="video-player-container">
+  @if (hasBunnyVideo() && bunnyVideoUrl()) {
+    <iframe
+      #bunnyIframe
+      [src]="bunnyVideoUrl()"
+      loading="lazy"
+      class="player-frame"
+      allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
+      allowfullscreen="true">
+    </iframe>
+  } @else {
+    <video
+      #htmlVideo
+      class="player-frame"
+      controls
+      playsinline
+      [src]="fallbackVideoUrl()"
+      (play)="onHtmlPlay()"
+      (pause)="onHtmlPause()"
+      (timeupdate)="onHtmlTimeUpdate($event)"
+      (ended)="onHtmlEnded()">
+    </video>
+  }
+
+  @if (video(); as v) {
+    <div class="video-details-card">
+      <div class="video-header">
+        <div>
+          <span class="video-meta-badge">Lesson {{ (v.sortOrder ?? 0) + 1 }}</span>
+          <h2 class="video-title">{{ v.title || 'Untitled Lesson' }}</h2>
+        </div>
+        <button
+          type="button"
+          class="btn-mark-watched"
+          [class.watched]="isWatched()"
+          (click)="onMarkWatched()">
+          @if (isWatched()) {
+            <span>✓ Completed</span>
+          } @else {
+            <span>Mark as Watched</span>
+          }
+        </button>
+      </div>
+
+      <div class="video-description">
+        <p>{{ v.description || 'No additional description available for this lesson.' }}</p>
+      </div>
+
+      <div class="attachments-section">
+        <h3 class="section-title">Lesson Attachments</h3>
+        @if (v.attachments && v.attachments.length > 0) {
+          <div class="attachments-list">
+            @for (att of v.attachments; track $index) {
+              <a [href]="att.url" target="_blank" rel="noopener noreferrer" class="attachment-item">
+                📎 {{ att.originalFileName || att.name || 'Attachment' }}
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="muted-text">No attachments available for this lesson.</p>
+        }
+      </div>
+    </div>
+  }
+</div>

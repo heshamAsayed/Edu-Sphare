@@ -1,0 +1,33 @@
+.teacher-meta-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(68, 73, 85, 0.04);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meta-item strong {
+  color: rgb(118, 217, 54);
+  font-weight: 700;
+}
+
+.meta-icon {
+  font-size: 14px;
+}
+
+.meta-divider {
+  color: #e5e7eb;
+}

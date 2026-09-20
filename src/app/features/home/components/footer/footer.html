@@ -1,0 +1,68 @@
+<footer class="app-footer" dir="ltr">
+  <div class="container py-5">
+    <div class="row g-4">
+
+      <!-- ================== Brand ================== -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <h5 class="footer-brand mb-3">{{ brandName }}</h5>
+        <p class="footer-description mb-3">{{ brandDescription }}</p>
+        <div class="d-flex gap-2">
+          <a *ngFor="let social of socialLinks" [href]="social.url" target="_blank"
+             class="social-link" [attr.aria-label]="social.name">
+            <i class="fa" [ngClass]="social.icon"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- ================== Quick Links ================== -->
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading mb-3">Quick Links</h6>
+        <ul class="footer-links list-unstyled">
+          <li *ngFor="let link of quickLinks" class="mb-2">
+            <a [href]="link.url">
+              <i class="fa" [ngClass]="link.icon"></i>
+              {{ link.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ================== Account Links ================== -->
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading mb-3">Account</h6>
+        <ul class="footer-links list-unstyled">
+          <li *ngFor="let link of accountLinks" class="mb-2">
+            <a [href]="link.url">
+              <i class="fa" [ngClass]="link.icon"></i>
+              {{ link.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ================== Newsletter (static UI only) ================== -->
+      <div class="col-12 col-lg-4">
+        <h6 class="footer-heading mb-3">Stay Updated</h6>
+        <p class="footer-description mb-3">Subscribe to get the latest courses and updates.</p>
+        <div class="newsletter-box d-flex">
+          <input type="email" class="form-control" placeholder="Your email address">
+          <button type="button" class="btn btn-subscribe">
+            <i class="fa fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================== Bottom Bar ================== -->
+  <div class="footer-bottom py-3">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <p class="mb-0 copyright-text">&copy; {{ currentYear }} {{ brandName }}. All rights reserved.</p>
+      <div class="d-flex gap-3">
+        <a href="/privacy" class="bottom-link">Privacy Policy</a>
+        <a href="/terms" class="bottom-link">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>

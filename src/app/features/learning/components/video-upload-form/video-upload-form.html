@@ -1,0 +1,99 @@
+<div class="upload-form-box">
+  <div class="box-header">
+    <h3 class="box-title">➕ Upload New Lesson to this Course</h3>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="upload-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Lesson Title *</label>
+        <input
+          type="text"
+          [(ngModel)]="title"
+          name="title"
+          placeholder="e.g. Introduction to Data Structures"
+          required />
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Lesson Order</label>
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="sortOrder"
+            name="sortOrder" />
+        </div>
+        <div class="form-group">
+          <label>Access Duration (Days)</label>
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="availabilityDays"
+            name="availabilityDays" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Lesson Description</label>
+      <textarea
+        [(ngModel)]="description"
+        name="description"
+        rows="2"
+        placeholder="Enter a detailed description for this lesson..."></textarea>
+    </div>
+
+    <div class="files-row">
+      <div class="form-group">
+        <label>Video File (MP4, MKV) *</label>
+        <input
+          type="file"
+          accept="video/*"
+          (change)="onVideoFileChange($event)"
+          required />
+      </div>
+      <div class="form-group">
+        <label>Attached Files (PDF, ZIP, etc.)</label>
+        <input
+          type="file"
+          multiple
+          (change)="onAttachmentsChange($event)" />
+      </div>
+    </div>
+
+    @if (isUploading()) {
+      <div class="progress-box">
+        <div class="progress-label-row">
+          <span class="progress-status-text">Uploading video to server and processing...</span>
+          <span class="progress-percent-text">{{ uploadProgress() }}%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width.%]="uploadProgress()"></div>
+        </div>
+        @if (progressBytes()) {
+          <small class="bytes-text">{{ progressBytes() }}</small>
+        }
+      </div>
+    }
+
+    @if (uploadStatusMessage(); as msg) {
+      <div class="status-alert" [class.error]="msg.isError" [class.success]="!msg.isError">
+        {{ msg.text }}
+      </div>
+    }
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn-submit-upload"
+        [disabled]="isUploading()">
+        @if (isUploading()) {
+          <span>⏳ Uploading...</span>
+        } @else {
+          <span>🚀 Upload & Save Lesson</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

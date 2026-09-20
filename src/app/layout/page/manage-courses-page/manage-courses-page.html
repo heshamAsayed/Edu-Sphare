@@ -1,0 +1,30 @@
+<app-navbar></app-navbar>
+
+<div class="manage-courses-root">
+  <div class="page-container">
+    <div class="page-header-card">
+      <div>
+        <h1 class="page-title">Instructor Dashboard - Course Management</h1>
+        <p class="page-subtitle">View and manage your courses, upload video lessons and materials easily</p>
+      </div>
+
+      <a routerLink="/upload-course" class="btn-create-course">
+        <span>+ Create New Course</span>
+      </a>
+    </div>
+
+    <app-teacher-meta-banner
+      [schoolName]="teacherSchoolName()"
+      [stages]="stages()">
+    </app-teacher-meta-banner>
+
+    <app-manage-course-list
+      [courses]="courses()"
+      [isLoading]="isLoading()"
+      [errorMessage]="errorMessage()"
+      (retry)="fetchCourses()">
+    </app-manage-course-list>
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,200 @@
+<div class="fixed-top">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+
+          <ul class="social-network">
+            <li>
+              <a class="waves-effect waves-dark" href="#">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+
+            <li>
+              <a class="waves-effect waves-dark" href="#">
+                <i class="fa fa-twitter"></i>
+              </a>
+            </li>
+
+            <li>
+              <a class="waves-effect waves-dark" href="#">
+                <i class="fa fa-linkedin"></i>
+              </a>
+            </li>
+
+            <li>
+              <a class="waves-effect waves-dark" href="#">
+                <i class="fa fa-pinterest"></i>
+              </a>
+            </li>
+
+            <li>
+              <a class="waves-effect waves-dark" href="#">
+                <i class="fa fa-google-plus"></i>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark mx-background-top-linear">
+
+    <div class="container">
+
+      <a class="navbar-brand" routerLink="/">
+        EduSphere
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+
+        <span class="navbar-toggler-icon"></span>
+
+      </button>
+
+
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+
+        <ul class="navbar-nav ml-auto align-items-center desktop-nav">
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/">
+              Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <!-- <a class="nav-link"  href="#about">
+              About
+            </a> -->
+            <a (click)="scrollTo('about')" class="nav-link" role="button">About</a>
+          </li>
+
+          <li class="nav-item">
+            <a (click)="scrollTo('contact')" class="nav-link" role="button">Contact</a>
+            <!-- <a class="nav-link" href="#contact">
+              Contact
+            </a> -->
+          </li>
+
+          <li class="nav-item profile-menu-item">
+            <button type="button" class="profile-trigger" aria-label="Open profile menu"
+              (click)="toggleProfileMenu($event)">
+              <i class="fa fa-user-circle" aria-hidden="true"></i>
+            </button>
+
+            <div class="profile-dropdown" [class.open]="profileMenuOpen">
+              @if (isLoggedIn()) {
+              <a class="dropdown-item" routerLink="/profile/me" (click)="closeProfileMenu()">
+                <i class="fa fa-user"></i>
+                Profile
+              </a>
+              <a class="dropdown-item" (click)="navigateToMyCourses()" role="button">
+                <i class="fa fa-book"></i>
+                My Courses
+              </a>
+              @if (isTeacher()) {
+              <a class="dropdown-item" routerLink="/manage-courses" (click)="closeProfileMenu()">
+                <i class="fa fa-graduation-cap"></i>
+                Teacher Portal
+              </a>
+              }
+              <a class="dropdown-item" routerLink="/home" (click)="closeProfileMenu()">
+                <i class="fa fa-cog"></i>
+                Settings
+              </a>
+              <button type="button" class="dropdown-item logout-item" (click)="logout()">
+                <i class="fa fa-sign-out"></i>
+                Logout
+              </button>
+              } @else {
+              <a class="dropdown-item" routerLink="/auth/login" (click)="closeProfileMenu()">
+                <i class="fa fa-sign-in"></i>
+                Login
+              </a>
+              <a class="dropdown-item" routerLink="/auth/register" (click)="closeProfileMenu()">
+                <i class="fa fa-user-plus"></i>
+                Register
+              </a>
+              }
+            </div>
+          </li>
+
+        </ul>
+
+        <ul class="navbar-nav mobile-nav">
+          <li class="nav-item active">
+            <a class="nav-link" routerLink="/">
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/about">
+              About
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/contact">
+              Contact
+            </a>
+          </li>
+
+          @if (isLoggedIn()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/profile/me" (click)="closeProfileMenu()">
+              Profile
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateToMyCourses()" role="button">
+              My Courses
+            </a>
+          </li>
+          @if (isTeacher()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/manage-courses" (click)="closeProfileMenu()">
+              Teacher Portal
+            </a>
+          </li>
+          }
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home" (click)="closeProfileMenu()">
+              Settings
+            </a>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="nav-link logout-link" (click)="logout()">
+              Logout
+            </button>
+          </li>
+          } @else {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/auth/login" (click)="closeProfileMenu()">
+              Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/auth/register" (click)="closeProfileMenu()">
+              Register
+            </a>
+          </li>
+          }
+        </ul>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+</div>

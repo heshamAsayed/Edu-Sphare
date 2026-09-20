@@ -1,0 +1,36 @@
+<aside class="playlist-sidebar">
+  <div class="playlist-header">
+    <div class="header-title-row">
+      <h3 class="playlist-title">Course Content</h3>
+      <span class="progress-badge">{{ progressPercent() }}%</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+    <small class="progress-caption">{{ watchedCount() }} of {{ videos().length }} completed</small>
+  </div>
+
+  <ul class="playlist-items">
+    @for (vid of videos(); track vid.id; let idx = $index) {
+      <li
+        class="playlist-item"
+        [class.current]="activeVideo()?.id === vid.id"
+        [class.done]="vid.isWatched"
+        (click)="onSelectVideo(vid)">
+        <div class="item-text">
+          <strong class="item-title">{{ idx + 1 }}. {{ vid.title || 'Lesson' }}</strong>
+          <small class="item-duration">{{ formatDuration(vid.duration) }}</small>
+        </div>
+        <div class="item-status">
+          @if (vid.isWatched) {
+            <span class="check-icon">✓</span>
+          } @else if (activeVideo()?.id === vid.id) {
+            <span class="playing-indicator">▶</span>
+          }
+        </div>
+      </li>
+    } @empty {
+      <li class="empty-playlist">No lessons available for this course yet.</li>
+    }
+  </ul>
+</aside>

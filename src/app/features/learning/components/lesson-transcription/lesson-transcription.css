@@ -1,0 +1,80 @@
+.transcription-container {
+  margin-top: 20px;
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(68, 73, 85, 0.05);
+}
+
+.tabs-header {
+  display: flex;
+  background: #f8f9fb;
+  border-bottom: 1px solid #eef0f5;
+}
+
+.tab-btn {
+  padding: 14px 22px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: rgb(118, 217, 54);
+}
+
+.tab-btn.active {
+  color: rgb(118, 217, 54);
+  border-bottom-color: rgb(118, 217, 54);
+  background: #ffffff;
+}
+
+.tab-body {
+  padding: 24px;
+  min-height: 120px;
+}
+
+.text-content p {
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e5e7eb;
+  border-top-color: rgb(118, 217, 54);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.muted-text {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.info-content p {
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.6;
+}

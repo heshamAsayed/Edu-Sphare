@@ -1,0 +1,46 @@
+<app-navbar></app-navbar>
+
+<div class="assessment-page-root">
+  <div class="page-container">
+    <div class="assessment-layout">
+      <!-- Main Content Area -->
+      <main class="assessment-main-content">
+        <div class="breadcrumbs">
+          <span>Programming Fundamentals</span>
+          <span class="sep">/</span>
+          <span class="active-crumb">Final Assessment</span>
+        </div>
+
+        <p class="module-eyebrow">MODULE 2 QUIZ</p>
+        <h1 class="quiz-title">Quiz: Data Types and Memory</h1>
+        <p class="quiz-subtext">Answer the following questions to test your understanding of the core concepts.</p>
+
+        @if (questions().length > 0) {
+          @if (!isCompleted()) {
+            <app-assessment-question-card
+              [question]="questions()[currentIndex()]"
+              [questionIndex]="currentIndex()"
+              [totalQuestions]="questions().length"
+              [selectedChoiceIndex]="userAnswers()[currentIndex()]"
+              (choiceSelected)="onChoiceSelected($event)"
+              (prev)="onPrev()"
+              (next)="onNext()">
+            </app-assessment-question-card>
+          } @else if (resultData(); as res) {
+            <app-assessment-result
+              [score]="res.correctAnswers"
+              [total]="res.totalQuestions"
+              [percentage]="res.percentage"
+              (retake)="onRetake()">
+            </app-assessment-result>
+          }
+        }
+      </main>
+
+      <!-- Sidebar -->
+      <app-assessment-sidebar [progressPercent]="60"></app-assessment-sidebar>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

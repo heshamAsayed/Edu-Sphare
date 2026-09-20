@@ -1,0 +1,41 @@
+<app-navbar></app-navbar>
+
+<div class="upload-course-root">
+  <div class="page-container">
+    <div class="page-header-card">
+      <div>
+        <h1 class="page-title">Create New Course & Upload Lessons</h1>
+        <p class="page-subtitle">Fill in course information and select video lessons to upload and process in batch</p>
+      </div>
+    </div>
+
+    @if (isLoadingStages()) {
+      <div class="loading-wrapper">
+        <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading stages and academic years..."></app-loading-spinner>
+      </div>
+    } @else {
+      <app-course-create-form
+        [stages]="stages()"
+        [teacherSchoolName]="teacherSchoolName()"
+        [isCreating]="isUploading()"
+        (courseDataChange)="onFormSubmit($event)"
+        (formSubmit)="onFormSubmit($event)">
+      </app-course-create-form>
+
+      <app-video-queue-uploader
+        [queue]="queue()"
+        [isUploading]="isUploading()"
+        [uploadProgress]="uploadProgress()"
+        [currentUploadInfo]="currentUploadInfo()"
+        (filesAdded)="onFilesAdded($event)"
+        (itemRemoved)="onItemRemoved($event)"
+        (itemTitleChanged)="onItemTitleChanged($event)"
+        (itemOrderChanged)="onItemOrderChanged($event)"
+        (itemAttachmentsChanged)="onItemAttachmentsChanged($event)"
+        (startUpload)="onStartUpload()">
+      </app-video-queue-uploader>
+    }
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,41 @@
+<div class="transcription-container">
+  <div class="tabs-header">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="currentTab() === 'transcription'"
+      (click)="setTab('transcription')">
+      📝 Transcription (Deepgram)
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="currentTab() === 'info'"
+      (click)="setTab('info')">
+      ℹ️ Lesson Info
+    </button>
+  </div>
+
+  <div class="tab-body">
+    @if (currentTab() === 'transcription') {
+      <div class="transcription-content">
+        @if (isLoading()) {
+          <div class="loading-state">
+            <span class="spinner"></span>
+            <p>Loading transcription for this lesson...</p>
+          </div>
+        } @else if (transcriptionText()) {
+          <div class="text-content">
+            <p>{{ transcriptionText() }}</p>
+          </div>
+        } @else {
+          <p class="muted-text">No transcription available for this lesson yet or it is still processing.</p>
+        }
+      </div>
+    } @else {
+      <div class="info-content">
+        <p>Audio is automatically transcribed and analyzed using AI to facilitate following along and searching within the lesson content.</p>
+      </div>
+    }
+  </div>
+</div>

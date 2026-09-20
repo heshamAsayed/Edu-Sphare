@@ -1,0 +1,65 @@
+<div class="course-form-card">
+  <div class="card-header">
+    <h2 class="card-title">1. Course Information</h2>
+    @if (teacherSchoolName()) {
+      <span class="school-badge">🏫 School: {{ teacherSchoolName() }}</span>
+    }
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="form-body">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Course Name *</label>
+        <input
+          type="text"
+          [ngModel]="name()"
+          (ngModelChange)="onNameChange($event)"
+          name="name"
+          placeholder="e.g. Physics - Chapter 1"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label>Course Price ($)</label>
+        <input
+          type="number"
+          min="0"
+          [ngModel]="price()"
+          (ngModelChange)="onPriceChange($event)"
+          name="price"
+          placeholder="0.00" />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Educational Stage *</label>
+        <select
+          [ngModel]="selectedStageId()"
+          (ngModelChange)="onStageChange($event)"
+          name="stageId"
+          required>
+          <option value="">Select Educational Stage</option>
+          @for (stg of stages(); track stg.id) {
+            <option [value]="stg.id">{{ stg.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Academic Year *</label>
+        <select
+          [ngModel]="selectedYearId()"
+          (ngModelChange)="onYearChange($event)"
+          name="yearId"
+          [disabled]="!selectedStageId()"
+          required>
+          <option value="">Select Academic Year</option>
+          @for (yr of availableYears(); track yr.id) {
+            <option [value]="yr.id">{{ yr.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </form>
+</div>

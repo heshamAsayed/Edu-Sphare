@@ -1,0 +1,100 @@
+<div class="course-details-page" dir="ltr">
+  @if (isLoading()) {
+    <div class="course-loading">
+      <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading..."></app-loading-spinner>
+    </div>
+  } @else if (courseNotFound()) {
+    <div class="not-found-page" role="alert" aria-labelledby="not-found-title">
+      <p class="not-found-code">404</p>
+      <h1 id="not-found-title">Not Found</h1>
+      <p>The course you are looking for does not exist.</p>
+    </div>
+  } @else {
+
+  <!-- ================== Full-width Header ================== -->
+  <div class="course-hero" [style.background-image]="'url(' + (course()?.imageUrl || defaultCourseImage) + ')'">
+    <div class="course-hero-overlay">
+      <div class="container">
+        <h2 class="hero-title mb-2">{{ course()?.title }}</h2>
+        <div class="hero-meta d-flex flex-wrap gap-3">
+          <span class="hero-meta-item" *ngIf="course()?.teacherName">
+            <i class="fa fa-user me-1"></i> {{ course()?.teacherName }}
+          </span>
+          <span class="hero-meta-item" *ngIf="course()?.videosCount !== undefined">
+            <i class="fa fa-play-circle-o me-1"></i> {{ course()?.videosCount }} Videos
+          </span>
+          <span class="hero-meta-item hero-price">
+            <i class="fa fa-tag me-1"></i> {{ getFormattedPrice() }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- hidden img only to trigger the fallback check via (error); the visible image is the CSS background above -->
+    <img [src]="course()?.imageUrl || defaultCourseImage" (error)="onImageError($event)" class="d-none" alt="">
+  </div>
+
+  <div class="container py-5">
+    <div class="row g-4">
+
+      <!-- ================== Description + Videos ================== -->
+      <div class="col-12 col-lg-8">
+
+        <h5 class="section-heading mb-3">About This Course</h5>
+        <p class="course-description mb-5" *ngIf="course()?.description">
+          {{ course()?.description }}
+        </p>
+        <p class="course-description text-muted fst-italic mb-5" *ngIf="!course()?.description">
+          No description available for this course yet.
+        </p>
+
+        <h5 class="section-heading mb-3">Course Videos</h5>
+        <div class="video-list">
+          <div class="video-item d-flex align-items-center" *ngFor="let video of getSortedVideos()"
+            (click)="onVideoClick(video)">
+
+            <div class="video-icon-wrapper me-3">
+              <i class="fa" [ngClass]="isVideoLocked() ? 'fa-lock' : 'fa-play-circle'"></i>
+            </div>
+
+            <div class="flex-grow-1">
+              <p class="video-title mb-1">{{ video.title }}</p>
+              <p class="video-description mb-1" *ngIf="video.description">
+                {{ video.description }}
+              </p>
+              <div class="video-meta d-flex flex-wrap gap-3">
+                <span *ngIf="video.studentsCount !== undefined">
+                  <i class="fa fa-users me-1"></i> {{ video.studentsCount }} students enrolled
+                </span>
+              </div>
+            </div>
+            
+            <span class="createAt"><i class="fa fa-calendar me-2"></i> {{ formatUploadDate(video.createdAt) }}</span>
+            <i class="fa fa-lock locked-badge" *ngIf="isVideoLocked()"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================== Purchase Card ================== -->
+      <div class="col-12 col-lg-4">
+        <div class="purchase-card">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="price-label">Price</span>
+            <span class="price-value">{{ getFormattedPrice() }}</span>
+          </div>
+
+          <app-button
+            [course]="course()"
+            [courseId]="resolvedCourseId() || course()?.id"
+            [price]="course()?.price"
+            (action)="onActionClick()">
+          </app-button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  }
+</div>

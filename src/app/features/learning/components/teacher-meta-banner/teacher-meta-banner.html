@@ -1,0 +1,15 @@
+@if (schoolName()) {
+  <div class="teacher-meta-container">
+    <div class="meta-item">
+      <span class="meta-icon">🏫</span>
+      <span>School: <strong>{{ schoolName() }}</strong></span>
+    </div>
+    @if (stages().length > 0) {
+      <div class="meta-divider">|</div>
+      <div class="meta-item">
+        <span class="meta-icon">📚</span>
+        <span>Stages: <strong>{{ stagesText() }}</strong></span>
+      </div>
+    }
+  </div>
+}
