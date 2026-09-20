@@ -1,0 +1,50 @@
+# Build results
+bin/
+obj/
+Debug/
+Release/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+
+# Logs
+*.log
+logs/
+Logs/
+
+# Environment / secrets
+.env
+.env.*
+appsettings.Development.json
+
+# Test results
+TestResults/
+TestResult.xml
+*.trx
+
+# Coverage
+coverage/
+CodeCoverage/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+# Local development settings
+Properties/serviceDependencies.local.json
+wwwroot/lib/bootstrap/
+wwwroot/lib/jquery/
+wwwroot/lib/jquery-validation/
+wwwroot/lib/jquery-validation-unobtrusive/
+
+sample-user-credentials.txt
+datasample.txt
+api-tests.http
+api-reference.md
+API_DOCUMENTATION.md
