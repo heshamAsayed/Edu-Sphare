@@ -1,7 +1,7 @@
 import { Observable, catchError, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { API_CONFIG } from '../../core/config/api-config';
+import { API_CONFIG, toMediaUrl } from '../../core/config/api-config';
 import { getHttpClient } from '../../core/http/http-client';
 import { Course, CourseListItem } from './models';
 import { VideoItem } from '../videos/models';
@@ -25,7 +25,12 @@ export class CoursesService {
   getCourses(schoolId: string, stageId: string, yearId: string): Observable<CourseListItem[]> {
     return this.http.get<CourseListItem[]>(`${API_URL}/${encodeURIComponent(schoolId)}/${encodeURIComponent(stageId)}/${encodeURIComponent(yearId)}`, {
       withCredentials: true,
-    });
+    }).pipe(
+      map((courses) => courses.map((course) => ({
+        ...course,
+        imageUrl: toMediaUrl(course.imageUrl || course.imagePath),
+      }))),
+    );
   }
 
   loadStudentAvailableCourses(schoolId: string, stageId: string, yearId: string): Observable<CourseListItem[]> {
@@ -53,6 +58,7 @@ export class CoursesService {
     }).pipe(
       map((course) => ({
         ...course,
+        imageUrl: toMediaUrl(course.imageUrl || course.imagePath),
         title: course.title || (course as any).name || 'Course Details',
         videos: course.videos?.map((video) => {
           const rawVideo = video as VideoItem & Record<string, unknown>;

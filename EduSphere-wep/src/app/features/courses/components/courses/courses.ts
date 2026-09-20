@@ -120,6 +120,7 @@ export class Courses implements OnInit {
 
         // this.schoolName = school.name;
         this.schoolName.set(school.name);
+        this.schoolImage = school.imageUrl || null;
 
         const stage = school.stages?.find((s) => s.id === this.selectedStageId);
 

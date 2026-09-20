@@ -149,7 +149,7 @@ public class Program
             options.AddPolicy("AngularPolicy", policy =>
             {
                 policy
-                    .WithOrigins("https://heshamasayed.github.io")
+                    .WithOrigins("https://heshamasayed.github.io", "http://localhost:4200")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

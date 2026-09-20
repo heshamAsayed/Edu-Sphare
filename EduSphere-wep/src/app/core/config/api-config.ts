@@ -52,3 +52,16 @@ export const API_CONFIG = {
   },
 };
 
+/** Converts a media path returned by the API into a URL on the API host. */
+export function toMediaUrl(path?: string | null): string {
+  if (!path) {
+    return '';
+  }
+
+  if (/^(https?:|data:)/i.test(path)) {
+    return path;
+  }
+
+  return `${new URL(API_CONFIG.BASE_URL).origin}/${path.replace(/^\/+/, '')}`;
+}
+

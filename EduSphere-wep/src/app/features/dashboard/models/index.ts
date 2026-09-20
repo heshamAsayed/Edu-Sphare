@@ -19,6 +19,8 @@ export type RemoveTeacherResponse = void;
 export interface School {
   id: string;
   name: string;
+  imagePath?: string;
+  imageUrl?: string;
   stages: Stage[];
 }
 

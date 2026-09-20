@@ -6,6 +6,7 @@ export interface CourseListItem {
   description?: string;
   sortOrder?: number;
   imageUrl?: string;
+  imagePath?: string;
   price?: number;
   isPaid: boolean;
   teacherName?: string;

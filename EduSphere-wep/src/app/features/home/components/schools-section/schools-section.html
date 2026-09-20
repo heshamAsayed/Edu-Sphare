@@ -34,7 +34,11 @@
           <div class="card school-card h-100 text-center" (click)="selectSchool(school)">
             <div class="card-body">
               <div class="school-avatar mb-3" [style.background]="getSchoolColor(i)">
-                {{ getSchoolInitial(school) }}
+                @if (school.imageUrl) {
+                  <img [src]="school.imageUrl" [alt]="school.name" class="school-avatar-image">
+                } @else {
+                  {{ getSchoolInitial(school) }}
+                }
               </div>
               <h5 class="card-title mb-0">{{ school.name }}</h5>
             </div>

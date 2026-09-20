@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
-import { API_CONFIG } from '../../core/config/api-config';
+import { API_CONFIG, toMediaUrl } from '../../core/config/api-config';
 import { getHttpClient } from '../../core/http/http-client';
 import { AddTeacherRequest, DashboardTeacher, RemoveTeacherResponse, School, Stage, Year } from './models';
 import { Injectable } from '@angular/core';
@@ -22,7 +22,12 @@ export class DashboardService {
   }
 
   GetSchools(): Observable<School[]> {
-    return this.http.get<School[]>(`${API_URL}/SchoolsWithStagesAndYears`);
+    return this.http.get<School[]>(`${API_URL}/SchoolsWithStagesAndYears`).pipe(
+      map((schools) => schools.map((school) => ({
+        ...school,
+        imageUrl: toMediaUrl(school.imageUrl || school.imagePath),
+      }))),
+    );
   }
 
   GetStages(schoolId: string): Observable<Stage[]> {
