@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+
+# Build output
+bin/
+obj/
+dist/
+out-tsc/
+bazel-out/
+tmp/
+Debug/
+Release/
+
+# Test results and coverage
+TestResults/
+TestResult.xml
+*.trx
+coverage/
+CodeCoverage/
+__screenshots__/
+
+# Logs
+*.log
+logs/
+Logs/
+npm-debug.log*
+yarn-error.log*
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+Properties/serviceDependencies.local.json
+sample-user-credentials.txt
+datasample.txt
+
+# Package artifacts
+*.nupkg
+*.snupkg
+
+# IDEs and editors
+.vs/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
+
+# Angular and front-end tooling
+.angular/cache/
+.sass-cache/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+
+# OS files
+.DS_Store
+Thumbs.db
