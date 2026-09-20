@@ -1,0 +1,6 @@
+/* Basic styles for lesson component */
+.lesson-page { padding: 16px; }
+.videos-list { float: left; width: 25%; }
+.videos-list ul { list-style: none; padding: 0; }
+.videos-list li { padding: 8px; cursor: pointer; }
+.active-video { margin-left: 26%; padding: 8px; }

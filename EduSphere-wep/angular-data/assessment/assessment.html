@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاختبار والتقييم | Alpha Gen Academy</title>
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="assessment.css">
+</head>
+<body>
+    <header class="alpha-header">
+        <a href="../manage-course/manage-course.html" class="brand">alpha<span>gen</span></a>
+        <nav class="header-nav">
+            <a href="../manage-course/manage-course.html" class="nav-link">كورساتي</a>
+        </nav>
+    </header>
+
+    <div class="assessment-layout">
+        <!-- Sidebar Progress -->
+        <aside class="assessment-nav">
+            <div class="journey-heading">
+                <span>محتوى الكورس</span>
+                <small id="quizProgressText">60%</small>
+            </div>
+            <div class="progress-bar">
+                <i id="quizProgressBar" style="width: 60%;"></i>
+            </div>
+            <ul class="journey-list">
+                <li class="done">المقدمة <b>✓</b></li>
+                <li class="done">المتغيرات وأنواع البيانات <b>✓</b></li>
+                <li class="current">التقييم النهائي <b>◉</b></li>
+                <li>المشروع العملي</li>
+            </ul>
+        </aside>
+
+        <!-- Question Section -->
+        <main class="assessment-main">
+            <div class="breadcrumbs">أساسيات البرمجة <span>›</span> التقييم النهائي</div>
+            <p class="eyebrow">MODULE 2 QUIZ</p>
+            <h1>اختبار: أنواع البيانات والذاكرة</h1>
+            <p class="subtle">أجب عن الأسئلة التالية لاختبار مدى فهمك واستيعابك للمفاهيم الأساسية.</p>
+
+            <div class="question-card" id="questionCard">
+                <div class="question-number" id="questionNumber">سؤال 1 من 3</div>
+                <h2 id="questionTitle">ما هو نوع البيانات المستخدم عادةً لتخزين النصوص مثل اسم الطالب؟</h2>
+                
+                <div class="answers-group" id="answersGroup">
+                    <label class="answer-option">
+                        <input type="radio" name="quizAnswer" value="0">
+                        <span>Integer (عدد صحيح)</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="quizAnswer" value="1">
+                        <span>String (نص)</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="quizAnswer" value="2">
+                        <span>Boolean (قيمة منطقية)</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="quizAnswer" value="3">
+                        <span>Array (مصفوفة)</span>
+                    </label>
+                </div>
+
+                <div class="question-actions">
+                    <button class="btn-outline" id="btnPrevQuestion" disabled>← السؤال السابق</button>
+                    <button class="btn-primary" id="btnNextQuestion">السؤال التالي →</button>
+                </div>
+            </div>
+
+            <!-- Quiz Result Box -->
+            <div class="quiz-result-card" id="quizResultCard" style="display: none;">
+                <h2>🎉 اكتمل الاختبار!</h2>
+                <p id="scoreText">لقد أحرزت 3 من 3</p>
+                <button class="btn-primary" onclick="location.reload()" style="margin-top: 14px;">إعادة الاختبار</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="assessment.js"></script>
+</body>
+</html>

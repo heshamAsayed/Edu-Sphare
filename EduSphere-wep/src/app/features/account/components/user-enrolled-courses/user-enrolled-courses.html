@@ -1,0 +1,114 @@
+<div class="courses-section">
+  <div class="section-header-row">
+    <div>
+      <h2 class="section-title">
+        {{ activeTab() === 'paid' ? 'My Paid Courses' : 'Available Academic Courses' }}
+      </h2>
+      <p class="section-subtitle">
+        {{ activeTab() === 'paid'
+          ? 'Courses you have enrolled in for your current academic stage and year'
+          : 'Browse courses available for your educational stage and academic year' }}
+      </p>
+    </div>
+    <span class="count-tag">{{ courses().length }} Courses</span>
+  </div>
+
+  @if (isStudent()) {
+    <div class="tabs-nav">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'available'"
+        (click)="onTabClick('available')">
+        <i class="fa fa-th-large me-2"></i> Available Year Courses ({{ availableCount() }})
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'paid'"
+        (click)="onTabClick('paid')">
+        <i class="fa fa-check-circle me-2"></i> My Paid Courses ({{ paidCount() }})
+      </button>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading courses...</p>
+    </div>
+  } @else if (!isStudent()) {
+    <div class="non-student-card">
+      <div class="non-student-icon">ℹ️</div>
+      <h3>{{ nonStudentMessage() || 'Not a Student Account' }}</h3>
+      <p>This account does not have student enrollment privileges. If you are an instructor or administrator, please access your management dashboard to create and oversee courses.</p>
+      <div class="non-student-actions">
+        <a routerLink="/manage-courses" class="btn-browse">
+          Go to Course Management
+        </a>
+        <a routerLink="/home" class="btn-home-outline">
+          Back to Home
+        </a>
+      </div>
+    </div>
+  } @else if (courses().length === 0) {
+    @if (activeTab() === 'paid') {
+      <div class="empty-courses-card">
+        <div class="empty-icon">📚</div>
+        <h3>No paid courses for this academic year yet</h3>
+        <p>You have not enrolled in or purchased any courses for your current grade yet. Explore available courses to start learning!</p>
+        <button type="button" class="btn-browse" (click)="onTabClick('available')">
+          Browse Available Courses
+        </button>
+      </div>
+    } @else {
+      <div class="empty-courses-card">
+        <div class="empty-icon">📚</div>
+        <h3>No courses available yet</h3>
+        <p>No courses are currently published for your educational stage and academic year. Please check back later!</p>
+      </div>
+    }
+  } @else {
+    <div class="courses-grid">
+      @for (course of courses(); track (course.id || $index)) {
+        <div class="course-card">
+          <div class="img-wrapper">
+            <img
+              [src]="course.imageUrl || defaultCourseImage"
+              [alt]="course.title || 'Course'"
+              class="course-img"
+              (error)="onImageError($event)" />
+            @if (course.isPaid) {
+              <span class="paid-badge">Enrolled ✓</span>
+            } @else {
+              <span class="available-badge">Available</span>
+            }
+          </div>
+
+          <div class="card-body">
+            <h3 class="course-title">{{ course.title || 'Untitled Course' }}</h3>
+            <p class="course-desc">{{ course.description || 'Comprehensive learning course on the platform.' }}</p>
+
+            <div class="course-meta">
+              <span class="price-text">
+                {{ course.isPaid ? 'Enrolled' : (course.price ? course.price + ' EGP' : 'Free') }}
+              </span>
+              <span class="videos-count">
+                🎥 {{ course.videosCount || course.videos?.length || 0 }} lessons
+              </span>
+            </div>
+
+            <div class="card-action">
+              <a
+                [routerLink]="['/course', course.id]"
+                class="btn-start-learning"
+                [class.btn-enrolled]="course.isPaid">
+                {{ course.isPaid ? 'Go to Course ➔' : 'View Details & Enroll ➔' }}
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

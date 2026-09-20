@@ -1,0 +1,36 @@
+<div class="question-card">
+  <div class="question-number">Question {{ questionIndex() + 1 }} of {{ totalQuestions() }}</div>
+  <h2 class="question-title">{{ question().title }}</h2>
+
+  <div class="answers-group">
+    @for (opt of question().options; track $index; let idx = $index) {
+      <label
+        class="answer-option"
+        [class.selected]="selectedChoiceIndex() === idx"
+        (click)="selectOption(idx)">
+        <input
+          type="radio"
+          name="quizAnswer"
+          [value]="idx"
+          [checked]="selectedChoiceIndex() === idx" />
+        <span>{{ opt }}</span>
+      </label>
+    }
+  </div>
+
+  <div class="question-actions">
+    <button
+      type="button"
+      class="btn-prev"
+      [disabled]="questionIndex() === 0"
+      (click)="onPrev()">
+      ← Previous Question
+    </button>
+    <button
+      type="button"
+      class="btn-next"
+      (click)="onNext()">
+      {{ questionIndex() === totalQuestions() - 1 ? 'Submit Assessment ✓' : 'Next Question →' }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<aside class="assessment-nav">
+  <div class="journey-heading">
+    <span>Course Modules</span>
+    <small class="percent-label">{{ progressPercent() }}%</small>
+  </div>
+  <div class="progress-bar">
+    <i [style.width.%]="progressPercent()"></i>
+  </div>
+  <ul class="journey-list">
+    <li class="done">1. Introduction <b>✓</b></li>
+    <li class="done">2. Variables & Types <b>✓</b></li>
+    <li class="current">3. Final Assessment <b>◉</b></li>
+    <li>4. Practical Project</li>
+  </ul>
+</aside>

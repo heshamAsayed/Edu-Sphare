@@ -1,0 +1,114 @@
+/* EduSphere Shared Palette matching home, courses, and navbar */
+:root {
+  --ag-primary: rgb(118, 217, 54);
+  --ag-primary-hover: #5ec024;
+  --ag-primary-dim: rgba(118, 217, 54, 0.12);
+  --ag-secondary: rgb(68, 73, 85);
+  --ag-bg-page: #f8f9fb;
+  --ag-bg-surface: #ffffff;
+  --ag-bg-surface-alt: #f3f4f6;
+  --ag-border: #e5e7eb;
+  --ag-border-light: #eef0f5;
+  --ag-text-dark: rgb(68, 73, 85);
+  --ag-text-main: #1f2937;
+  --ag-text-muted: #6b7280;
+  --ag-text-faint: #9ca3af;
+  --ag-danger: #ef4444;
+  --ag-warning: #f59e0b;
+}
+
+.edusphere-page-container {
+  background-color: var(--ag-bg-page);
+  min-height: calc(100vh - 120px);
+  padding: 3rem 1.5rem;
+  direction: ltr;
+  color: var(--ag-text-main);
+  font-family: inherit;
+}
+
+.page-inner-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Common Section Header */
+.page-hero-bar {
+  background: #ffffff;
+  border: 1px solid var(--ag-border-light);
+  border-radius: 16px;
+  padding: 24px 30px;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 4px 14px rgba(68, 73, 85, 0.05);
+}
+
+.page-hero-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--ag-text-dark);
+  margin: 0 0 6px 0;
+}
+
+.page-hero-subtitle {
+  font-size: 13px;
+  color: var(--ag-text-muted);
+  margin: 0;
+}
+
+/* Primary Button with Project Gradient */
+.btn-edusphere-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+  background: linear-gradient(176deg, rgb(118, 217, 54), rgb(68, 73, 85));
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn-edusphere-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(68, 73, 85, 0.25);
+  color: #ffffff;
+}
+
+.btn-edusphere-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-edusphere-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--ag-border);
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ag-text-dark);
+  background: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edusphere-outline:hover {
+  border-color: var(--ag-primary);
+  color: var(--ag-primary);
+  background: var(--ag-primary-dim);
+}

@@ -1,0 +1,69 @@
+:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* =========================
+   LEFT SECTION
+========================= */
+
+.intro-section {
+    width: 100%;
+    height: 100vh;
+    padding: 55px 7.5% 45px 3.8%;
+
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    color: #ffffff;
+
+    background: linear-gradient(
+        135deg,
+        #4338ca 0%,
+        #5b3ee8 45%,
+        #7c3aed 100%
+    );
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.intro-content {
+    margin-top: 125px;
+    max-width: 480px;
+}
+
+.intro-content h1 {
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -1.2px;
+    margin-bottom: 18px;
+}
+
+.intro-content p {
+    max-width: 420px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.testimonial {
+    margin-top: auto;
+    max-width: 400px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.testimonial p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.testimonial span {
+    font-size: 13px;
+}

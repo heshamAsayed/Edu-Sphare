@@ -1,0 +1,357 @@
+/* Lesson Page Layout */
+.learning-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 0;
+    width: 100%;
+    min-height: calc(100vh - 54px);
+    background: #030c0f;
+}
+
+.header-course-title {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* Video Main Area */
+.video-main-area {
+    padding: 20px 24px;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.video-container iframe,
+.video-error {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.video-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: #09171b;
+    color: var(--text-muted);
+}
+
+.video-error-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+/* Video Info Bar */
+.video-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.video-info-bar h1 {
+    font-size: 1.4rem;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.video-meta-badge {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Tabs */
+.lesson-tabs-container {
+    margin-top: 24px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: #07171c;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: rgba(43, 213, 165, 0.04);
+}
+
+.tabs-body {
+    padding: 20px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.tab-pane h3 {
+    font-size: 1.05rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.tab-text {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.transcription-box {
+    background: #07171b;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    max-height: 280px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #c5d9de;
+}
+
+.attachments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #081a20;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.attachment-item:hover {
+    border-color: var(--primary);
+}
+
+/* Playlist Sidebar */
+.playlist-sidebar {
+    background: #091c22;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 54px);
+    position: sticky;
+    top: 54px;
+}
+
+.playlist-header {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.journey-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, #6be3c4 100%);
+    border-radius: inherit;
+    transition: width 0.3s ease;
+}
+
+.playlist-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 8px;
+}
+
+.playlist-title {
+    font-size: 11px;
+    color: var(--text-subtle);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 8px 8px;
+}
+
+.playlist-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #8da4ac;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.playlist-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: #ffffff;
+}
+
+.playlist-item.current {
+    background: #0d282f;
+    border-color: #174f5c;
+    color: #ffffff;
+}
+
+.playlist-item.done {
+    color: #e2f4f1;
+}
+
+.playlist-item strong {
+    font-size: 13px;
+    display: block;
+    line-height: 1.3;
+}
+
+.playlist-item small {
+    font-size: 11px;
+    color: var(--text-subtle);
+}
+
+.check-icon {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* Attention Modal */
+.attention-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 8, 10, 0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.attention-modal-overlay.active {
+    display: flex;
+}
+
+.attention-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 28px;
+    width: 90%;
+    max-width: 480px;
+    text-align: center;
+}
+
+.attention-badge {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.attention-card h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 18px;
+}
+
+.attention-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.attention-choice-btn {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: #08171b;
+    color: var(--text-main);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: right;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.attention-choice-btn:hover {
+    border-color: var(--primary);
+    background: #0b2229;
+}
+
+.attention-footer {
+    font-size: 12px;
+    color: var(--text-muted);
+}

@@ -1,0 +1,80 @@
+.content-header-card {
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(68, 73, 85, 0.05);
+}
+
+.header-nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.back-link {
+  color: rgb(118, 217, 54);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #5ec024;
+}
+
+.course-id-badge {
+  background: #f8f9fb;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.header-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.course-title {
+  font-size: 1.4rem;
+  color: rgb(68, 73, 85);
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+
+.course-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.stats-pills {
+  display: flex;
+  gap: 12px;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8f9fb;
+  border: 1px solid #e5e7eb;
+  padding: 8px 16px;
+  border-radius: 10px;
+  color: rgb(68, 73, 85);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stat-icon {
+  font-size: 14px;
+}

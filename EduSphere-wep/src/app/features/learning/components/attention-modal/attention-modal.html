@@ -1,0 +1,90 @@
+@if (isOpen() && question()) {
+  <div
+    class="attention-toast"
+    [class.pos-left]="position() === 'bottom-left'"
+    role="alert"
+    aria-live="assertive">
+
+    <!-- Toast Header -->
+    <div class="toast-header">
+      <div class="header-left">
+        <span class="flash-icon" aria-hidden="true">⚡</span>
+        <span class="toast-title">Attention Check</span>
+      </div>
+
+      <div class="header-right">
+        <span class="timer-badge" [class.timer-warning]="isDelayed()">
+          ⏱️ {{ formattedTimer() }}
+        </span>
+        <button
+          type="button"
+          class="btn-close-toast"
+          (click)="close()"
+          aria-label="Dismiss attention prompt">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- Penalty Warning if >= 60 seconds -->
+    @if (isDelayed()) {
+      <div class="penalty-warning-bar">
+        <span>⚠️ Delayed response: -{{ penaltyPercentage() }}% attention penalty recorded</span>
+      </div>
+    }
+
+    <!-- Toast Body / Question -->
+    <div class="toast-body">
+      <p class="question-text">{{ question()?.question }}</p>
+
+      <!-- Feedback if answered -->
+      @if (selectedAnswer() !== null) {
+        <div
+          class="feedback-banner"
+          [class.success]="isCorrect()"
+          [class.danger]="!isCorrect()">
+          <span>{{ isCorrect() ? '✓' : '✕' }}</span>
+          <span>{{ feedbackMessage() }}</span>
+        </div>
+      } @else {
+        <!-- Answer Choices -->
+        @if (isTrueFalse()) {
+          <div class="tf-choices-grid">
+            <button
+              type="button"
+              class="choice-btn tf-btn tf-true"
+              (click)="selectChoice(true)">
+              <span class="btn-icon">✔️</span>
+              <span>True (صح)</span>
+            </button>
+            <button
+              type="button"
+              class="choice-btn tf-btn tf-false"
+              (click)="selectChoice(false)">
+              <span class="btn-icon">✖️</span>
+              <span>False (خطأ)</span>
+            </button>
+          </div>
+        } @else {
+          <div class="mcq-choices-list">
+            @for (opt of question()?.options; track $index; let idx = $index) {
+              <button
+                type="button"
+                class="choice-btn mcq-btn"
+                (click)="selectChoice(opt, idx)">
+                <span class="opt-index">{{ idx + 1 }}.</span>
+                <span class="opt-text">{{ opt }}</span>
+              </button>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Footer Note -->
+    <div class="toast-footer">
+      <small>Answering promptly verifies your focus and attendance.</small>
+    </div>
+
+  </div>
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة محتوى الكورس | Alpha Gen Academy</title>
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="manage-course-content.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="alpha-header">
+        <a href="../manage-course/manage-course.html" class="brand">alpha<span>gen</span></a>
+        <nav class="header-nav">
+            <a href="../manage-course/manage-course.html" class="nav-link">كورساتي</a>
+            <a href="../upload-course/upload-course.html" class="nav-link">رفع كورس</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="manage-container">
+        <a href="../manage-course/manage-course.html" class="back-link">← رجوع لكل الكورسات</a>
+
+        <div class="course-intro">
+            <p class="eyebrow">COURSE CONTENT</p>
+            <h1 id="courseTitle">جاري التحميل...</h1>
+            <p class="lead">ارفع دروس الفيديو لهذا الكورس وأدر ترتيبها وملحقاتها.</p>
+            <div class="meta-row" id="courseMeta">
+                <span id="videosCount">0 فيديو</span>
+                <span id="coursePrice">0 ج.م</span>
+                <span id="courseIdBadge">كود الكورس: --</span>
+            </div>
+        </div>
+
+        <!-- Upload Video Panel -->
+        <section class="panel">
+            <h2>رفع فيديو جديد إلى Bunny</h2>
+            <form id="uploadVideoForm">
+                <div class="form-group">
+                    <label for="videoTitle">عنوان الدرس</label>
+                    <input id="videoTitle" required maxlength="200" placeholder="مثال: مقدمة الدرس الأول">
+                </div>
+
+                <div class="form-group">
+                    <label for="videoDescription">الوصف (اختياري)</label>
+                    <textarea id="videoDescription" rows="2" placeholder="اكتب ملخصاً أو ملاحظات عن الدرس..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="videoOrder">ترتيب الدرس</label>
+                        <input id="videoOrder" type="number" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="availabilityDays">مدة الإتاحة للحضور (بالأيام)</label>
+                        <input id="availabilityDays" type="number" min="1" value="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="videoFile">ملف الفيديو</label>
+                    <input id="videoFile" type="file" accept="video/*" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="videoAttachments">ملحقات الدرس (PDF، صور، عروض تقديمية)</label>
+                    <input id="videoAttachments" type="file" multiple>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btnUploadVideo">
+                    رفع الدرس الآن
+                </button>
+
+                <!-- Real-time Upload Progress Box -->
+                <div id="progressBox" class="progress-box" style="display: none;">
+                    <div class="progress-header">
+                        <span id="progressStatus">جاري رفع ملف الفيديو...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="progressBarFill" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-footer">
+                        <span id="progressBytes">0 MB / 0 MB</span>
+                    </div>
+                </div>
+
+                <div id="uploadStatusMsg" class="upload-status-msg" style="display: none;"></div>
+            </form>
+        </section>
+
+        <!-- Videos List Panel -->
+        <section class="panel">
+            <h2>دروس الكورس المرفوعة</h2>
+            <div id="videosList" class="videos-list">
+                <p class="muted" style="text-align: center; padding: 20px;">جاري تحميل الدروس...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../shared/api.js"></script>
+    <script src="manage-course-content.js"></script>
+</body>
+</html>

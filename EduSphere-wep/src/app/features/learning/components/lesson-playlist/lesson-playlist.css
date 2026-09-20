@@ -1,0 +1,121 @@
+.playlist-sidebar {
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(68, 73, 85, 0.05);
+}
+
+.playlist-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid #eef0f5;
+  background: #f8f9fb;
+}
+
+.header-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.playlist-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgb(68, 73, 85);
+  margin: 0;
+}
+
+.progress-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgb(118, 217, 54);
+}
+
+.progress-bar-track {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: rgb(118, 217, 54);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.progress-caption {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.playlist-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.playlist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.playlist-item:hover {
+  background: #f8f9fb;
+}
+
+.playlist-item.current {
+  background: rgba(118, 217, 54, 0.08);
+  border-right: 4px solid rgb(118, 217, 54);
+}
+
+.item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.item-title {
+  font-size: 13px;
+  color: rgb(68, 73, 85);
+  font-weight: 600;
+}
+
+.playlist-item.current .item-title {
+  color: rgb(118, 217, 54);
+}
+
+.item-duration {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.check-icon {
+  color: rgb(118, 217, 54);
+  font-weight: bold;
+}
+
+.playing-indicator {
+  color: rgb(118, 217, 54);
+  font-size: 12px;
+}
+
+.empty-playlist {
+  padding: 24px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+}

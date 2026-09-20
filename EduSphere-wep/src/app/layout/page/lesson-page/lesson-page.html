@@ -1,0 +1,66 @@
+<nav class="lesson-nav" aria-label="Lesson navigation">
+  <div class="lesson-nav-inner">
+    <a class="home-link" routerLink="/profile/me" aria-label="Back to profile">
+      <span aria-hidden="true">⌂</span>
+      <span>Home</span>
+    </a>
+
+    <div class="lesson-context" aria-label="Course context">
+      <span class="context-item">{{ schoolName() }}</span>
+      <span class="context-separator" aria-hidden="true">/</span>
+      <span class="context-item">{{ stageName() }}</span>
+      <span class="context-separator" aria-hidden="true">/</span>
+      <span class="context-item">{{ yearName() }}</span>
+      <span class="context-separator" aria-hidden="true">/</span>
+      <strong class="context-course">{{ courseName() }}</strong>
+    </div>
+  </div>
+</nav>
+
+<div class="lesson-page-root">
+  <div class="page-container">
+    @if (isLoading()) {
+      <div class="loading-wrapper">
+        <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading lesson content..."></app-loading-spinner>
+      </div>
+    } @else {
+      <!-- Main Learning Grid: Video on right/main, Playlist on left (RTL) -->
+      <div class="learning-grid">
+        <main class="main-video-col">
+          <app-lesson-player
+            [video]="activeVideo()"
+            [errorMessage]="errorMessage()"
+            [isWatched]="activeVideo()?.isWatched || false"
+            (timeUpdate)="onTimeUpdate($event)"
+            (markWatched)="onMarkWatched($event)">
+          </app-lesson-player>
+
+          <app-lesson-transcription
+            [transcriptionText]="transcriptionText()"
+            [isLoading]="isLoadingTranscription()">
+          </app-lesson-transcription>
+        </main>
+
+        <aside class="playlist-col">
+          <app-lesson-playlist
+            [videos]="videos()"
+            [activeVideo]="activeVideo()"
+            (selectVideo)="selectVideo($event)">
+          </app-lesson-playlist>
+        </aside>
+      </div>
+    }
+  </div>
+</div>
+
+<app-attention-modal
+  [isOpen]="isAttentionModalOpen()"
+  [question]="currentAttentionQuestion()"
+  [videoId]="activeVideo()?.id || ''"
+  position="bottom-right"
+  (answered)="onAttentionAnswered($event)"
+  (penaltyRecorded)="onPenaltyRecorded($event)"
+  (closed)="onAttentionClosed()">
+</app-attention-modal>
+
+

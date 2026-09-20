@@ -1,0 +1,58 @@
+<section class="about-section py-5" dir="ltr" id="about"> 
+  <div class="container">
+
+    <!-- ================== Header ================== -->
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">{{ subtitle }}</span>
+      <h2 class="section-title-main mt-2 mb-3">{{ title }}</h2>
+      <p class="section-description mx-auto">{{ description }}</p>
+    </div>
+
+    <!-- ================== Stats ================== -->
+    <div class="row g-4 mb-5">
+      <div class="col-6 col-lg-3" *ngFor="let stat of stats">
+        <div class="stat-card text-center h-100">
+          <div class="stat-icon-wrapper mb-3">
+            <i class="fa" [ngClass]="stat.icon"></i>
+          </div>
+          <h3 class="stat-value mb-1">{{ stat.value }}</h3>
+          <p class="stat-label mb-0">{{ stat.label }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================== Mission / Vision / Values ================== -->
+    <div class="row g-4 mb-5">
+      <div class="col-12 col-md-4" *ngFor="let value of values">
+        <div class="card value-card h-100 text-center">
+          <div class="card-body">
+            <div class="value-icon-wrapper mb-3">
+              <i class="fa" [ngClass]="value.icon"></i>
+            </div>
+            <h5 class="card-title mb-2">{{ value.title }}</h5>
+            <p class="card-text value-description mb-0">{{ value.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================== Team ================== -->
+    <div>
+      <h3 class="text-center mb-4 team-title">Meet the Team</h3>
+      <div class="row g-4">
+        <div class="col-6 col-lg-3" *ngFor="let member of team">
+          <div class="card team-card text-center h-100">
+            <div class="card-body">
+              <div class="team-avatar mb-3" [style.background]="member.color">
+                {{ getInitials(member.name) }}
+              </div>
+              <h6 class="card-title mb-1">{{ member.name }}</h6>
+              <p class="card-text team-role mb-0">{{ member.role }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

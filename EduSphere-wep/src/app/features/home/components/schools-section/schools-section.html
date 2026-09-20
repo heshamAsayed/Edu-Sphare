@@ -1,0 +1,81 @@
+<section class="education-section py-5" dir="ltr">
+  <div class="container">
+
+    <!-- ================== Breadcrumb ================== -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb custom-breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="javascript:void(0)" (click)="goToSchools()"
+             [class.active-crumb]="currentView === 'schools'">
+            <i class="fa fa-home me-1"></i> Schools
+          </a>
+        </li>
+
+        <li class="breadcrumb-item" *ngIf="selectedSchool">
+          <a href="javascript:void(0)" (click)="goToStages()"
+             [class.active-crumb]="currentView === 'stages'">
+            {{ selectedSchool?.name }}
+          </a>
+        </li>
+
+        <li class="breadcrumb-item active-crumb" *ngIf="selectedStage" aria-current="page">
+          {{ selectedStage?.name }}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- ================== Level 1: Schools ================== -->
+    <div *ngIf="currentView === 'schools'">
+      <h2 class="section-title mb-4">Choose a School</h2>
+
+      <div class="row g-4">
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3" *ngFor="let school of schools(); let i = index">
+          <!-- school.id is not shown to the user, only used programmatically -->
+          <div class="card school-card h-100 text-center" (click)="selectSchool(school)">
+            <div class="card-body">
+              <div class="school-avatar mb-3" [style.background]="getSchoolColor(i)">
+                {{ getSchoolInitial(school) }}
+              </div>
+              <h5 class="card-title mb-0">{{ school.name }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================== Level 2: Stages ================== -->
+    <div *ngIf="currentView === 'stages' && selectedSchool">
+      <h2 class="section-title mb-4">Stages of {{ selectedSchool?.name }}</h2>
+
+      <div class="row g-4">
+        <div class="col-6 col-sm-4 col-lg-3"
+             *ngFor="let stage of getSortedStages(selectedSchool); let i = index">
+          <div class="card stage-card h-100 text-center" (click)="selectStage(stage)">
+            <div class="card-body">
+              <div class="stage-icon-wrapper mb-3">
+                <i class="fa" [ngClass]="getStageIcon(stage, i)"></i>
+              </div>
+              <h6 class="card-title mb-0">{{ stage?.name }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================== Level 3: Years ================== -->
+    <div *ngIf="currentView === 'years' && selectedStage">
+      <h2 class="section-title mb-4">Years of {{ selectedStage?.name }}</h2>
+
+      <div class="row g-3">
+        <div class="col-12 col-sm-6 col-lg-4"
+             *ngFor="let year of getSortedYears(selectedStage)">
+          <div class="year-box" (click)="selectYear(year)">
+            <span>{{ year.name }}</span>
+            <i class="fa fa-chevron-left"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

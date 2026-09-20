@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محتوى مقيد | Alpha Gen Academy</title>
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="restricted.css">
+</head>
+<body>
+    <div class="restricted-page">
+        <header class="restricted-header">
+            <a href="../manage-course/manage-course.html" class="brand">alpha<span>gen</span></a>
+        </header>
+
+        <main class="restricted-main">
+            <div class="restricted-card">
+                <div class="lock-icon">🔒</div>
+                <p class="eyebrow">محتوى خاص للطلاب المشتركين والمدرسين</p>
+                <h1>هذا الكورس مقيد</h1>
+                <p id="restrictedMessage">
+                    تحتاج إلى تسجيل الدخول واشتراك مفعل لفتح هذا الكورس، أو تسجيل الدخول بحساب مدرس مالك للكورس.
+                </p>
+
+                <div class="card-actions">
+                    <a href="../manage-course/manage-course.html" class="btn-primary" style="width: 100%;">
+                        العودة إلى لوحة التحكم
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../shared/api.js"></script>
+    <script src="restricted.js"></script>
+</body>
+</html>

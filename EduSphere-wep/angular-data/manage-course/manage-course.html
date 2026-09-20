@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة كورسات المدرس | Alpha Gen Academy</title>
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="manage-course.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="alpha-header">
+        <a href="manage-course.html" class="brand">alpha<span>gen</span></a>
+        <nav class="header-nav">
+            <a href="manage-course.html" class="nav-link active">كورساتي</a>
+            <a href="../upload-course/upload-course.html" class="nav-link">رفع كورس</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="manage-container">
+        <header class="manage-header">
+            <div>
+                <p class="eyebrow">INSTRUCTOR DASHBOARD</p>
+                <h1>لوحة كورسات المدرس</h1>
+                <p class="lead">إدارة المحتوى والدروس للكورسات الخاصة بك.</p>
+                <div id="teacherMeta" class="teacher-meta-badge" style="display: none;">
+                    <span id="schoolInfo">المدرسة: <strong>--</strong></span>
+                    <span id="stagesInfo">| المراحل: <strong>--</strong></span>
+                </div>
+            </div>
+
+            <a href="../upload-course/upload-course.html" class="btn-primary btn-create">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                رفع كورس جديد
+            </a>
+        </header>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state">
+            <div class="spinner"></div>
+            <p>جاري تحميل الكورسات...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>لا توجد كورسات مضافة بعد</h3>
+            <p>اضغط على زر "رفع كورس جديد" لإضافة أول كورس لك مع الفيديوهات.</p>
+            <a href="../upload-course/upload-course.html" class="btn-primary" style="margin-top: 14px;">
+                رفع كورس جديد
+            </a>
+        </div>
+
+        <!-- Course Cards Grid -->
+        <div id="courseCards" class="course-cards"></div>
+    </main>
+
+    <script src="../shared/api.js"></script>
+    <script src="manage-course.js"></script>
+</body>
+</html>

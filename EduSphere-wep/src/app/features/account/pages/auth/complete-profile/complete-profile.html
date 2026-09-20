@@ -1,0 +1,588 @@
+<div class="page">
+
+  <div class="onboarding" id="onboarding">
+
+    <!-- ==================== BRAND ==================== -->
+
+    <header class="brand">
+
+      <span class="brand__mark">
+        Es
+      </span>
+
+      <div class="brand__text">
+
+        <p class="brand__name">
+          EduSphere
+        </p>
+
+        <p class="brand__tagline">
+          Let's set up your learning space
+        </p>
+
+      </div>
+
+    </header>
+
+
+    <!-- ==================== ONBOARDING THREAD ==================== -->
+
+    <div class="thread" id="thread" [hidden]="reviewMode">
+
+
+      <!-- =====================================================
+           PHONE VERIFICATION
+           ===================================================== -->
+
+      <section class="step" id="phone-section" data-step="phone">
+
+        <div class="step__dot" aria-hidden="true"></div>
+
+
+        <div class="step__body">
+
+
+          <!-- PHONE FORM -->
+
+          <div class="step__form" id="phone-form" [hidden]="phoneVerified">
+
+            <h2 class="step__title">
+              Verify your phone number
+            </h2>
+
+            <p class="step__hint">
+              We'll use this to keep your account secure.
+            </p>
+
+
+            <!-- COUNTRY + PHONE -->
+
+            <div class="field-row">
+
+
+              <!-- COUNTRY CODE -->
+
+              <div class="field field--code">
+
+                <label class="field__label" for="country-code">
+                  Country
+                </label>
+
+                <select class="input" id="country-code" [(ngModel)]="countryCode">
+
+                  <option value="+20">
+                    🇪🇬 +20
+                  </option>
+
+                  <option value="+966">
+                    🇸🇦 +966
+                  </option>
+
+                  <option value="+971">
+                    🇦🇪 +971
+                  </option>
+
+                  <option value="+44">
+                    🇬🇧 +44
+                  </option>
+
+                  <option value="+1">
+                    🇺🇸 +1
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <!-- PHONE NUMBER -->
+
+              <div class="field field--phone">
+
+                <label class="field__label" for="phone-input">
+                  Phone number
+                </label>
+
+                <input class="input" type="tel" id="phone-input" placeholder="10 123 4567" inputmode="numeric"
+                  [(ngModel)]="phoneNumber" />
+
+              </div>
+
+            </div>
+
+
+            <!-- SEND CODE -->
+
+            <button class="btn btn--primary" id="send-code-btn" type="button" [disabled]="otpSent" (click)="sendCode()">
+
+              {{ otpSent ? 'Code sent' : 'Send code' }}
+
+            </button>
+
+
+            <!-- OTP BLOCK -->
+
+            <div class="otp-block" id="otp-block" [hidden]="!otpSent">
+
+              <p class="otp-block__sent" id="otp-sent-msg">
+
+                A 4-digit code was sent to
+                {{ maskedPhone }}
+                (simulated).
+
+              </p>
+
+
+              <div class="field-row">
+
+
+                <!-- OTP INPUT -->
+
+                <div class="field field--otp">
+
+                  <label class="field__label" for="otp-input">
+                    Verification code
+                  </label>
+
+                  <input class="input" type="text" id="otp-input" placeholder="••••" maxlength="4" inputmode="numeric"
+                    [(ngModel)]="otpCode" />
+
+                </div>
+
+
+                <!-- VERIFY -->
+
+                <button class="btn btn--primary" id="verify-btn" type="button" (click)="verifyCode()">
+                  Verify
+                </button>
+
+              </div>
+
+
+              <!-- RESEND -->
+
+              <button class="btn-link" id="resend-btn" type="button" (click)="resendCode()">
+                Resend code
+              </button>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <p class="field-error" id="phone-error" [hidden]="!phoneError">
+              {{ phoneError }}
+            </p>
+
+          </div>
+
+
+          <!-- PHONE SUMMARY -->
+
+          <button class="summary" id="phone-summary" type="button" [hidden]="!phoneVerified" (click)="reopenPhone()">
+
+            <span class="summary__check">
+              ✓
+            </span>
+
+            <span class="summary__text">
+
+              <span class="summary__label">
+                Phone verified
+              </span>
+
+              <span class="summary__value">
+                {{ maskedPhone }}
+              </span>
+
+            </span>
+
+            <span class="summary__edit">
+              Edit
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           SCHOOL
+           ===================================================== -->
+
+      <section class="step step--pending" id="school-section" data-step="school" [hidden]="!showSchoolSection">
+
+        <div class="step__dot" aria-hidden="true"></div>
+
+
+        <div class="step__body">
+
+
+          <!-- SCHOOL FORM -->
+
+          <div class="step__form" id="school-form" [hidden]="!!selectedSchool">
+
+            <h2 class="step__title">
+              Choose your school
+            </h2>
+
+            <p class="step__hint">
+              Select the school your child is enrolled in.
+            </p>
+
+
+            <div class="school-grid" id="school-grid">
+
+              @for (school of schools; track school.id) {
+
+              <button type="button" class="school-card" [class.is-selected]="selectedSchool?.id === school.id"
+                (click)="chooseSchool(school)">
+
+                <span class="school-card__badge">
+                  ✓
+                </span>
+
+                <!-- <span class="school-card__logo" [style.background]="school.color">
+                  {{ school.initials }}
+                </span> -->
+
+                <span class="school-card__name">
+                  {{ school.name }}
+                </span>
+
+                <!-- <span class="school-card__desc">
+                  {{ school.description }}
+                </span> -->
+
+              </button>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- SCHOOL SUMMARY -->
+
+          <button class="summary" id="school-summary" type="button" [hidden]="!selectedSchool" (click)="reopenSchool()">
+
+            <!-- <span class="summary__logo" id="school-summary-logo" [style.background]="selectedSchool?.color">
+              {{ selectedSchool?.initials }}
+            </span> -->
+
+
+            <span class="summary__text">
+
+              <span class="summary__label">
+                School
+              </span>
+
+              <span class="summary__value">
+                {{ selectedSchool?.name }}
+              </span>
+
+            </span>
+
+
+            <span class="summary__edit">
+              Edit
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           STAGE
+           ===================================================== -->
+
+      <section class="step step--pending" id="stage-section" data-step="stage" [hidden]="!showStageSection">
+
+        <div class="step__dot" aria-hidden="true"></div>
+
+
+        <div class="step__body">
+
+
+          <!-- STAGE FORM -->
+
+          <div class="step__form" id="stage-form" [hidden]="!!selectedStage">
+
+            <h2 class="step__title">
+              Choose your stage
+            </h2>
+
+            <p class="step__hint">
+              Which stage is your child studying this year?
+            </p>
+
+
+            <div class="stage-list" id="stage-list">
+
+              @for (stage of selectedSchool?.stages; track stage.id) {
+
+              <button type="button" class="stage-card" [class.is-selected]="selectedStage?.id === stage.id"
+                (click)="chooseStage(stage)">
+
+                <!-- <span class="stage-card__icon" [innerHTML]="icons[stage.icon]"></span> -->
+
+                <span class="stage-card__name">
+                  {{ stage.name }}
+                </span>
+
+              </button>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- STAGE SUMMARY -->
+
+          <button class="summary" id="stage-summary" type="button" [hidden]="!selectedStage" (click)="reopenStage()">
+
+            <!-- <span class="summary__icon" id="stage-summary-icon" [innerHTML]="
+                selectedStage
+                  ? icons[selectedStage.icon]
+                  : ''
+              "></span> -->
+
+
+            <span class="summary__text">
+
+              <span class="summary__label">
+                Stage
+              </span>
+
+              <span class="summary__value">
+                {{ selectedStage?.name }}
+              </span>
+
+            </span>
+
+
+            <span class="summary__edit">
+              Edit
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           YEAR
+           ===================================================== -->
+
+      <section class="step step--pending" id="year-section" data-step="year" [hidden]="!showYearSection">
+
+        <div class="step__dot" aria-hidden="true"></div>
+
+
+        <div class="step__body">
+
+
+          <!-- YEAR FORM -->
+
+          <div class="step__form" id="year-form" [hidden]="!!selectedYear">
+
+            <h2 class="step__title">
+              Choose your year
+            </h2>
+
+            <p class="step__hint">
+              Pick the academic year within this stage.
+            </p>
+
+
+            <div class="year-list" id="year-list">
+
+              @for (year of selectedStage?.years; track year.id) {
+
+              <button type="button" class="year-card" [class.is-selected]="selectedYear?.id === year.id"
+                (click)="chooseYear(year)">
+
+                {{ year.name }}
+
+              </button>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- YEAR SUMMARY -->
+
+          <button class="summary" id="year-summary" type="button" [hidden]="!selectedYear" (click)="reopenYear()">
+
+            <span class="summary__check">
+              ✓
+            </span>
+
+
+            <span class="summary__text">
+
+              <span class="summary__label">
+                Year
+              </span>
+
+              <span class="summary__value">
+                {{ selectedYear?.name }}
+              </span>
+
+            </span>
+
+
+            <span class="summary__edit">
+              Edit
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FINISH
+         ===================================================== -->
+
+    <!-- <footer
+      class="finish"
+      id="finish-block"
+      [hidden]="!isComplete"
+    >
+      <p class="finish__note">
+        You're all set. Review your details on the next screen.
+      </p>
+      <button
+        class="btn btn--primary btn--wide"
+        id="next-btn"
+        type="button"
+        [disabled]="!isComplete"
+        (click)="next()"
+      >
+        Next
+      </button>
+
+    </footer> -->
+
+    <!-- Footer: navigates to review screen -->
+    <footer class="finish" id="finish-block" [hidden]="!isComplete || reviewMode">
+      <p class="finish__note">
+        You're all set. Review your details on the next screen.
+      </p>
+      <button class="btn btn--primary btn--wide" id="next-btn" type="button" [disabled]="!isComplete"
+        (click)="goToReview()">
+        Next
+      </button>
+    </footer>
+
+    <section class="review" id="review-section" [hidden]="!reviewMode">
+      <div class="review__card">
+
+        <h2 class="step__title">Review your details</h2>
+        <p class="step__hint">Check everything before creating your account.</p>
+
+        <!-- ACCOUNT FIELDS — editable inputs -->
+        <div class="review__group">
+
+          <div class="field">
+            <label class="field__label" for="review-name">Full name</label>
+            <input class="input" id="review-name" type="text" [(ngModel)]="reviewName" name="reviewName" disabled />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="review-email">Email</label>
+            <input class="input" id="review-email" type="email" [(ngModel)]="reviewEmail" name="reviewEmail" disabled />
+          </div>
+
+          <div class="field field--password">
+            <label class="field__label" for="review-password">Password</label>
+            <div class="password-input-wrap">
+              <input class="input input--password" id="review-password" [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="reviewPassword" name="reviewPassword" disabled />
+              <button class="password-toggle" type="button"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                (click)="togglePasswordVisibility()">
+                @if (showPassword) {
+                <i class="fa-solid fa-eye"></i>
+                } @else {
+                <i class="fa-solid fa-eye-slash"></i>
+                }
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- READ-ONLY ROWS — with edit links -->
+        <div class="review__group">
+
+          <div class="review__row">
+            <span class="review__row-icon">📱</span>
+            <span class="review__row-text">
+              <span class="review__row-label">Mobile</span>
+              <span class="review__row-value">{{ maskedPhone }}</span>
+            </span>
+            <button class="btn-link" type="button">Edit</button>
+          </div>
+
+          <div class="review__row">
+            <span class="review__row-icon review__row-icon--logo" style="background:#2F5D5A">AN</span>
+            <span class="review__row-text">
+              <span class="review__row-label">School</span>
+              <span class="review__row-value">{{ reviewSchoolName }}</span>
+            </span>
+            <button class="btn-link" type="button">Edit</button>
+          </div>
+
+          <div class="review__row">
+            <span class="review__row-icon">🎓</span>
+            <span class="review__row-text">
+              <span class="review__row-label">Stage</span>
+              <span class="review__row-value">{{ reviewStageName }}</span>
+            </span>
+            <button class="btn-link" type="button">Edit</button>
+          </div>
+
+          <div class="review__row">
+            <span class="review__row-icon">📅</span>
+            <span class="review__row-text">
+              <span class="review__row-label">Year</span>
+              <span class="review__row-value">{{ reviewYearName }}</span>
+            </span>
+            <button class="btn-link" type="button">Edit</button>
+          </div>
+
+        </div>
+
+        <p class="field-error" hidden>Something went wrong. Please try again.</p>
+
+        <button class="btn btn--primary btn--wide" type="button" (click)="Registration()">Register</button>
+
+      </div>
+
+    </section>
+  </div>
+
+</div>

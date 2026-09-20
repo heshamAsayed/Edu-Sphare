@@ -1,0 +1,214 @@
+/* ================== General ================== */
+.course-details-page {
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  padding-top: 4rem;
+}
+
+.course-loading {
+  min-height: calc(100vh - 4rem);
+  display: grid;
+  place-items: center;
+}
+
+.not-found-page {
+  min-height: calc(100vh - 4rem);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: 2rem;
+  text-align: center;
+  color: #111827;
+}
+
+.not-found-code {
+  margin: 0;
+  color: #4338ca;
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.not-found-page h1 {
+  margin: 1rem 0 0.5rem;
+  font-size: 2rem;
+}
+
+.not-found-page p:last-child {
+  margin: 0;
+  color: #6b7280;
+}
+
+span.createAt{
+  font-size: 0.8rem !important;
+}
+.fa-calendar{
+  font-size: 0.7rem;
+}
+
+/* ================== Full-width Hero Header ================== */
+.course-hero {
+  width: 100%;
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+  background-color: #eef0f5;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.course-hero-overlay {
+  width: 100%;
+  padding: 40px 0;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0) 0%, rgba(17, 24, 39, 0.75) 100%);
+}
+
+.hero-title {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 32px;
+}
+
+.hero-meta-item {
+  color: #e5e7eb;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.hero-price {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ================== Section Headings ================== */
+.section-heading {
+  font-weight: 700;
+  color: #111827;
+}
+
+.course-description {
+  color: #4b5563;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* ================== Video List ================== */
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.video-item {
+  background: #ffffff;
+  border: 1px solid #eef0f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(68, 73, 85, 0.1);
+}
+
+.video-icon-wrapper {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef0f5;
+}
+
+.video-icon-wrapper i {
+  font-size: 18px;
+  color: #4338ca;
+}
+
+.video-title {
+  font-weight: 700;
+  color: #111827;
+  font-size: 15px;
+}
+
+.video-meta {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.locked-badge {
+  color: #444955;
+  font-size: 15px;
+  margin-left: 8px;
+}
+
+/* ================== Purchase Card ================== */
+.purchase-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 20px;
+}
+
+.price-label {
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.price-value {
+  color: #4338ca;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+/* ================== Action Button (Pay / Continue) ================== */
+.course-action-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 15px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #444955, #4338ca);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.course-action-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(68, 73, 85, 0.3);
+  color: #ffffff;
+}
+
+.course-action-btn:active {
+  transform: translateY(0);
+}
+
+.course-action-btn.is-continue {
+  background: linear-gradient(135deg, #4338ca, #444955);
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 992px) {
+  .purchase-card {
+    position: static;
+  }
+}
+
+@media (max-width: 576px) {
+  .course-hero {
+    height: 220px;
+  }
+
+  .hero-title {
+    font-size: 22px;
+  }
+}

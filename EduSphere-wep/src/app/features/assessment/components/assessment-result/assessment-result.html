@@ -1,0 +1,12 @@
+<div class="result-card">
+  <div class="result-icon">🎉</div>
+  <h2 class="result-title">Assessment Completed Successfully!</h2>
+  <p class="result-score">
+    You scored <strong>{{ score() }}</strong> out of <strong>{{ total() }}</strong> ({{ percentage() }}%)
+  </p>
+  <div class="result-actions">
+    <button type="button" class="btn-retake" (click)="retake.emit()">
+      Retake Assessment ↺
+    </button>
+  </div>
+</div>

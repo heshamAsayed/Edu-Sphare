@@ -1,0 +1,40 @@
+<div class="manage-courses-container">
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading courses...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-state">
+      <p class="error-msg">Error loading courses: {{ errorMessage() }}</p>
+      <button type="button" class="btn-retry" (click)="retry.emit()">Retry</button>
+    </div>
+  } @else if (courses().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📁</div>
+      <h3>No courses added yet</h3>
+      <p>You can get started by creating your first course and adding video lessons and materials.</p>
+      <a routerLink="/upload-course" class="btn-create-course">
+        <span>+ Create New Course</span>
+      </a>
+    </div>
+  } @else {
+    <div class="courses-grid">
+      @for (course of courses(); track course.id) {
+        <a [routerLink]="['/manage-course-content', course.id]" class="course-manage-card">
+          <div class="card-top">
+            <h2 class="course-name">{{ course.name || 'Untitled Course' }}</h2>
+            <p class="card-hint">Click to review and manage lessons and video content</p>
+          </div>
+          <div class="card-meta">
+            <span class="meta-tag">🎥 {{ course.videosCount ?? 0 }} videos</span>
+            <span class="meta-tag">💰 ${{ (course.price || 0).toFixed(2) }}</span>
+            @if (course.createdAt) {
+              <span class="meta-tag">📅 {{ formatDate(course.createdAt) }}</span>
+            }
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>

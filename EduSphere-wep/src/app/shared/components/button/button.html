@@ -1,0 +1,10 @@
+<button
+  type="button"
+  [class]="buttonClass()"
+  [class.is-continue]="hasAccess()"
+  [class.is-unavailable]="!isCourseAvailable()"
+  [disabled]="!isCourseAvailable()"
+  (click)="onClick()">
+  <i [class]="buttonIcon()"></i>
+  {{ buttonLabel() }}
+</button>

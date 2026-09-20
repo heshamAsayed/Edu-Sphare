@@ -1,0 +1,116 @@
+<div class="uploader-section">
+  <div class="card-header">
+    <h2 class="card-title">2. Course Lessons and Videos</h2>
+    <span class="count-tag">{{ queue().length }} selected videos</span>
+  </div>
+
+  <div
+    class="dropzone"
+    (click)="fileInput.click()"
+    (drop)="onDrop($event)"
+    (dragover)="onDragOver($event)">
+    <div class="dropzone-content">
+      <div class="dropzone-icon">☁️</div>
+      <h3>Drag and drop video files here</h3>
+      <p>Or click to select multiple video files from your device</p>
+      <input
+        #fileInput
+        type="file"
+        multiple
+        accept="video/*"
+        style="display: none;"
+        (change)="onFileInputChange($event)" />
+    </div>
+  </div>
+
+  @if (queue().length > 0) {
+    <div class="queue-list">
+      @for (item of queue(); track $index; let idx = $index) {
+        <div class="queue-card">
+          <div class="queue-card-main">
+            <div class="queue-index">{{ idx + 1 }}</div>
+            <div class="queue-title-col">
+              <input
+                type="text"
+                [ngModel]="item.title"
+                (ngModelChange)="onTitleInput(idx, $event)"
+                placeholder="Lesson title"
+                class="queue-title-input" />
+            </div>
+            <div class="queue-order-col">
+              <label>Order:</label>
+              <input
+                type="number"
+                min="1"
+                [ngModel]="item.sortOrder"
+                (ngModelChange)="onOrderInput(idx, $event)"
+                class="queue-order-input" />
+            </div>
+            <div class="queue-size-col">
+              <span>{{ getFileSizeMB(item.file.size) }} MB</span>
+            </div>
+            <button
+              type="button"
+              class="btn-remove"
+              (click)="onRemove(idx)"
+              title="Remove this video">
+              ✕
+            </button>
+          </div>
+
+          <div class="queue-attachments-row">
+            <label class="btn-attach-files">
+              📎 Add Attachments
+              <input
+                type="file"
+                multiple
+                style="display: none;"
+                (change)="onAttachmentsChange(idx, $event)" />
+            </label>
+            @if (item.attachments && item.attachments.length > 0) {
+              <div class="attachment-chips">
+                @for (att of item.attachments; track $index; let attIdx = $index) {
+                  <span class="attachment-chip">
+                    📄 {{ att.name }}
+                    <button type="button" class="btn-remove-att" (click)="removeAttachment(idx, attIdx)" title="Remove file">✕</button>
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="uploader-footer">
+    <button
+      type="button"
+      class="btn-start-upload"
+      (click)="onStartUpload()"
+      [disabled]="isUploading()">
+      @if (isUploading()) {
+        <span>⏳ Creating course and uploading videos...</span>
+      } @else {
+        <span>🚀 Save Course & Start Upload</span>
+      }
+    </button>
+  </div>
+</div>
+
+<!-- Modal Progress -->
+@if (isUploading()) {
+  <div class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="upload-icon">🚀</span>
+        <h3>Uploading Course & Videos</h3>
+        <span class="modal-percent">{{ uploadProgress() }}%</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" [style.width.%]="uploadProgress()"></div>
+      </div>
+      <p class="modal-status">{{ currentUploadInfo() || 'Processing...' }}</p>
+    </div>
+  </div>
+}

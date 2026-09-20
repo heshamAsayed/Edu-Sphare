@@ -1,0 +1,32 @@
+<app-navbar></app-navbar>
+
+<div class="profile-page-root">
+  <div class="page-container">
+    @if (isLoadingUser()) {
+      <div class="loading-wrapper">
+        <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading profile..."></app-loading-spinner>
+      </div>
+    } @else {
+      <app-user-profile-header
+        [user]="user()"
+        [schoolName]="schoolName()"
+        [stageName]="stageName()"
+        [yearName]="yearName()"
+        (logout)="onLogout()">
+      </app-user-profile-header>
+
+      <app-user-enrolled-courses
+        [courses]="displayedCourses()"
+        [isLoading]="isLoadingCourses()"
+        [isStudent]="isStudent()"
+        [nonStudentMessage]="nonStudentMessage()"
+        [activeTab]="activeTab()"
+        [availableCount]="availableCount()"
+        [paidCount]="paidCount()"
+        (tabChange)="onTabChange($event)">
+      </app-user-enrolled-courses>
+    }
+  </div>
+</div>
+
+<app-footer></app-footer>

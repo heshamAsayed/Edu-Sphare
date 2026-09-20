@@ -1,0 +1,105 @@
+<section class="contact-section py-5" dir="ltr" id="contact">
+  <div class="container">
+
+    <!-- ================== Header ================== -->
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">{{ subtitle }}</span>
+      <h2 class="section-title-main mt-2 mb-3">{{ title }}</h2>
+      <p class="section-description mx-auto">{{ description }}</p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- ================== Contact Info ================== -->
+      <div class="col-12 col-lg-4">
+        <div class="contact-info-card h-100">
+          <div class="contact-info-item d-flex align-items-start mb-4" *ngFor="let info of contactInfo">
+            <div class="contact-icon-wrapper me-3">
+              <i class="fa" [ngClass]="info.icon"></i>
+            </div>
+            <div>
+              <h6 class="mb-1">{{ info.label }}</h6>
+              <p class="mb-0 contact-value">{{ info.value }}</p>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="mt-4">
+            <h6 class="mb-3">Follow Us</h6>
+            <div class="d-flex gap-2">
+              <a *ngFor="let social of socialLinks" [href]="social.url" target="_blank"
+                 class="social-link" [attr.aria-label]="social.name">
+                <i class="fa" [ngClass]="social.icon"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================== Contact Form ================== -->
+      <div class="col-12 col-lg-8">
+        <div class="contact-form-card">
+          <form (ngSubmit)="onSubmit()" #contactForm="ngForm">
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="contactName">Full Name</label>
+                <input
+                  type="text"
+                  id="contactName"
+                  class="form-control"
+                  name="name"
+                  placeholder="Your name"
+                  [(ngModel)]="formData.name"
+                  required>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="contactEmail">Email Address</label>
+                <input
+                  type="email"
+                  id="contactEmail"
+                  class="form-control"
+                  name="email"
+                  placeholder="you@example.com"
+                  [(ngModel)]="formData.email"
+                  required>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="contactSubject">Subject</label>
+                <input
+                  type="text"
+                  id="contactSubject"
+                  class="form-control"
+                  name="subject"
+                  placeholder="What is this about?"
+                  [(ngModel)]="formData.subject"
+                  required>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="contactMessage">Message</label>
+                <textarea
+                  id="contactMessage"
+                  class="form-control"
+                  name="message"
+                  rows="5"
+                  placeholder="Write your message here..."
+                  [(ngModel)]="formData.message"
+                  required></textarea>
+              </div>
+
+              <div class="col-12">
+                <button type="submit" class="btn btn-submit" [disabled]="contactForm.invalid">
+                  <i class="fa fa-paper-plane me-2"></i> Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

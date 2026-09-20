@@ -1,0 +1,53 @@
+<div class="videos-management-box">
+  <div class="box-header">
+    <h3 class="box-title">Uploaded Lessons and Videos</h3>
+    <span class="count-badge">{{ videos().length }} lessons</span>
+  </div>
+
+  <div class="videos-list">
+    @for (vid of videos(); track vid.id) {
+      <div class="video-row">
+        <div class="video-info">
+          <strong class="video-title">{{ vid.title || 'Untitled Lesson' }}</strong>
+          <div class="video-submeta">
+            <span>Current Order: {{ (vid.sortOrder ?? 0) + 1 }}</span>
+            <span>| Access: {{ vid.availabilityDays ?? 1 }} days</span>
+            @if (vid.description) {
+              <span>· {{ vid.description }}</span>
+            }
+            @if (vid.bunnyVideoId) {
+              <span>· Bunny: {{ vid.bunnyVideoId }}</span>
+            }
+          </div>
+
+          @if (transcriptionStatuses()[vid.id]; as tStatus) {
+            <div
+              class="transcription-badge"
+              [class.completed]="tStatus.status === 'completed'"
+              [class.failed]="tStatus.status === 'failed'">
+              {{ tStatus.label }}
+            </div>
+          }
+        </div>
+
+        <div class="reorder-actions">
+          <label class="order-label">Order:</label>
+          <input
+            type="number"
+            min="0"
+            [ngModel]="getOrder(vid)"
+            (ngModelChange)="setOrder(vid.id, $event)"
+            class="reorder-input" />
+          <button
+            type="button"
+            class="btn-save-order"
+            (click)="onSave(vid)">
+            Save
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <p class="empty-text">No lessons uploaded to this course yet.</p>
+    }
+  </div>
+</div>

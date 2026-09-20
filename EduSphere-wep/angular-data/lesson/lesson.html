@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاهدة الدرس | Alpha Gen Academy</title>
+    <link rel="stylesheet" href="../shared/shared.css">
+    <link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="alpha-header">
+        <a href="../manage-course/manage-course.html" class="brand">alpha<span>gen</span></a>
+        <span id="headerCourseTitle" class="header-course-title">جاري تحميل الكورس...</span>
+        <div class="avatar" id="userAvatar">U</div>
+    </header>
+
+    <div class="learning-layout">
+        <!-- Main Video Area -->
+        <main class="video-main-area">
+            <div class="video-container" id="videoContainer">
+                <iframe id="bunnyPlayerFrame"
+                        src=""
+                        loading="lazy"
+                        allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
+                        allowfullscreen="true">
+                </iframe>
+                <div id="videoErrorOverlay" class="video-error" style="display: none;">
+                    <div class="video-error-icon">⚠️</div>
+                    <p id="videoErrorText">لا يوجد فيديو متاح لهذا الدرس.</p>
+                </div>
+            </div>
+
+            <!-- Video Info Bar -->
+            <div class="video-info-bar">
+                <div>
+                    <h1 id="activeVideoTitle">جاري تحميل عنوان الدرس...</h1>
+                    <span id="activeVideoMeta" class="video-meta-badge">درس 1</span>
+                </div>
+                <button id="btnMarkWatched" class="btn-outline" style="font-size: 13px;">
+                    ✓ تحديد كمكتمل
+                </button>
+            </div>
+
+            <!-- Tabs Section -->
+            <div class="lesson-tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="tabOverview">نظرة عامة</button>
+                    <button class="tab-btn" data-tab="tabTranscription">تفريغ النص (Deepgram)</button>
+                    <button class="tab-btn" data-tab="tabAttachments">الملحقات</button>
+                    <button class="tab-btn" data-tab="tabQuiz">الاختبار السريع</button>
+                </div>
+
+                <div class="tabs-body">
+                    <!-- Overview Tab -->
+                    <div id="tabOverview" class="tab-pane active">
+                        <h3>وصف الدرس</h3>
+                        <p id="videoDescription" class="tab-text">لا يوجد وصف إضافي لهذا الدرس.</p>
+                    </div>
+
+                    <!-- Transcription Tab -->
+                    <div id="tabTranscription" class="tab-pane">
+                        <h3>النص المفرغ من الفيديو</h3>
+                        <div id="transcriptionContent" class="transcription-box">
+                            <p class="muted">جاري فحص تفريغ النص للدرس الحالي...</p>
+                        </div>
+                    </div>
+
+                    <!-- Attachments Tab -->
+                    <div id="tabAttachments" class="tab-pane">
+                        <h3>ملحقات وملفات الدرس</h3>
+                        <div id="attachmentsList" class="attachments-list">
+                            <p class="muted">لا توجد ملفات مرفقة مع هذا الدرس.</p>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Tab -->
+                    <div id="tabQuiz" class="tab-pane">
+                        <h3>أسئلة التقييم للدرس</h3>
+                        <div id="quizContent">
+                            <p class="muted">يمكنك حل أسئلة التقييم أو أسئلة التركيز التلقائية أثناء المشاهدة.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Playlist Sidebar -->
+        <aside class="playlist-sidebar">
+            <div class="playlist-header">
+                <div class="journey-heading">
+                    <span>محتوى الكورس</span>
+                    <small id="progressPercentageText">0%</small>
+                </div>
+                <div class="progress-bar">
+                    <i id="courseProgressBar" style="width: 0%;"></i>
+                </div>
+            </div>
+
+            <div class="playlist-scroll">
+                <p class="playlist-title">قائمة الدروس</p>
+                <ul id="playlistItems" class="playlist-items"></ul>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Interactive Attention Question Modal -->
+    <div id="attentionModalOverlay" class="attention-modal-overlay">
+        <div class="attention-card">
+            <span class="attention-badge">⚡ سؤال تركيز سريع</span>
+            <h3 id="attentionQuestionText">هل تتابع الشرح جيداً؟</h3>
+            <div id="attentionChoices" class="attention-choices"></div>
+            <div class="attention-footer">
+                <span id="attentionTimer" class="attention-timer">المتبقي: 30 ثانية</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://assets.mediadelivery.net/playerjs/playerjs-latest.min.js"></script>
+    <script src="../shared/api.js"></script>
+    <script src="lesson.js"></script>
+</body>
+</html>
