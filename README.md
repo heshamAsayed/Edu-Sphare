@@ -1,21 +1,55 @@
-# Alpha Academy
+<div align="center">
 
-هذا المجلد يجمع مكوّنات منصة **EduSphere** في مكان واحد:
+# 🎓 Alpha Academy
 
-- `EduSphare/`: خدمة الـ API والخلفية.
-- `EduSphere-wep/`: واجهة الويب.
+### A connected learning platform for modern education
 
-## التشغيل المحلي
+![Platform](https://img.shields.io/badge/Platform-EduSphere-6C63FF?style=for-the-badge)
+![Backend](https://img.shields.io/badge/Backend-.NET%209-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Frontend](https://img.shields.io/badge/Frontend-Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
 
-شغّل المشروعين معًا للتجربة الكاملة. تبدأ خدمة الـ API أولًا، ثم واجهة الويب التي تتصل بها محليًا.
+</div>
 
-راجع دليل كل مشروع للحصول على المتطلبات وخطوات الإعداد والتشغيل والتكوين الخاصة به:
+---
 
-- [دليل الخلفية](EduSphare/README.md)
-- [دليل واجهة الويب](EduSphere-wep/README.md)
+## ✨ Overview
 
-## ملاحظات مشتركة
+Alpha Academy brings the EduSphere learning experience together in one workspace. It provides a complete flow for managing educational content, supporting learners, and delivering courses through a dedicated web application backed by a secure API.
 
-- لا تُضمّن مفاتيح الخدمات أو كلمات المرور أو ملفات إعدادات البيئة في المستودع.
-- تعتمد واجهة الويب على تشغيل خدمة الـ API محليًا؛ تأكد من توافق عنوان الـ API قبل البدء.
-- يُفضّل تثبيت الإصدارات المطلوبة لكل مشروع كما هي موضحة في دليله الخاص.
+The workspace contains two connected applications:
+
+| Application | Purpose | Location |
+| --- | --- | --- |
+| 🛠️ **EduSphare API** | Manages accounts, schools, courses, lessons, learning progress, payments, and platform services. | [`EduSphare/`](EduSphare/) |
+| 💻 **EduSphere Web** | The student, teacher, and administrator web experience for browsing and managing learning content. | [`EduSphere-wep/`](EduSphere-wep/) |
+
+## 🚀 Getting Started
+
+For a complete local experience, run both applications:
+
+1. Start the **EduSphare API**.
+2. Start the **EduSphere Web** application.
+3. Open the web app in your browser and connect using an account from the API environment.
+
+> The web application expects the API to be available locally. Check the web project's configuration if your API uses a different address.
+
+## 🔗 Project Guides
+
+Each application has its own guide with installation instructions, required software, configuration values, and technical details.
+
+| Need help with… | Read this guide |
+| --- | --- |
+| API setup, database configuration, service keys, and API usage | [Open the EduSphare API guide →](EduSphare/README.md) |
+| Web setup, local development, API address, and front-end commands | [Open the EduSphere Web guide →](EduSphere-wep/README.md) |
+
+## 🔐 Shared Development Notes
+
+- Keep API keys, passwords, and local environment settings out of source control.
+- Use the project-specific guides for configuration and dependency requirements.
+- Run the API before using features in the web application that require live data.
+
+<div align="center">
+
+Built for better learning experiences. 🌟
+
+</div>

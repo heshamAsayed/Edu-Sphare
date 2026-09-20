@@ -34,7 +34,8 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 3000;
-    width: min(100%, 1400px);
+    //width: min(100%, 1400px);
+    min-width:90%;
     margin-left: auto;
     margin-right: auto;
     border-radius: 24px;

@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BASE_URL: 'https://alphagen.runasp.net/api',
+  BASE_URL: 'https://edusphare.runasp.net/api',
   TIMEOUT: 10000,
   TOKEN_KEY: 'AlphaGen_Token',
   HEADERS: {
