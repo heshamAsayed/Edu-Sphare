@@ -31,6 +31,8 @@ export class CourseDetails implements OnInit {
   course = signal<CourseListItem | undefined>(undefined);
   isLoading = signal<boolean>(false);
   courseNotFound = signal<boolean>(false);
+  isCreatingPayment = signal<boolean>(false);
+  paymentError = signal<string | null>(null);
 
   defaultCourseImage =
     'data:image/svg+xml;charset=UTF-8,' +
@@ -220,6 +222,36 @@ export class CourseDetails implements OnInit {
       return;
     }
 
-    alert(`Preparing checkout for course: ${course.title} (${this.getFormattedPrice()})`);
+    const user = this.accountService.currentUser();
+    const courseId = this.resolvedCourseId() || course.id;
+    if (!user || !courseId || this.isCreatingPayment()) {
+      return;
+    }
+
+    const nameParts = (user.name || 'EduSphere Student').trim().split(/\s+/);
+    const firstName = nameParts.shift() || 'Student';
+    const lastName = nameParts.join(' ') || firstName;
+
+    this.paymentError.set(null);
+    this.isCreatingPayment.set(true);
+    this.coursesService.createPayment({
+      orderId: 0,
+      firstName,
+      lastName,
+      email: user.email,
+      phoneNumber: user.mobile || user.phoneNumber || '',
+      courseId,
+      redirectionUrl: `${window.location.origin}/payment-callback`,
+    }).subscribe({
+      next: (response) => {
+        this.isCreatingPayment.set(false);
+        window.location.assign(response.unifiedCheckoutUrl);
+      },
+      error: (error) => {
+        console.error('Payment initialization failed:', error);
+        this.isCreatingPayment.set(false);
+        this.paymentError.set(error.error?.message || 'Could not start the payment. Please try again.');
+      },
+    });
   }
 }

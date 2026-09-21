@@ -10,6 +10,8 @@ using EduSphare.Application.Services.Interface.Ai;
 using EduSphare.Application.Services.Interface.Payment;
 using EduSphare.Application.Services.Implement.Payment;
 using Microsoft.Extensions.DependencyInjection;
+using EduSphare.Application.Services.Interface.Verification;
+using EduSphare.Application.Services.Implement.Verification;
 
 namespace EduSphare.Application.DependencyInjection
 {
@@ -27,6 +29,7 @@ namespace EduSphare.Application.DependencyInjection
             services.AddScoped<IFinancialReportService, FinancialReportService>();
             services.AddScoped<IVideoQuizCatalogService, VideoQuizCatalogService>();
             services.AddScoped<IStudentCoursePaymentService, StudentCoursePaymentService>();
+            services.AddScoped<IPhoneNumber, PhoneNumber>();
 
             return services;
         }

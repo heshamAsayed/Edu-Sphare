@@ -4,6 +4,7 @@ using EduSphare.Domain.Entities.Main;
 using EduSphare.Infrastructure.Data;
 using EduSphare.Infrastructure.UnitOfWork.DataControll;
 using Microsoft.EntityFrameworkCore.Storage;
+using EduSphare.Domain.Entities.Verification;
 
 namespace EduSphare.Infrastructure.UnitOfWork;
 
@@ -22,6 +23,7 @@ public class UOW : IUnitOfWork
     public IRepository<School> Schools { get; }
     public IRepository<Stage> Stages { get; }
     public IRepository<Year> Years { get; }
+    public IRepository<PhoneVerification> PhoneVerifications { get; }
 
     public UOW(ApplicationDbContext context)
     {
@@ -37,6 +39,7 @@ public class UOW : IUnitOfWork
         Schools = new Repository<School>(_context);
         Stages = new Repository<Stage>(_context);
         Years = new Repository<Year>(_context);
+        PhoneVerifications = new Repository<PhoneVerification>(_context);
     }
 
     public Task<IDbContextTransaction> BeginTransactionAsync() =>

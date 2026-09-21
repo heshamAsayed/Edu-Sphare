@@ -22,6 +22,7 @@ import { RestrictedPage } from './layout/page/restricted-page/restricted-page';
 import { ProfilePage } from './layout/page/profile-page/profile-page';
 import { NotFoundPage } from './layout/page/not-found-page/not-found-page';
 import { ManageCoursesPage } from './layout/page/manage-courses-page/manage-courses-page';
+import { PaymentCallback } from './features/courses/components/payment-callback/payment-callback';
 
 export const authGuard: CanActivateFn = () => {
     const accountService = inject(AccountService);
@@ -128,6 +129,10 @@ export const routes: Routes = [
     {
         path: 'course/:courseId',
         component: CourseDetailsPage,
+    },
+    {
+        path: 'payment-callback',
+        component: PaymentCallback,
     },
 
     // Learning & Lesson Routes

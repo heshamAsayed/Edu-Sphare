@@ -91,6 +91,13 @@
             (action)="onActionClick()">
           </app-button>
 
+          @if (isCreatingPayment()) {
+          <p class="text-muted mt-2" role="status">Opening secure checkout...</p>
+          }
+          @if (paymentError()) {
+          <p class="text-danger mt-2" role="alert">{{ paymentError() }}</p>
+          }
+
         </div>
       </div>
 

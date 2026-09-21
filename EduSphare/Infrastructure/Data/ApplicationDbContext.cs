@@ -1,6 +1,7 @@
 using EduSphare.Domain.Entities;
 using EduSphare.Domain.Entities.Main;
 using EduSphare.Domain.Entities.Users;
+using EduSphare.Domain.Entities.Verification;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ namespace EduSphare.Infrastructure.Data
         public DbSet<WatchedVideo> WatchedVideos { get; set; }
         public DbSet<TimeLine> TimeLines { get; set; }
         public DbSet<VideoAttachment> VideoAttachments { get; set; }
+        public DbSet<PhoneVerification> PhoneVerifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -175,6 +177,11 @@ namespace EduSphare.Infrastructure.Data
                 .WithOne(c => c.TimeLine)
                 .HasForeignKey<TimeLine>(tl => tl.NextCourseId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+
+            // PhoneVerification -> ApplicationUser (One-to-One)
+            builder.Entity<PhoneVerification>();
         }
     }
 }

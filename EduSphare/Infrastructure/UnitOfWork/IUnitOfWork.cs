@@ -1,6 +1,7 @@
 using EduSphare.Domain.Entities;
 using EduSphare.Domain.Entities.Main;
 using EduSphare.Domain.Entities.Users;
+using EduSphare.Domain.Entities.Verification;
 using EduSphare.Infrastructure.UnitOfWork.DataControll;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -19,6 +20,7 @@ public interface IUnitOfWork
     IRepository<School> Schools { get; }
     IRepository<Stage> Stages { get; }
     IRepository<Year> Years { get; }
+    IRepository<PhoneVerification> PhoneVerifications { get; }
     Task<IDbContextTransaction> BeginTransactionAsync();
     Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation);
     Task<int> SaveChangesAsync();

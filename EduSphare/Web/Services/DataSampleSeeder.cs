@@ -73,8 +73,8 @@ public sealed class DataSampleSeeder(
                         var teacher = await teacherService.AddTeacher(new TeacherDto
                         {
                             Name = $"New Sample Teacher {teacherNumber}",
-                            Email = $"seed.new.teacher{teacherNumber}@edusphare.test",
-                            UserName = $"seed.new.teacher{teacherNumber}@edusphare.test",
+                            Email = $"teacher{teacherNumber}@edusphare.test",
+                            UserName = $"teacher{teacherNumber}@edusphare.test",
                             PhoneNumber = $"012{teacherNumber:0000000}",
                             Password = Password,
                             SchoolId = school.Id,

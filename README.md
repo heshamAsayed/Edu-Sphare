@@ -53,3 +53,13 @@ Each application has its own guide with installation instructions, required soft
 Built for better learning experiences. 🌟
 
 </div>
+
+## 🔌 Integrations
+
+The platform is integrated with the following services:
+
+| Service | Integration purpose |
+| --- | --- |
+| **Paymob** | Secure online payment gateway for course purchases. |
+| **Deepgram** | Speech-to-text transcription for learning video content. |
+| **OpenRouter** | AI-powered features and model access for the platform. |

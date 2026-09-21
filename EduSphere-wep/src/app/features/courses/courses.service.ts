@@ -9,6 +9,22 @@ import { computed, Injectable, signal } from '@angular/core';
 
 const API_URL = `${API_CONFIG.BASE_URL}/Courses`;
 
+export interface CreatePaymentRequest {
+  orderId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  courseId: string;
+  redirectionUrl: string;
+}
+
+export interface CreatePaymentResponse {
+  clientSecret: string;
+  publicKey: string;
+  unifiedCheckoutUrl: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -103,5 +119,11 @@ export class CoursesService {
         );
       })
     );
+  }
+
+  createPayment(payload: CreatePaymentRequest): Observable<CreatePaymentResponse> {
+    return this.http.post<CreatePaymentResponse>(`${API_CONFIG.BASE_URL}/Payment/create`, payload, {
+      withCredentials: true,
+    });
   }
 }
