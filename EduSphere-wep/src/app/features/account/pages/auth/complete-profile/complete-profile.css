@@ -24,11 +24,25 @@ button {
 }
 
 .page {
+  --color-bg: #f1f4f7;
+  --color-surface: #ffffff;
+  --color-ink: #344054;
+  --color-ink-soft: #52606d;
+  --color-ink-faint: #9ca3af;
+  --color-primary: #64c52f;
+  --color-primary-dark: #4ea91f;
+  --color-primary-tint: #e8f7dc;
+  --color-primary-tint-strong: #b8df9f;
+  --color-border: #d7e0e7;
+  --color-border-strong: #c4d0da;
+  --color-error: #ef4444;
+  --shadow-soft: 0 8px 24px rgba(68, 73, 85, 0.12);
+  --shadow-card: 0 8px 20px rgba(68, 73, 85, 0.12);
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 56px 20px 0px;
-  
+  padding: 48px 20px 0;
+  background: var(--color-bg);
 }
 
 .onboarding {
@@ -52,7 +66,7 @@ button {
   width: 42px;
   height: 42px;
   border-radius: var(--radius-sm);
-  background: var(--color-primary);
+  background: #76d936;
   color: #fff;
   display: flex;
   align-items: center;
@@ -65,7 +79,8 @@ button {
 
 .brand__name {
   font-family: var(--font-display);
-  font-size: 21px;
+  font-size: 20px;
+  font-weight: 500;
   color: var(--color-ink);
 }
 
@@ -129,14 +144,38 @@ button {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 26px;
   box-shadow: var(--shadow-soft);
 }
 
 .step__form[hidden] { display: none; }
 
+#phone-section .step__form {
+  padding: 20px 24px;
+}
+
+#phone-section .step__title {
+  font-size: 18px;
+}
+
+#phone-section .step__hint {
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+#phone-section .field {
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+#phone-section .input {
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
 .step__title {
-  font-size: 20px;
+  font-size: 19px;
+  font-weight: 500;
   color: var(--color-ink);
   margin-bottom: 6px;
 }
@@ -254,7 +293,7 @@ button {
   border-radius: var(--radius-sm);
   padding: 12px 20px;
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 500;
   transition: transform 0.15s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 
@@ -372,7 +411,7 @@ button {
 
 .summary__value {
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
@@ -430,7 +469,7 @@ button {
 
 .school-card__name {
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-ink);
 }
 
@@ -504,7 +543,7 @@ button {
 
 .stage-card__name {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-ink);
 }
 
@@ -573,6 +612,7 @@ button {
 @media (max-width: 480px) {
   .page { padding: 32px 14px 60px; }
   .step__form { padding: 20px; }
+  #phone-section .step__form { padding: 18px; }
   .school-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .year-list { grid-template-columns: repeat(2, 1fr); }
   .field-row { gap: 8px; }
@@ -593,7 +633,7 @@ button {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 26px;
   box-shadow: var(--shadow-soft);
 }
 
@@ -653,7 +693,7 @@ button {
 
 .review__row-value {
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
@@ -662,4 +702,113 @@ button {
 
 .review .btn--wide {
   margin-top: 24px;
+}
+
+.review__account-hint {
+  margin-top: 10px;
+  color: var(--color-ink-soft);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.review .input[readonly] {
+  cursor: pointer;
+}
+
+.registration-error {
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-error) 35%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-error) 8%, transparent);
+}
+
+/* Phone verification replaces the onboarding flow after the account is saved. */
+.verification {
+  animation: reveal 0.5s var(--ease);
+}
+
+.verification[hidden] {
+  display: none;
+}
+
+.verification__card {
+  padding: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.verification__icon {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+  font-size: 20px;
+}
+
+.verification__eyebrow {
+  margin-bottom: 8px;
+  color: var(--color-primary-dark);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.verification .step__hint {
+  max-width: 420px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.verification__field {
+  max-width: 300px;
+  margin: 0 auto 18px;
+  text-align: left;
+}
+
+.verification__field .input {
+  text-align: center;
+  letter-spacing: 0.3em;
+}
+
+.verification .field-error {
+  margin-bottom: 12px;
+}
+
+.verification__resend {
+  display: block;
+  margin: 14px auto 0;
+}
+
+.verification__resend:disabled,
+.btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.button-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -3px;
+  animation: button-spin 0.7s linear infinite;
+}
+
+@keyframes button-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .verification__card { padding: 24px 18px; }
 }

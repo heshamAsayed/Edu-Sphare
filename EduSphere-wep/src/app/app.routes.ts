@@ -14,12 +14,14 @@ import { CourseDetailsPage } from './layout/page/course-details-page/course-deta
 import { SchoolsSection } from './features/home/components/schools-section/schools-section';
 
 import { LessonPage } from './layout/page/lesson-page/lesson-page';
-import { ManageCoursesPage } from './layout/page/manage-courses-page/manage-courses-page';
 import { ManageCourseContentPage } from './layout/page/manage-course-content-page/manage-course-content-page';
+        pathMatch: 'full'
 import { UploadCoursePage } from './layout/page/upload-course-page/upload-course-page';
 import { AssessmentPage } from './layout/page/assessment-page/assessment-page';
 import { RestrictedPage } from './layout/page/restricted-page/restricted-page';
 import { ProfilePage } from './layout/page/profile-page/profile-page';
+import { NotFoundPage } from './layout/page/not-found-page/not-found-page';
+import { ManageCoursesPage } from './layout/page/manage-courses-page/manage-courses-page';
 
 export const authGuard: CanActivateFn = () => {
     const accountService = inject(AccountService);
@@ -35,6 +37,16 @@ export const authGuard: CanActivateFn = () => {
             return router.createUrlTree(['/auth/login']);
         }),
         catchError(() => of(router.createUrlTree(['/auth/login'])))
+    );
+};
+
+export const guestGuard: CanActivateFn = () => {
+    const accountService = inject(AccountService);
+    const router = inject(Router);
+
+    return accountService.checkAuth().pipe(
+        map((user) => user ? router.createUrlTree(['/profile/me']) : true),
+        catchError(() => of(true))
     );
 };
 
@@ -86,25 +98,23 @@ export const routes: Routes = [
         children: [
             {
                 path: 'login',
+                canActivate: [guestGuard],
                 component: FormLogin
             },
             {
                 path: 'register',
+                canActivate: [guestGuard],
                 component: FormRegister
-            },
-            {
-                path: 'complete-profile',
-                component: CompleteProfile
             }
         ]
     },
     {
         path: 'auth/register/completeprofile',
-        canActivate: [registrationGuard],
+        canActivate: [guestGuard, registrationGuard],
         component: CompleteProfile
     },
 
-    // Home 
+    // Home
     {
         path: 'home',
         component: Home
@@ -159,5 +169,10 @@ export const routes: Routes = [
         path: 'restricted',
         component: RestrictedPage,
     },
+    {
+        path: '**',
+        component: NotFoundPage,
+    },
+
 ];
 

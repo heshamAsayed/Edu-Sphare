@@ -160,12 +160,12 @@ export class Courses implements OnInit {
 
   private loadCourses(): void {
     if (!this.selectedYearId) {
-      console.warn("Year ID is missing. Courses cannot be loaded.");
+      console.error("Year ID is missing. Courses cannot be loaded.");
       return;
     }
      this.isLoadingCourses.set(true);
     if (!this.selectedSchoolId || !this.selectedStageId) {
-      console.warn(
+      console.error(
         "School ID or Stage ID is missing. Courses cannot be loaded.",
       );
       return;

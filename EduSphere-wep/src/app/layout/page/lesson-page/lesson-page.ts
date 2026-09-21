@@ -204,7 +204,7 @@ export class LessonPage implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        console.warn('Could not generate attention question:', err);
+        console.error('Could not generate attention question:', err);
         this.isGeneratingQuestion.set(false);
       },
     });
@@ -230,8 +230,8 @@ export class LessonPage implements OnInit, OnDestroy {
       videoId: vId,
       secondsTaken: event.secondsTaken,
     }).subscribe({
-      next: (res) => console.log('Attention penalty recorded:', res),
-      error: (err) => console.warn('Failed to record penalty:', err),
+      next: () => {},
+      error: (err) => console.error('Failed to record penalty:', err),
     });
   }
 

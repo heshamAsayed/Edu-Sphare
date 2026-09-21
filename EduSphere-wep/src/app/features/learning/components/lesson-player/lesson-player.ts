@@ -129,7 +129,7 @@ export class LessonPlayer implements AfterViewInit, OnDestroy {
           this.videoEnded.emit();
         });
       } catch (e) {
-        console.warn('Could not attach playerjs instance:', e);
+        console.error('Could not attach playerjs instance:', e);
       }
     }
   }

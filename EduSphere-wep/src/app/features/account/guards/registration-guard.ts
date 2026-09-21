@@ -9,5 +9,5 @@ export const registrationGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  return router.createUrlTree(['/register']);
+  return router.createUrlTree(['/auth/register']);
 };

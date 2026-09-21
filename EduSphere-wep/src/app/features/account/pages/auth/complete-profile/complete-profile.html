@@ -27,7 +27,7 @@
 
     <!-- ==================== ONBOARDING THREAD ==================== -->
 
-    <div class="thread" id="thread" [hidden]="reviewMode">
+    <div class="thread" id="thread" [hidden]="reviewMode || registrationSaved">
 
 
       <!-- =====================================================
@@ -47,11 +47,11 @@
           <div class="step__form" id="phone-form" [hidden]="phoneVerified">
 
             <h2 class="step__title">
-              Verify your phone number
+              {{ registrationSaved ? 'Verify your phone number' : 'Add your phone number' }}
             </h2>
 
             <p class="step__hint">
-              We'll use this to keep your account secure.
+              {{ registrationSaved ? 'Enter the code sent to your phone to finish creating your account.' : 'We\'ll use this to keep your account secure.' }}
             </p>
 
 
@@ -68,7 +68,7 @@
                   Country
                 </label>
 
-                <select class="input" id="country-code" [(ngModel)]="countryCode">
+                <select class="input" id="country-code" [(ngModel)]="countryCode" [disabled]="registrationSaved">
 
                   <option value="+20">
                     🇪🇬 +20
@@ -104,20 +104,11 @@
                 </label>
 
                 <input class="input" type="tel" id="phone-input" placeholder="10 123 4567" inputmode="numeric"
-                  [(ngModel)]="phoneNumber" />
+                  [(ngModel)]="phoneNumber" [disabled]="registrationSaved" />
 
               </div>
 
             </div>
-
-
-            <!-- SEND CODE -->
-
-            <button class="btn btn--primary" id="send-code-btn" type="button" [disabled]="otpSent" (click)="sendCode()">
-
-              {{ otpSent ? 'Code sent' : 'Send code' }}
-
-            </button>
 
 
             <!-- OTP BLOCK -->
@@ -128,7 +119,7 @@
 
                 A 4-digit code was sent to
                 {{ maskedPhone }}
-                (simulated).
+                after your account was saved.
 
               </p>
 
@@ -213,7 +204,7 @@
            SCHOOL
            ===================================================== -->
 
-      <section class="step step--pending" id="school-section" data-step="school" [hidden]="!showSchoolSection">
+      <section class="step step--pending" id="school-section" data-step="school" [hidden]="registrationSaved || !showSchoolSection">
 
         <div class="step__dot" aria-hidden="true"></div>
 
@@ -304,7 +295,7 @@
            STAGE
            ===================================================== -->
 
-      <section class="step step--pending" id="stage-section" data-step="stage" [hidden]="!showStageSection">
+      <section class="step step--pending" id="stage-section" data-step="stage" [hidden]="registrationSaved || !showStageSection">
 
         <div class="step__dot" aria-hidden="true"></div>
 
@@ -387,7 +378,7 @@
            YEAR
            ===================================================== -->
 
-      <section class="step step--pending" id="year-section" data-step="year" [hidden]="!showYearSection">
+      <section class="step step--pending" id="year-section" data-step="year" [hidden]="registrationSaved || !showYearSection">
 
         <div class="step__dot" aria-hidden="true"></div>
 
@@ -460,6 +451,54 @@
 
     </div>
 
+    <section class="verification" [hidden]="!registrationSaved || phoneVerified" aria-labelledby="verification-title">
+      <div class="verification__card">
+        <div class="verification__icon" aria-hidden="true">✓</div>
+        <p class="verification__eyebrow">Account saved</p>
+        <h2 id="verification-title" class="step__title">Verify your phone</h2>
+        <p class="step__hint">
+          Enter the 4-digit code sent to {{ maskedPhone }} to finish setting up your account.
+        </p>
+
+        <div class="verification__field field">
+          <label class="field__label" for="saved-otp-input">Verification code</label>
+          <input class="input" id="saved-otp-input" type="text" placeholder="••••" maxlength="6"
+            inputmode="numeric" [(ngModel)]="otpCode" [disabled]="isVerifyingCode" />
+        </div>
+
+        <p class="field-error" [hidden]="!phoneError">{{ phoneError }}</p>
+
+        <button class="btn btn--primary btn--wide" type="button" (click)="verifyCode()"
+          [disabled]="isVerifyingCode || isSendingCode">
+          @if (isVerifyingCode) {
+          <app-loading-spinner [isLoading]="true" size="small" loadingText="Verifying..."></app-loading-spinner>
+          } @else {
+          Verify phone
+          }
+        </button>
+
+        <button class="btn-link verification__resend" type="button" (click)="resendCode()"
+          [disabled]="isSendingCode || isVerifyingCode || resendSecondsRemaining > 0">
+          @if (isSendingCode) {
+          Sending a new code...
+          } @else if (resendSecondsRemaining > 0) {
+          Resend code in {{ resendSecondsRemaining }}s
+          } @else {
+          Resend code
+          }
+        </button>
+      </div>
+    </section>
+
+    <section class="verification" [hidden]="!verificationSuccess" aria-labelledby="verification-success-title">
+      <div class="verification__card">
+        <div class="verification__icon" aria-hidden="true">✓</div>
+        <p class="verification__eyebrow">Phone verified</p>
+        <h2 id="verification-success-title" class="step__title">Your phone number is verified</h2>
+        <p class="step__hint">Your account is ready. Redirecting you to your paid courses...</p>
+      </div>
+    </section>
+
 
 
     <!-- =====================================================
@@ -487,7 +526,7 @@
     </footer> -->
 
     <!-- Footer: navigates to review screen -->
-    <footer class="finish" id="finish-block" [hidden]="!isComplete || reviewMode">
+    <footer class="finish" id="finish-block" [hidden]="!isComplete || reviewMode || registrationSaved">
       <p class="finish__note">
         You're all set. Review your details on the next screen.
       </p>
@@ -497,7 +536,7 @@
       </button>
     </footer>
 
-    <section class="review" id="review-section" [hidden]="!reviewMode">
+    <section class="review" id="review-section" [hidden]="!reviewMode || registrationSaved">
       <div class="review__card">
 
         <h2 class="step__title">Review your details</h2>
@@ -513,14 +552,16 @@
 
           <div class="field">
             <label class="field__label" for="review-email">Email</label>
-            <input class="input" id="review-email" type="email" [(ngModel)]="reviewEmail" name="reviewEmail" disabled />
+            <input class="input" id="review-email" type="email" [(ngModel)]="reviewEmail" name="reviewEmail" readonly
+              (click)="editAccountDetails()" (focus)="editAccountDetails()" aria-describedby="account-edit-hint" />
           </div>
 
           <div class="field field--password">
             <label class="field__label" for="review-password">Password</label>
             <div class="password-input-wrap">
               <input class="input input--password" id="review-password" [type]="showPassword ? 'text' : 'password'"
-                [(ngModel)]="reviewPassword" name="reviewPassword" disabled />
+                [(ngModel)]="reviewPassword" name="reviewPassword" readonly (click)="editAccountDetails()"
+                (focus)="editAccountDetails()" aria-describedby="account-edit-hint" />
               <button class="password-toggle" type="button"
                 [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
                 (click)="togglePasswordVisibility()">
@@ -534,6 +575,8 @@
           </div>
 
         </div>
+
+        <p id="account-edit-hint" class="review__account-hint">To change your email or password, select the field to return to registration. Your details will be kept.</p>
 
         <!-- READ-ONLY ROWS — with edit links -->
         <div class="review__group">
@@ -576,9 +619,15 @@
 
         </div>
 
-        <p class="field-error" hidden>Something went wrong. Please try again.</p>
+        <p class="field-error registration-error" role="alert" [hidden]="!registrationError">{{ registrationError }}</p>
 
-        <button class="btn btn--primary btn--wide" type="button" (click)="Registration()">Register</button>
+        <button class="btn btn--primary btn--wide" type="button" (click)="Registration()" [disabled]="isRegistering">
+          @if (isRegistering) {
+          <app-loading-spinner [isLoading]="true" size="small" loadingText="Saving account..."></app-loading-spinner>
+          } @else {
+          Register
+          }
+        </button>
 
       </div>
 

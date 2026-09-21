@@ -73,23 +73,12 @@ export class SchoolsSection implements OnInit {
     this.schoolService.GetSchools().subscribe({
 
       next: (schools) => {
-
-        console.log('GetSchools() response:', schools);
-
         this.schools.set(schools);
       },
 
       error: (err) => {
 
         console.error('GetSchools() failed:', err);
-      },
-
-      complete: () => {
-
-        console.log(
-          'GetSchools() completed. schools array length:',
-          this.schools().length
-        );
       }
 
     });
@@ -180,11 +169,6 @@ export class SchoolsSection implements OnInit {
     localStorage.setItem(
       this.selectionKey,
       JSON.stringify(selection)
-    );
-
-    console.log(
-      'Student selection saved:',
-      selection
     );
 
     // alert("navigate to courses page");

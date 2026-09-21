@@ -180,6 +180,29 @@ button:active {
     transform: translateY(0);
 }
 
+button:disabled {
+    background: #9ca3af;
+    cursor: wait;
+    opacity: 0.85;
+    transform: none;
+}
+
+.button-spinner {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    vertical-align: -3px;
+    animation: button-spin 0.7s linear infinite;
+}
+
+@keyframes button-spin {
+    to { transform: rotate(360deg); }
+}
+
 
 /* =========================
    LOGIN LINK
@@ -300,7 +323,13 @@ button:active {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 40px 30px;
+  box-sizing: border-box;
   background: #ffffff;
+}
+
+.register-container {
+  width: min(100%, 380px);
 }
 
 button:disabled {
@@ -311,4 +340,11 @@ button:disabled {
 button:disabled:hover {
     background: #4f46e5;
     transform: none;
+}
+
+.validation-error {
+    margin: 6px 0 0;
+    color: #dc2626;
+    font-size: 12px;
+    line-height: 1.4;
 }

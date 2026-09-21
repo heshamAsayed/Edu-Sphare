@@ -22,7 +22,9 @@
                 </label>
 
                 <input type="text" id="name" placeholder="Enter your full name" formControlName="Name" required>
-
+                @if (registerForm.controls.Name.touched && registerForm.controls.Name.invalid) {
+                <p class="validation-error">Please enter your full name (at least 2 characters).</p>
+                }
             </div>
 
 
@@ -34,7 +36,9 @@
                 </label>
 
                 <input type="email" id="email" placeholder="you@example.com" formControlName="email" required>
-
+                @if (registerForm.controls.email.touched && registerForm.controls.email.invalid) {
+                <p class="validation-error">Enter a valid email address.</p>
+                }
             </div>
 
 
@@ -46,7 +50,9 @@
                 </label>
 
                 <input type="password" id="password" placeholder="Create a password" formControlName="password" required>
-
+                @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) {
+                <p class="validation-error">Password must be at least 6 characters and include uppercase and lowercase letters, a number, and a special character.</p>
+                }
             </div>
 
 
@@ -58,7 +64,9 @@
                 </label>
 
                 <input type="password" id="confirm-password" placeholder="Confirm your password" formControlName="confirmPassword" required>
-
+                @if (registerForm.controls.confirmPassword.touched && registerForm.hasError('passwordMismatch')) {
+                <p class="validation-error">Passwords do not match.</p>
+                }
             </div>
 
 
@@ -76,6 +84,10 @@
 
             </label>
 
+            @if (!Agreement && registerForm.touched) {
+            <p class="validation-error">Please agree to the Terms of Service and Privacy Policy.</p>
+            }
+
             <!-- Submit -->
             <!-- @if (Agreement){
             <button type="submit">
@@ -89,8 +101,13 @@
             } -->
 
 
-              <button type="submit" [disabled]="!Agreement">
+                            <button type="submit" [disabled]="!Agreement || isLoading">
+                                @if (isLoading) {
+                                <span class="button-spinner" aria-hidden="true"></span>
+                                Opening profile setup...
+                                } @else {
                 Create account
+                                }
             </button>
 
         </form>

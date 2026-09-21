@@ -34,8 +34,7 @@ export class FormLogin {
     this.modelError = null;
 
     this.authService.login(data).subscribe({
-      next: (response) => {
-        console.log('Login successful:', response);
+      next: () => {
         this.authService.checkAuth().subscribe({
           next: (user) => {
             this.isLoading = false;
@@ -53,7 +52,7 @@ export class FormLogin {
       },
       error: (error) => {
         this.isLoading = false;
-        console.log('Status:', error.status);
+        console.error('Login failed:', error);
 
         if (error.status === 400 || error.status === 401) {
           this.modelError = 'Invalid email or password';

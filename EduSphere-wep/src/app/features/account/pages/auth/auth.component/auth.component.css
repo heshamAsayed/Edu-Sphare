@@ -23,11 +23,13 @@ app-left-side-auth {
 
 .auth-right-panel {
   display: flex;
-  flex: 0 0 45%;
-  width: 45%;
+  flex: 0 0 55%;
+  width: 55%;
   height: 100vh;
   box-sizing: border-box;
   background: #ffffff;
+  align-items: center;
+  justify-content: center;
 }
 
 .auth-right-panel > router-outlet {

@@ -14,6 +14,10 @@ import {
 
 const API_URL = `${API_CONFIG.BASE_URL}/Account`;
 
+export interface OtpApiResponse {
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -135,6 +139,25 @@ export class AccountService {
       tap((user) => {
         this.currentUser.set(user);
       })
+    );
+  }
+
+
+
+  sendOTP(phone: string): Observable<OtpApiResponse> {
+    return this.http.post<OtpApiResponse>(`${API_URL}/send-otp`, null, {
+      params: { Phone: phone },
+    });
+  }
+
+
+  verify(phone: string, code: string): Observable<OtpApiResponse> {
+    return this.http.post<OtpApiResponse>(
+      `${API_URL}/verify-otp`,
+      {
+        Phone: phone,
+        Code: code,
+      }
     );
   }
 }
