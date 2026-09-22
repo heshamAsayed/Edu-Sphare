@@ -58,15 +58,22 @@ export class LearningService {
   }
 
   createCourse(payload: CreateCourseRequest): Observable<CreateCourseResponse> {
-    const body = {
-      name: payload.name,
-      price: payload.price ?? 0,
-      stageId: payload.stageId,
-      yearId: payload.yearId,
-      instructorId: payload.instructorId || 'current-teacher',
-    };
-    return this.http.post<CreateCourseResponse>(`${LEARNING_API_URL}/CreateCourse`, body, {
+    const formData = new FormData();
+    formData.append('Name', payload.name.trim());
+    formData.append('Price', String(payload.price ?? 0));
+    formData.append('StageId', payload.stageId);
+    formData.append('YearId', payload.yearId);
+    formData.append('InstructorId', payload.instructorId || 'authenticated-teacher');
+
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem(API_CONFIG.TOKEN_KEY) : null;
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return this.http.post<CreateCourseResponse>(`${LEARNING_API_URL}/CreateCourse`, formData, {
       withCredentials: true,
+      headers,
     });
   }
 

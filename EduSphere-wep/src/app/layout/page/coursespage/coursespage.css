@@ -1,0 +1,11 @@
+.courses-page-root {
+  background-color: #f8f9fb;
+  min-height: calc(100vh - 120px);
+  padding-top: 145px;
+}
+
+@media (max-width: 991px) {
+  .courses-page-root {
+    padding-top: 110px;
+  }
+}

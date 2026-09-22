@@ -15,7 +15,6 @@ import { SchoolsSection } from './features/home/components/schools-section/schoo
 
 import { LessonPage } from './layout/page/lesson-page/lesson-page';
 import { ManageCourseContentPage } from './layout/page/manage-course-content-page/manage-course-content-page';
-        pathMatch: 'full'
 import { UploadCoursePage } from './layout/page/upload-course-page/upload-course-page';
 import { AssessmentPage } from './layout/page/assessment-page/assessment-page';
 import { RestrictedPage } from './layout/page/restricted-page/restricted-page';

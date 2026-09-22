@@ -4,8 +4,8 @@
   <div class="page-container">
     <div class="page-header-card">
       <div>
-        <h1 class="page-title">Create New Course & Upload Lessons</h1>
-        <p class="page-subtitle">Fill in course information and select video lessons to upload and process in batch</p>
+        <h1 class="page-title">Create New Course</h1>
+        <p class="page-subtitle">Fill in the course details below. Once created, you will be redirected to upload and manage lessons.</p>
       </div>
     </div>
 
@@ -17,23 +17,9 @@
       <app-course-create-form
         [stages]="stages()"
         [teacherSchoolName]="teacherSchoolName()"
-        [isCreating]="isUploading()"
-        (courseDataChange)="onFormSubmit($event)"
+        [isCreating]="isCreating()"
         (formSubmit)="onFormSubmit($event)">
       </app-course-create-form>
-
-      <app-video-queue-uploader
-        [queue]="queue()"
-        [isUploading]="isUploading()"
-        [uploadProgress]="uploadProgress()"
-        [currentUploadInfo]="currentUploadInfo()"
-        (filesAdded)="onFilesAdded($event)"
-        (itemRemoved)="onItemRemoved($event)"
-        (itemTitleChanged)="onItemTitleChanged($event)"
-        (itemOrderChanged)="onItemOrderChanged($event)"
-        (itemAttachmentsChanged)="onItemAttachmentsChanged($event)"
-        (startUpload)="onStartUpload()">
-      </app-video-queue-uploader>
     }
   </div>
 </div>

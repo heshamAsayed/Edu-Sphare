@@ -85,3 +85,38 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #eef0f5;
+}
+
+.btn-submit-course {
+  background: linear-gradient(176deg, rgb(118, 217, 54), rgb(68, 73, 85));
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-submit-course:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(68, 73, 85, 0.25);
+}
+
+.btn-submit-course:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+

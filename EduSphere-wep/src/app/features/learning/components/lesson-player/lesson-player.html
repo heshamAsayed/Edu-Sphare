@@ -1,5 +1,11 @@
 <div class="video-player-container">
-  @if (hasBunnyVideo() && bunnyVideoUrl()) {
+  @if (!video()) {
+    <div class="empty-player-card">
+      <div class="empty-player-icon">🎬</div>
+      <h3 class="empty-player-title">No Video Available</h3>
+      <p class="empty-player-text">No video lessons have been uploaded to this course yet.</p>
+    </div>
+  } @else if (hasBunnyVideo() && bunnyVideoUrl()) {
     <iframe
       #bunnyIframe
       [src]="bunnyVideoUrl()"

@@ -12,21 +12,22 @@
         [videosCount]="videos().length">
       </app-course-content-header>
 
-      <app-video-reorder-list
-        [videos]="videos()"
-        [transcriptionStatuses]="transcriptionStatuses()"
-        (saveOrder)="onSaveOrder($event)">
-      </app-video-reorder-list>
-
       <app-video-upload-form
         [courseId]="courseId()"
         [defaultOrder]="videos().length"
         [isUploading]="isUploading()"
         [uploadProgress]="uploadProgress()"
         [progressBytes]="progressBytes()"
+        [currentUploadInfo]="currentUploadInfo()"
         [uploadStatusMessage]="uploadStatusMessage()"
-        (uploadSubmit)="onUploadSubmit($event)">
+        (uploadBatchSubmit)="onUploadBatchSubmit($event)">
       </app-video-upload-form>
+
+      <app-video-reorder-list
+        [videos]="videos()"
+        [transcriptionStatuses]="transcriptionStatuses()"
+        (saveOrder)="onSaveOrder($event)">
+      </app-video-reorder-list>
     }
   </div>
 </div>

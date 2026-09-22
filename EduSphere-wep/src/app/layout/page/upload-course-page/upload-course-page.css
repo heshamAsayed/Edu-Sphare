@@ -1,8 +1,14 @@
 .upload-course-root {
   background-color: #f8f9fb;
-  min-height: calc(100vh - 140px);
-  padding: 2.5rem 1.5rem;
+  min-height: 100vh;
+  padding: 145px 1.5rem 3.5rem;
   direction: ltr;
+}
+
+@media (max-width: 991px) {
+  .upload-course-root {
+    padding-top: 110px;
+  }
 }
 
 .page-container {

@@ -14,8 +14,7 @@ public class CreateCourseDTo
     [Required]
     public string StageId { get; set; } = string.Empty;
 
-    [Required]
-    public string InstructorId { get; set; } = string.Empty;
+    public string? InstructorId { get; set; }
 
     // Optional fields
     public string? Description { get; set; }

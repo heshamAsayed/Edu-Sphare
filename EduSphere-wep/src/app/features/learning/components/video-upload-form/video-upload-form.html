@@ -1,99 +1,229 @@
 <div class="upload-form-box">
   <div class="box-header">
-    <h3 class="box-title">➕ Upload New Lesson to this Course</h3>
+    <div class="box-header-title">
+      <span class="box-icon">🎬</span>
+      <div>
+        <h3 class="box-title">Upload New Lessons to this Course</h3>
+        <p class="box-subtitle">Select and upload one or multiple video lessons at once. You can customize the title, order, and description for each video individually.</p>
+      </div>
+    </div>
+    @if (queue().length > 0) {
+      <span class="badge-count">{{ queue().length }} video(s) selected</span>
+    }
   </div>
 
-  <form (ngSubmit)="onSubmit()" class="upload-form">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Lesson Title *</label>
-        <input
-          type="text"
-          [(ngModel)]="title"
-          name="title"
-          placeholder="e.g. Introduction to Data Structures"
-          required />
-      </div>
-
-      <div class="form-row-2">
-        <div class="form-group">
-          <label>Lesson Order</label>
-          <input
-            type="number"
-            min="0"
-            [(ngModel)]="sortOrder"
-            name="sortOrder" />
-        </div>
-        <div class="form-group">
-          <label>Access Duration (Days)</label>
-          <input
-            type="number"
-            min="1"
-            [(ngModel)]="availabilityDays"
-            name="availabilityDays" />
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Lesson Description</label>
-      <textarea
-        [(ngModel)]="description"
-        name="description"
-        rows="2"
-        placeholder="Enter a detailed description for this lesson..."></textarea>
-    </div>
-
-    <div class="files-row">
-      <div class="form-group">
-        <label>Video File (MP4, MKV) *</label>
-        <input
-          type="file"
-          accept="video/*"
-          (change)="onVideoFileChange($event)"
-          required />
-      </div>
-      <div class="form-group">
-        <label>Attached Files (PDF, ZIP, etc.)</label>
-        <input
-          type="file"
-          multiple
-          (change)="onAttachmentsChange($event)" />
-      </div>
-    </div>
-
-    @if (isUploading()) {
-      <div class="progress-box">
-        <div class="progress-label-row">
-          <span class="progress-status-text">Uploading video to server and processing...</span>
-          <span class="progress-percent-text">{{ uploadProgress() }}%</span>
-        </div>
-        <div class="progress-bar-track">
-          <div class="progress-bar-fill" [style.width.%]="uploadProgress()"></div>
-        </div>
-        @if (progressBytes()) {
-          <small class="bytes-text">{{ progressBytes() }}</small>
-        }
-      </div>
-    }
-
-    @if (uploadStatusMessage(); as msg) {
-      <div class="status-alert" [class.error]="msg.isError" [class.success]="!msg.isError">
-        {{ msg.text }}
-      </div>
-    }
-
-    <div class="form-actions">
-      <button
-        type="submit"
-        class="btn-submit-upload"
-        [disabled]="isUploading()">
-        @if (isUploading()) {
-          <span>⏳ Uploading...</span>
-        } @else {
-          <span>🚀 Upload & Save Lesson</span>
-        }
+  <div class="upload-form-body">
+    <!-- Dropzone / Picker -->
+    <div
+      class="upload-dropzone"
+      (click)="fileInput.click()"
+      (drop)="onDrop($event)"
+      (dragover)="onDragOver($event)">
+      <input
+        #fileInput
+        type="file"
+        multiple
+        accept="video/*"
+        style="display: none;"
+        (change)="onFileInputChange($event)" />
+      <div class="dropzone-icon">☁️</div>
+      <h4 class="dropzone-title">Click to choose video files or drag and drop them here</h4>
+      <p class="dropzone-hint">Supports MP4, MKV, WebM formats (you can select multiple files at once)</p>
+      <button type="button" class="btn-select-files" (click)="$event.stopPropagation(); fileInput.click()" [disabled]="isUploading()">
+        📁 Select Video Files
       </button>
     </div>
-  </form>
+
+    <!-- Queue List: Form per Video -->
+    @if (queue().length > 0) {
+      <div class="queue-section">
+        <div class="queue-header-actions">
+          <span class="section-title">Selected Lessons to Upload ({{ queue().length }} video(s)):</span>
+          <div class="queue-header-buttons">
+            <button type="button" class="btn-add-more" (click)="fileInput.click()" [disabled]="isUploading()">
+              ➕ Add More Videos
+            </button>
+            <button type="button" class="btn-clear-all" (click)="clearQueue()" [disabled]="isUploading()">
+              🗑️ Clear List
+            </button>
+          </div>
+        </div>
+
+        <div class="queue-cards-container">
+          @for (item of queue(); track $index; let idx = $index) {
+            <div class="video-item-card" [class.has-order-error]="isOrderDuplicate(item.sortOrder) || !item.sortOrder || item.sortOrder < 1">
+              <div class="card-top-bar">
+                <div class="card-video-info">
+                  <span class="video-badge">Lesson #{{ idx + 1 }}</span>
+                  <span class="video-file-name" [title]="item.file.name">🎥 {{ item.file.name }}</span>
+                  <span class="video-file-size">{{ getFileSizeMB(item.file.size) }} MB</span>
+                </div>
+                <button
+                  type="button"
+                  class="btn-delete-card"
+                  (click)="removeVideo(idx)"
+                  [disabled]="isUploading()"
+                  title="Remove this video from list">
+                  ✕ Remove
+                </button>
+              </div>
+
+              <div class="card-form-grid">
+                <!-- Title -->
+                <div class="form-group col-span-2">
+                  <label>Lesson Title *</label>
+                  <input
+                    type="text"
+                    [ngModel]="item.title"
+                    (ngModelChange)="updateTitle(idx, $event)"
+                    placeholder="e.g. Lesson 1 - Introduction"
+                    required
+                    [disabled]="isUploading()" />
+                  @if (!item.title.trim()) {
+                    <small class="error-hint">⚠️ Lesson title is required</small>
+                  }
+                </div>
+
+                <!-- Order -->
+                <div class="form-group">
+                  <label>Lesson Order *</label>
+                  <input
+                    type="number"
+                    min="1"
+                    [ngModel]="item.sortOrder"
+                    (ngModelChange)="updateOrder(idx, $event)"
+                    [class.input-error]="isOrderDuplicate(item.sortOrder) || !item.sortOrder || item.sortOrder < 1"
+                    required
+                    [disabled]="isUploading()" />
+                  @if (!item.sortOrder || item.sortOrder < 1) {
+                    <small class="error-hint">⚠️ Order must be at least 1</small>
+                  } @else if (isOrderDuplicate(item.sortOrder)) {
+                    <small class="error-hint">⚠️ Order {{ item.sortOrder }} is duplicated with another lesson!</small>
+                  }
+                </div>
+
+                <!-- Availability days -->
+                <div class="form-group">
+                  <label>Access Duration (Days)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    [ngModel]="item.availabilityDays"
+                    (ngModelChange)="updateAvailability(idx, $event)"
+                    [disabled]="isUploading()" />
+                </div>
+
+                <!-- Description -->
+                <div class="form-group col-span-2">
+                  <label>Lesson Description (Optional)</label>
+                  <textarea
+                    [ngModel]="item.description"
+                    (ngModelChange)="updateDescription(idx, $event)"
+                    rows="2"
+                    placeholder="Enter a detailed description for this lesson..."
+                    [disabled]="isUploading()"></textarea>
+                </div>
+
+                <!-- Attachments -->
+                <div class="form-group col-span-2">
+                  <label>Attached Materials (PDF, exercises, etc. - Optional)</label>
+                  <div class="attachments-control">
+                    <label class="btn-attach-files" [class.disabled]="isUploading()">
+                      📎 Add Attachments
+                      <input
+                        type="file"
+                        multiple
+                        style="display: none;"
+                        (change)="onAttachmentsChange(idx, $event)"
+                        [disabled]="isUploading()" />
+                    </label>
+                    @if (item.attachments && item.attachments.length > 0) {
+                      <div class="attachment-chips">
+                        @for (att of item.attachments; track $index; let attIdx = $index) {
+                          <span class="attachment-chip">
+                            📄 {{ att.name }}
+                            <button type="button" class="btn-remove-att" (click)="removeAttachment(idx, attIdx)" [disabled]="isUploading()">✕</button>
+                          </span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Validation Banners -->
+        @if (hasDuplicateOrders()) {
+          <div class="validation-banner error-banner">
+            <span class="banner-icon">🚫</span>
+            <div class="banner-text">
+              <strong>Duplicate Order Numbers Detected!</strong>
+              <p>Duplicate orders: [ {{ duplicateOrders().join(', ') }} ]. Each video must have a unique order number to proceed with the upload.</p>
+            </div>
+          </div>
+        }
+
+        @if (hasInvalidOrders() && !hasDuplicateOrders()) {
+          <div class="validation-banner warning-banner">
+            <span class="banner-icon">⚠️</span>
+            <div class="banner-text">
+              <strong>Invalid Order Number!</strong>
+              <p>Lesson order must be 1 or higher for all videos.</p>
+            </div>
+          </div>
+        }
+
+        @if (hasMissingTitles()) {
+          <div class="validation-banner warning-banner">
+            <span class="banner-icon">⚠️</span>
+            <div class="banner-text">
+              <strong>Missing Lesson Titles!</strong>
+              <p>Please provide a title for every lesson before starting the upload.</p>
+            </div>
+          </div>
+        }
+
+        <!-- Upload Progress & Status -->
+        @if (isUploading()) {
+          <div class="progress-box">
+            <div class="progress-label-row">
+              <span class="progress-status-text">{{ currentUploadInfo() || 'Uploading and processing lessons...' }}</span>
+              <span class="progress-percent-text">{{ uploadProgress() }}%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" [style.width.%]="uploadProgress()"></div>
+            </div>
+            @if (progressBytes()) {
+              <small class="bytes-text">{{ progressBytes() }}</small>
+            }
+          </div>
+        }
+
+        @if (uploadStatusMessage(); as msg) {
+          <div class="status-alert" [class.error]="msg.isError" [class.success]="!msg.isError">
+            {{ msg.text }}
+          </div>
+        }
+
+        <!-- Submit Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-submit-upload"
+            (click)="onSubmit()"
+            [disabled]="isUploading() || queue().length === 0 || !isFormValid()">
+            @if (isUploading()) {
+              <span>⏳ Uploading Lessons Sequentially...</span>
+            } @else {
+              <span>🚀 Upload & Save {{ queue().length }} Lesson(s)</span>
+            }
+          </button>
+        </div>
+      </div>
+    }
+  </div>
 </div>
+
+

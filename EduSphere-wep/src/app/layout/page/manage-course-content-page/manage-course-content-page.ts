@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
@@ -11,6 +11,7 @@ import {
   CourseSummary,
   LearningService,
   LessonVideo,
+  VideoQueueItem,
   VideoReorderList,
   VideoUploadForm,
 } from '../../../features/learning';
@@ -31,6 +32,8 @@ import {
   styleUrl: './manage-course-content-page.css',
 })
 export class ManageCourseContentPage implements OnInit {
+  @ViewChild(VideoUploadForm) uploadFormRef?: VideoUploadForm;
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private learningService = inject(LearningService);
@@ -49,6 +52,7 @@ export class ManageCourseContentPage implements OnInit {
   isUploading = signal<boolean>(false);
   uploadProgress = signal<number>(0);
   progressBytes = signal<string>('');
+  currentUploadInfo = signal<string>('');
   uploadStatusMessage = signal<{ text: string; isError: boolean } | null>(null);
 
   ngOnInit(): void {
@@ -120,41 +124,83 @@ export class ManageCourseContentPage implements OnInit {
     });
   }
 
-  onUploadSubmit(formData: FormData): void {
+  async onUploadBatchSubmit(items: VideoQueueItem[]): Promise<void> {
+    if (!items || items.length === 0) return;
+
     this.isUploading.set(true);
     this.uploadProgress.set(0);
-    this.progressBytes.set('Starting upload...');
+    this.progressBytes.set('');
     this.uploadStatusMessage.set(null);
 
-    const uploadId = 'up_' + Date.now();
+    const total = items.length;
 
-    this.learningService.uploadVideoWithProgress(this.courseId(), formData, uploadId).subscribe({
-      next: (event) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          if (event.total) {
+    for (let i = 0; i < total; i++) {
+      const item = items[i];
+      this.currentUploadInfo.set(`Uploading video ${i + 1} of ${total}: "${item.title}"`);
+      this.uploadProgress.set(0);
+
+      try {
+        await this.uploadSingleQueueItem(item, i, total);
+      } catch (err: any) {
+        this.isUploading.set(false);
+        this.uploadStatusMessage.set({
+          text: `Failed to upload "${item.title}": ${err.message || 'Network error occurred'}`,
+          isError: true,
+        });
+        // Reload course content to show any videos successfully uploaded so far
+        this.loadCourseContent(this.courseId());
+        return;
+      }
+    }
+
+    this.isUploading.set(false);
+    this.uploadProgress.set(100);
+    this.currentUploadInfo.set('');
+    this.uploadStatusMessage.set({
+      text: `All ${total} video(s) have been successfully uploaded and saved!`,
+      isError: false,
+    });
+
+    // Reload content
+    this.loadCourseContent(this.courseId());
+    // Clear queue in form component
+    this.uploadFormRef?.clearQueue();
+  }
+
+  private uploadSingleQueueItem(item: VideoQueueItem, index: number, total: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append('CourseId', this.courseId());
+      formData.append('Title', item.title.trim());
+      formData.append('Description', (item.description || '').trim());
+      formData.append('SortOrder', String(item.sortOrder));
+      formData.append('AvailabilityDays', String(item.availabilityDays || 1));
+      formData.append('VideoFile', item.file);
+
+      (item.attachments || []).forEach((att) => {
+        formData.append('Attachments', att);
+      });
+
+      const uploadId = `up_${Date.now()}_${index}`;
+
+      this.learningService.uploadVideoWithProgress(this.courseId(), formData, uploadId).subscribe({
+        next: (event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
             const percent = Math.round((event.loaded / event.total) * 100);
             const loadedMB = (event.loaded / (1024 * 1024)).toFixed(1);
             const totalMB = (event.total / (1024 * 1024)).toFixed(1);
             this.uploadProgress.set(percent);
-            this.progressBytes.set(`${loadedMB} MB / ${totalMB} MB`);
+            this.progressBytes.set(`Video ${index + 1} of ${total} | ${loadedMB} MB / ${totalMB} MB`);
+            this.currentUploadInfo.set(`Uploading video ${index + 1} of ${total}: "${item.title}" (${percent}%)`);
+          } else if (event.type === HttpEventType.Response) {
+            resolve();
           }
-        } else if (event.type === HttpEventType.Response) {
-          this.isUploading.set(false);
-          this.uploadProgress.set(100);
-          this.uploadStatusMessage.set({
-            text: 'Lesson uploaded successfully and processing started on Bunny Stream.',
-            isError: false,
-          });
-          this.loadCourseContent(this.courseId());
-        }
-      },
-      error: (err) => {
-        this.isUploading.set(false);
-        this.uploadStatusMessage.set({
-          text: `Upload failed: ${err.message || 'Network error'}`,
-          isError: true,
-        });
-      },
+        },
+        error: (err) => {
+          reject(err);
+        },
+      });
     });
   }
 }
+

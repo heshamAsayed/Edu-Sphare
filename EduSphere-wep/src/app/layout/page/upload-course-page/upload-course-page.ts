@@ -11,9 +11,6 @@ import {
   CreateCourseResponse,
   LearningService,
   TeacherStage,
-  TeacherStagesResponse,
-  VideoQueueItem,
-  VideoQueueUploader,
 } from '../../../features/learning';
 
 @Component({
@@ -25,7 +22,6 @@ import {
     Footer,
     LoadingSpinner,
     CourseCreateForm,
-    VideoQueueUploader,
   ],
   templateUrl: './upload-course-page.html',
   styleUrl: './upload-course-page.css',
@@ -38,17 +34,7 @@ export class UploadCoursePage implements OnInit {
   stages = signal<TeacherStage[]>([]);
   teacherSchoolName = signal<string>('');
   isLoadingStages = signal<boolean>(true);
-
-  // Stored form data
-  courseData = signal<CreateCourseRequest | null>(null);
-
-  // Video queue
-  queue = signal<VideoQueueItem[]>([]);
-
-  // Sequential upload state
-  isUploading = signal<boolean>(false);
-  uploadProgress = signal<number>(0);
-  currentUploadInfo = signal<string>('');
+  isCreating = signal<boolean>(false);
 
   ngOnInit(): void {
     this.fetchTeacherStages();
@@ -138,57 +124,6 @@ export class UploadCoursePage implements OnInit {
   }
 
   onFormSubmit(data: CreateCourseRequest): void {
-    this.courseData.set(data);
-  }
-
-  onFilesAdded(files: File[]): void {
-    const currentQueue = [...this.queue()];
-    files.forEach((file) => {
-      const exists = currentQueue.some((item) => item.file.name === file.name && item.file.size === file.size);
-      if (!exists) {
-        currentQueue.push({
-          file,
-          title: file.name.replace(/\.[^/.]+$/, ''),
-          sortOrder: currentQueue.length + 1,
-          availabilityDays: 1,
-        });
-      }
-    });
-    this.queue.set(currentQueue);
-  }
-
-  onItemRemoved(index: number): void {
-    const updated = [...this.queue()];
-    updated.splice(index, 1);
-    this.queue.set(updated);
-  }
-
-  onItemTitleChanged(event: { index: number; title: string }): void {
-    const updated = [...this.queue()];
-    if (updated[event.index]) {
-      updated[event.index].title = event.title;
-      this.queue.set(updated);
-    }
-  }
-
-  onItemOrderChanged(event: { index: number; order: number }): void {
-    const updated = [...this.queue()];
-    if (updated[event.index]) {
-      updated[event.index].sortOrder = event.order;
-      this.queue.set(updated);
-    }
-  }
-
-  onItemAttachmentsChanged(event: { index: number; attachments: File[] }): void {
-    const updated = [...this.queue()];
-    if (updated[event.index]) {
-      updated[event.index].attachments = event.attachments;
-      this.queue.set(updated);
-    }
-  }
-
-  async onStartUpload(): Promise<void> {
-    const data = this.courseData();
     if (!data || !data.name || !data.name.trim()) {
       alert('Please enter the course name.');
       return;
@@ -202,65 +137,23 @@ export class UploadCoursePage implements OnInit {
       return;
     }
 
-    this.isUploading.set(true);
-    this.uploadProgress.set(0);
-    this.currentUploadInfo.set('Creating course on system...');
+    this.isCreating.set(true);
 
     this.learningService.createCourse(data).subscribe({
-      next: async (res: CreateCourseResponse) => {
+      next: (res: CreateCourseResponse) => {
+        this.isCreating.set(false);
         const courseId = res.courseId || res.id;
         if (!courseId) {
-          this.isUploading.set(false);
-          alert('Unable to retrieve course ID.');
+          alert('Course created, but unable to retrieve course ID.');
+          this.router.navigate(['/manage-courses']);
           return;
         }
 
-        const items = this.queue();
-        const total = items.length;
-
-        if (total === 0) {
-          this.uploadProgress.set(100);
-          this.currentUploadInfo.set('Course created successfully!');
-          setTimeout(() => {
-            this.router.navigate(['/manage-course-content', courseId]);
-          }, 800);
-          return;
-        }
-
-        for (let i = 0; i < total; i++) {
-          const item = items[i];
-          const overall = Math.round(((i + 1) / total) * 100);
-          this.uploadProgress.set(overall);
-          this.currentUploadInfo.set(`Uploading lesson ${i + 1} of ${total}: "${item.title}"`);
-
-          const formData = new FormData();
-          formData.append('CourseId', courseId);
-          formData.append('Title', item.title);
-          formData.append('SortOrder', String(item.sortOrder));
-          formData.append('AvailabilityDays', String(item.availabilityDays || 1));
-          formData.append('VideoFile', item.file);
-
-          if (item.attachments && item.attachments.length > 0) {
-            for (const att of item.attachments) {
-              formData.append('Attachments', att, att.name);
-            }
-          }
-
-          try {
-            await this.uploadSinglePromise(formData, courseId);
-          } catch (e: any) {
-            console.error('Failed uploading video item:', e);
-          }
-        }
-
-        this.uploadProgress.set(100);
-        this.currentUploadInfo.set('Course and all videos uploaded successfully!');
-        setTimeout(() => {
-          this.router.navigate(['/manage-course-content', courseId]);
-        }, 1000);
+        // Navigate directly to the lesson upload page for this course
+        this.router.navigate(['/manage-course-content', courseId]);
       },
       error: (err) => {
-        this.isUploading.set(false);
+        this.isCreating.set(false);
         console.error('Course creation error details:', err);
         const serverMsg =
           err.error?.message ||
@@ -269,15 +162,6 @@ export class UploadCoursePage implements OnInit {
           (typeof err.error === 'string' ? err.error : null);
         alert(`Course creation failed: ${serverMsg || err.message || 'Error occurred'}`);
       },
-    });
-  }
-
-  private uploadSinglePromise(formData: FormData, courseId: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.learningService.uploadVideo(formData).subscribe({
-        next: (res) => resolve(res),
-        error: (err) => reject(err),
-      });
     });
   }
 }

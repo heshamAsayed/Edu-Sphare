@@ -35,10 +35,12 @@
             (markWatched)="onMarkWatched($event)">
           </app-lesson-player>
 
-          <app-lesson-transcription
-            [transcriptionText]="transcriptionText()"
-            [isLoading]="isLoadingTranscription()">
-          </app-lesson-transcription>
+          @if (activeVideo()) {
+            <app-lesson-transcription
+              [transcriptionText]="transcriptionText()"
+              [isLoading]="isLoadingTranscription()">
+            </app-lesson-transcription>
+          }
         </main>
 
         <aside class="playlist-col">

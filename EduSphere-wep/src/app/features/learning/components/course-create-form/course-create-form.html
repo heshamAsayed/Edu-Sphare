@@ -1,6 +1,6 @@
 <div class="course-form-card">
   <div class="card-header">
-    <h2 class="card-title">1. Course Information</h2>
+    <h2 class="card-title">Course Information</h2>
     @if (teacherSchoolName()) {
       <span class="school-badge">🏫 School: {{ teacherSchoolName() }}</span>
     }
@@ -60,6 +60,16 @@
           }
         </select>
       </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-submit-course" [disabled]="isCreating()">
+        @if (isCreating()) {
+          <span>⏳ Creating Course...</span>
+        } @else {
+          <span>🚀 Create Course & Continue to Upload Lessons</span>
+        }
+      </button>
     </div>
   </form>
 </div>
