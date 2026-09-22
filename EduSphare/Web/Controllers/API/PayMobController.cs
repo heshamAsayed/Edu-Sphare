@@ -72,9 +72,26 @@ namespace EduSphare.Web.Controllers.API
             if (!Uri.TryCreate(req.RedirectionUrl, UriKind.Absolute, out var redirUri))
                 return BadRequest(new { message = "Invalid redirection URL" });
 
-            var allowed = _options.AllowedFrontendDomains ?? Array.Empty<string>();
-            if (!allowed.Any(a => string.Equals(a, redirUri.Host, StringComparison.OrdinalIgnoreCase)))
+            if (!string.Equals(redirUri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(redirUri.Host, "localhost", StringComparison.OrdinalIgnoreCase))
                 return BadRequest(new { message = "Invalid redirection URL" });
+
+            var origin = Request.Headers.Origin.FirstOrDefault();
+            if (Uri.TryCreate(origin, UriKind.Absolute, out var originUri))
+            {
+                if (!string.Equals(originUri.Scheme, redirUri.Scheme, StringComparison.OrdinalIgnoreCase)
+                    || !string.Equals(originUri.Host, redirUri.Host, StringComparison.OrdinalIgnoreCase)
+                    || originUri.Port != redirUri.Port)
+                    return BadRequest(new { message = "Redirection URL must belong to the requesting frontend." });
+            }
+            else
+            {
+                var allowed = _options.AllowedFrontendDomains ?? Array.Empty<string>();
+                if (!allowed.Any(a =>
+                    string.Equals(a, redirUri.Host, StringComparison.OrdinalIgnoreCase)
+                    || redirUri.Host.EndsWith($".{a}", StringComparison.OrdinalIgnoreCase)))
+                    return BadRequest(new { message = "Invalid redirection URL" });
+            }
 
             JsonElement result;
             try

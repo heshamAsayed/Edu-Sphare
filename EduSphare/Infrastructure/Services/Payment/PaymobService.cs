@@ -66,13 +66,7 @@ namespace EduSphare.Infrastructure.Services.Payment
                 },
                 special_reference = specialRef,
                 notification_url = string.IsNullOrWhiteSpace(req.NotificationUrl) ? _options.NotificationUrl : req.NotificationUrl,
-                redirection_url = !string.IsNullOrWhiteSpace(req.RedirectionUrl)
-                    ? req.RedirectionUrl
-                    : (!string.IsNullOrWhiteSpace(_options.RedirectionUrl)
-                        ? _options.RedirectionUrl
-                        : (string.IsNullOrWhiteSpace(_options.FrontendBaseUrl)
-                            ? "https://your-frontend-url.com/payment-callback.html"
-                            : $"{_options.FrontendBaseUrl.TrimEnd('/')}/payment-callback.html"))
+                redirection_url = req.RedirectionUrl
             };
 
             using var response = await _http.PostAsJsonAsync("/v1/intention/", payload);

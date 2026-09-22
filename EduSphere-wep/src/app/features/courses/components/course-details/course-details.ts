@@ -31,6 +31,7 @@ export class CourseDetails implements OnInit {
   course = signal<CourseListItem | undefined>(undefined);
   isLoading = signal<boolean>(false);
   courseNotFound = signal<boolean>(false);
+  heroImageUrl = signal<string | null>(null);
   isCreatingPayment = signal<boolean>(false);
   paymentError = signal<string | null>(null);
 
@@ -87,6 +88,7 @@ export class CourseDetails implements OnInit {
         }
 
         this.course.set(course);
+        this.heroImageUrl.set(course.imageUrl || this.defaultCourseImage);
       },
       error: (err) => {
         console.error('Failed to load course:', err);
@@ -118,6 +120,7 @@ export class CourseDetails implements OnInit {
         videos: enrolled.videos || [],
         teacherName: enrolled.teacherName || '',
       });
+      this.heroImageUrl.set(enrolled.imageUrl || this.defaultCourseImage);
       this.courseNotFound.set(false);
       this.isLoading.set(false);
       return;
@@ -134,6 +137,11 @@ export class CourseDetails implements OnInit {
     if (img.src !== this.defaultCourseImage) {
       img.src = this.defaultCourseImage;
     }
+    this.heroImageUrl.set(this.defaultCourseImage);
+  }
+
+  getHeroBackground(): string {
+    return `url("${this.heroImageUrl() || this.course()?.imageUrl || this.defaultCourseImage}")`;
   }
 
   isLoggedIn(): boolean {
@@ -241,7 +249,7 @@ export class CourseDetails implements OnInit {
       email: user.email,
       phoneNumber: user.mobile || user.phoneNumber || '',
       courseId,
-      redirectionUrl: `${window.location.origin}/payment-callback`,
+      redirectionUrl: new URL('payment-callback', document.baseURI).href,
     }).subscribe({
       next: (response) => {
         this.isCreatingPayment.set(false);

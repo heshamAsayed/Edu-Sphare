@@ -12,7 +12,7 @@
   } @else {
 
   <!-- ================== Full-width Header ================== -->
-  <div class="course-hero" [style.background-image]="'url(' + (course()?.imageUrl || defaultCourseImage) + ')'">
+  <div class="course-hero" [style.background-image]="getHeroBackground()">
     <div class="course-hero-overlay">
       <div class="container">
         <h2 class="hero-title mb-2">{{ course()?.title }}</h2>
