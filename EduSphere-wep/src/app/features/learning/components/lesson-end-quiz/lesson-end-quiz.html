@@ -1,0 +1,81 @@
+<section class="end-quiz-panel">
+  <header class="quiz-head">
+    <div>
+      <p class="quiz-eyebrow">End-of-lesson quiz</p>
+      <h2 class="quiz-title">{{ videoTitle() }}</h2>
+      <p class="quiz-sub">Questions are generated from this lesson’s transcription.</p>
+    </div>
+    <button type="button" class="btn-ghost" (click)="backToVideo.emit()">Back to video</button>
+  </header>
+
+  @if (loading()) {
+    <div class="quiz-state">Generating questions from transcription…</div>
+  } @else if (errorMessage()) {
+    <div class="quiz-state error">
+      <p>{{ errorMessage() }}</p>
+      @if (showReload()) {
+        <button type="button" class="btn-primary reload-btn" (click)="reload.emit()">Reload</button>
+      }
+    </div>
+  } @else if (result(); as res) {
+    <div class="quiz-result">
+      <p class="score-label">Your score</p>
+      <p class="score-value">{{ res.scorePercent }}%</p>
+      <p class="score-meta">{{ res.correct }} / {{ res.total }} correct</p>
+      <button type="button" class="btn-primary" (click)="backToVideo.emit()">Continue</button>
+    </div>
+  } @else if (!total()) {
+    <div class="quiz-state">
+      <p>No quiz questions available for this lesson yet.</p>
+      @if (showReload()) {
+        <button type="button" class="btn-primary reload-btn" (click)="reload.emit()">Reload</button>
+      }
+    </div>
+  } @else {
+    <div class="quiz-progress">
+      Question {{ currentIndex() + 1 }} of {{ total() }}
+      <span>· {{ answeredCount() }} answered</span>
+    </div>
+
+    @if (currentQuestion(); as q) {
+      <article class="question-card">
+        <h3>{{ q.question }}</h3>
+
+        @if (isTrueFalse(q)) {
+          <div class="choices tf">
+            <button type="button" class="choice" [class.active]="isSelected(true)" (click)="selectAnswer(true)">True</button>
+            <button type="button" class="choice" [class.active]="isSelected(false)" (click)="selectAnswer(false)">False</button>
+          </div>
+        } @else {
+          <div class="choices">
+            @for (opt of q.options || []; track $index) {
+              <button
+                type="button"
+                class="choice"
+                [class.active]="isSelected($index)"
+                (click)="selectAnswer($index)">
+                <span class="opt-i">{{ $index + 1 }}.</span>
+                <span>{{ opt }}</span>
+              </button>
+            }
+          </div>
+        }
+      </article>
+    }
+
+    <footer class="quiz-actions">
+      <button type="button" class="btn-ghost" (click)="prev()" [disabled]="currentIndex() === 0">Previous</button>
+      @if (currentIndex() < total() - 1) {
+        <button type="button" class="btn-primary" (click)="next()">Next</button>
+      } @else {
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="submit()"
+          [disabled]="!canSubmit() || submitting()">
+          {{ submitting() ? 'Submitting…' : 'Submit quiz' }}
+        </button>
+      }
+    </footer>
+  }
+</section>

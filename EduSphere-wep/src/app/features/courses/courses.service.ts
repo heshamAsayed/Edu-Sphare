@@ -38,6 +38,12 @@ export class CoursesService {
   );
   readonly hasLoadedAvailable = signal<boolean>(false);
 
+  getAllCourses(): Observable<CourseListItem[]> {
+    return this.http.get<CourseListItem[]>(API_URL, { withCredentials: true }).pipe(
+      map(courses => (courses || []).map(course => ({ ...course, title: course.title || (course as any).name || 'Untitled course', imageUrl: toMediaUrl(course.imageUrl || course.imagePath) })))
+    );
+  }
+
   getCourses(schoolId: string, stageId: string, yearId: string): Observable<CourseListItem[]> {
     return this.http.get<CourseListItem[]>(`${API_URL}/${encodeURIComponent(schoolId)}/${encodeURIComponent(stageId)}/${encodeURIComponent(yearId)}`, {
       withCredentials: true,

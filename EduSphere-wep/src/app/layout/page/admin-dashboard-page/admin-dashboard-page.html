@@ -1,0 +1,32 @@
+<div class="dash-layout">
+
+  <!-- Sidebar -->
+  <app-admin-sidebar
+    [activeTab]="activeTab()"
+    (tabChange)="onTabChange($event)"
+  />
+
+  <!-- Main content -->
+  <main class="dash-main">
+    <div class="dash-content">
+
+      @if (activeTab() === 'overview') {
+        <app-overview-tab />
+      }
+
+      @if (activeTab() === 'teachers') {
+        <app-teachers-tab />
+      }
+
+      @if (activeTab() === 'structure') {
+        <app-site-structure-tab />
+      }
+
+      @if (activeTab() === 'report') {
+        <app-financial-report-tab />
+      }
+
+    </div>
+  </main>
+
+</div>

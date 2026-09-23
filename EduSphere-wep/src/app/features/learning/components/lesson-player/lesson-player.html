@@ -11,7 +11,8 @@
       [src]="bunnyVideoUrl()"
       loading="lazy"
       class="player-frame"
-      allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen"
       allowfullscreen="true">
     </iframe>
   } @else {
@@ -35,17 +36,6 @@
           <span class="video-meta-badge">Lesson {{ (v.sortOrder ?? 0) + 1 }}</span>
           <h2 class="video-title">{{ v.title || 'Untitled Lesson' }}</h2>
         </div>
-        <button
-          type="button"
-          class="btn-mark-watched"
-          [class.watched]="isWatched()"
-          (click)="onMarkWatched()">
-          @if (isWatched()) {
-            <span>✓ Completed</span>
-          } @else {
-            <span>Mark as Watched</span>
-          }
-        </button>
       </div>
 
       <div class="video-description">

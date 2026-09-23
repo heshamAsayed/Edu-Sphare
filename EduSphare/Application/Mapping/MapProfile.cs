@@ -116,7 +116,14 @@ namespace EduSphare.Application.Mapping
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
                 .ForMember(dest => dest.VideosCount, opt => opt.MapFrom(src => src.Videos == null ? 0 : src.Videos.Count))
                 .ForMember(dest => dest.Videos, opt => opt.MapFrom(src => src.Videos))
-                .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src => src.teachers != null && src.teachers.Any() ? src.teachers.First().ApplicationUser.Name : string.Empty))
+                .ForMember(dest => dest.TeacherId, opt => opt.MapFrom(src =>
+                    src.teachers != null && src.teachers.Any()
+                        ? src.teachers.First().ApplicationUserId
+                        : string.Empty))
+                .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src =>
+                    src.teachers != null && src.teachers.Any() && src.teachers.First().ApplicationUser != null
+                        ? src.teachers.First().ApplicationUser.Name
+                        : string.Empty))
                 .ForMember(dest => dest.IsPaid, opt => opt.MapFrom(src => false));
             CreateMap<CreateCourseDTo, Course>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

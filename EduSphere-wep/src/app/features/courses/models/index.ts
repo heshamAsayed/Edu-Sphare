@@ -9,6 +9,7 @@ export interface CourseListItem {
   imagePath?: string;
   price?: number;
   isPaid: boolean;
+  teacherId?: string;
   teacherName?: string;
   videosCount?: number;
   videos?: VideoItem[];

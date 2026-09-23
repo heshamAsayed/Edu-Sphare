@@ -19,46 +19,75 @@
   font-weight: 700;
 }
 
-/* ================== Light School Header ================== */
+/* ================== School Header ================== */
 .school-header {
-  background: #ffffff;
+  width: 100%;
+  min-height: 420px;
+  height: 62vh;
+  max-height: 640px;
+  margin: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #eef0f5;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
   border-bottom: 1px solid #eef0f5;
-    height: 40vh;
-    display: flex;
+}
 
+.school-header-overlay {
+  width: 100%;
+  padding: calc(88px + 16px) 0 28px;
+  background: none;
+}
+
+.school-header-inner {
+  display: flex;
+  align-items: flex-end;
+}
+
+.school-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(100%, 520px);
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(17, 24, 39, 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .school-header-img {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   border-radius: 12px;
   object-fit: cover;
   background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  flex-shrink: 0;
 }
 
 .school-header-name {
-  font-weight: 700;
-  color: rgb(68, 73, 85);
+  font-weight: 800;
+  color: #ffffff;
   font-size: 20px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
 }
 
 .school-header-sub {
-  color: #6b7280;
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* ================== Courses Section ================== */
 .courses-page {
   background-color: #f8f9fb;
   min-height: 100vh;
-  padding-top: 2.5rem;
-}
-.container.py-4 {
-
-  min-height: 20rem;
-  display: flex;
-  
+  padding-top: 0;
+  margin-top: 0;
 }
 
 /* Container spacing (courses grid section) */
@@ -168,6 +197,16 @@
 
 /* ================== Responsive ================== */
 @media (max-width: 576px) {
+  .school-header {
+    min-height: 300px;
+    height: 52vh;
+    max-height: 480px;
+  }
+
+  .school-header-overlay {
+    padding: calc(72px + 12px) 0 20px;
+  }
+
   .school-header-img {
     width: 52px;
     height: 52px;
@@ -196,11 +235,4 @@
 .card-title{
     display: flex;
     justify-content: space-between;
-}
-
-.py-4 {
-    margin-top: auto !important;
-    
-    padding-top: 1.5rem !important;
-    padding-bottom: 1.5rem !important;
 }

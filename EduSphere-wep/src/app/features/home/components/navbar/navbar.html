@@ -95,19 +95,30 @@
 
             <div class="profile-dropdown" [class.open]="profileMenuOpen">
               @if (isLoggedIn()) {
+              @if (!isTeacher()) {
               <a class="dropdown-item" routerLink="/profile/me" (click)="closeProfileMenu()">
                 <i class="fa fa-user"></i>
                 Profile
               </a>
+              }
               <a class="dropdown-item" (click)="navigateToMyCourses()" role="button">
                 <i class="fa fa-book"></i>
                 My Courses
               </a>
-              @if (isTeacher()) {
-              <a class="dropdown-item" routerLink="/manage-courses" (click)="closeProfileMenu()">
+              <!-- @if (isTeacher()) {
+              <a class="dropdown-item" routerLink="/teacher-dashboard" (click)="closeProfileMenu()">
                 <i class="fa fa-graduation-cap"></i>
                 Teacher Portal
               </a>
+              } -->
+
+              @if (isLoggedIn() && isTeacher()) {
+              <li class="nav-item teacher-dashboard-link">
+                <a class="nav-link" routerLink="/teacher-dashboard">
+                  <i class="fa fa-line-chart"></i>
+                  Teacher Dashboard
+                </a>
+              </li>
               }
               <a class="dropdown-item" routerLink="/home" (click)="closeProfileMenu()">
                 <i class="fa fa-cog"></i>
@@ -150,11 +161,13 @@
           </li>
 
           @if (isLoggedIn()) {
+          @if (!isTeacher()) {
           <li class="nav-item">
             <a class="nav-link" routerLink="/profile/me" (click)="closeProfileMenu()">
               Profile
             </a>
           </li>
+          }
           <li class="nav-item">
             <a class="nav-link" (click)="navigateToMyCourses()" role="button">
               My Courses
@@ -162,8 +175,8 @@
           </li>
           @if (isTeacher()) {
           <li class="nav-item">
-            <a class="nav-link" routerLink="/manage-courses" (click)="closeProfileMenu()">
-              Teacher Portal
+            <a class="nav-link" routerLink="/teacher-dashboard" (click)="closeProfileMenu()">
+              Teacher Dashboard
             </a>
           </li>
           }

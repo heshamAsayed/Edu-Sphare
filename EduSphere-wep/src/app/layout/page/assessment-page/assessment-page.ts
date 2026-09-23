@@ -38,15 +38,18 @@ export class AssessmentPage implements OnInit {
   resultData = signal<AssessmentResultData | null>(null);
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('courseId') || this.route.snapshot.queryParamMap.get('courseId');
+    this.route.paramMap.subscribe(() => {
+      const id =
+        this.route.snapshot.paramMap.get('courseId') ||
+        this.route.snapshot.queryParamMap.get('courseId');
+      const videoId = this.route.snapshot.queryParamMap.get('videoId') || undefined;
       this.courseId.set(id);
-      this.loadQuestions(id || undefined);
+      this.loadQuestions(id || undefined, videoId);
     });
   }
 
-  loadQuestions(courseId?: string): void {
-    this.assessmentService.getQuestions(courseId).subscribe((qs) => {
+  loadQuestions(courseId?: string, videoId?: string): void {
+    this.assessmentService.getQuestions(courseId, videoId).subscribe((qs) => {
       this.questions.set(qs);
       this.currentIndex.set(0);
       this.userAnswers.set({});

@@ -106,6 +106,10 @@ export class AccountService {
     );
   }
 
+  getAllStudents(): Observable<AccountSummary[]> {
+    return this.http.get<AccountSummary[]>(`${API_URL}/students`, { withCredentials: true });
+  }
+
   getMe(): Observable<AccountSummary> {
     return this.http.get<AccountSummary>(`${API_URL}/me`, {
       withCredentials: true,

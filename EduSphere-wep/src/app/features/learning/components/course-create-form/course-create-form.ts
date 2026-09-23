@@ -22,6 +22,9 @@ export class CourseCreateForm {
   price = signal<number>(0);
   selectedStageId = signal<string>('');
   selectedYearId = signal<string>('');
+  imageFile = signal<File | null>(null);
+  imagePreviewUrl = signal<string | null>(null);
+  imageError = signal<string | null>(null);
 
   availableYears = computed<TeacherYear[]>(() => {
     const stageId = this.selectedStageId();
@@ -51,13 +54,58 @@ export class CourseCreateForm {
     this.emitChange();
   }
 
-  private emitChange(): void {
-    this.courseDataChange.emit({
+  onImagePick(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.imageError.set(null);
+
+    if (!file) {
+      this.clearImage();
+      return;
+    }
+
+    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowed.includes(file.type)) {
+      this.imageError.set('Course image must be JPG, PNG, or WebP.');
+      this.clearImage();
+      input.value = '';
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      this.imageError.set('Course image must be 2 MB or smaller.');
+      this.clearImage();
+      input.value = '';
+      return;
+    }
+
+    this.imageFile.set(file);
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imagePreviewUrl.set(URL.createObjectURL(file));
+    this.emitChange();
+  }
+
+  clearImage(): void {
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imagePreviewUrl.set(null);
+    this.imageFile.set(null);
+    this.emitChange();
+  }
+
+  private buildPayload(): CreateCourseRequest {
+    return {
       name: this.name().trim(),
       price: this.price() || 0,
       stageId: this.selectedStageId(),
       yearId: this.selectedYearId(),
-    });
+      image: this.imageFile(),
+    };
+  }
+
+  private emitChange(): void {
+    this.courseDataChange.emit(this.buildPayload());
   }
 
   onSubmit(): void {
@@ -70,11 +118,6 @@ export class CourseCreateForm {
       return;
     }
 
-    this.formSubmit.emit({
-      name: this.name().trim(),
-      price: this.price() || 0,
-      stageId: this.selectedStageId(),
-      yearId: this.selectedYearId(),
-    });
+    this.formSubmit.emit(this.buildPayload());
   }
 }

@@ -7,7 +7,7 @@ namespace EduSphare.Web.Controllers.API;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class FinancialReportController(IFinancialReportService reportService) : ControllerBase
 {
     /// <summary>

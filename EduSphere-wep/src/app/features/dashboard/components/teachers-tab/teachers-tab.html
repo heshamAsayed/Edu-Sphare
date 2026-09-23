@@ -1,0 +1,171 @@
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<div class="tab-header">
+  <div>
+    <h2 class="tab-title">Teachers</h2>
+    <p class="tab-sub">Manage teacher accounts and their assignments to schools and classes</p>
+  </div>
+  <button class="btn-edusphere-primary" (click)="toggleForm()">
+    {{ showForm() ? '✕  Cancel' : '+ Add Teacher' }}
+  </button>
+</div>
+
+<!-- ── Feedback ────────────────────────────────────────────────────────────── -->
+@if (errorMsg()) {
+  <div class="alert alert-error">{{ errorMsg() }}</div>
+}
+@if (successMsg()) {
+  <div class="alert alert-success">{{ successMsg() }}</div>
+}
+
+<!-- ── Add Form ────────────────────────────────────────────────────────────── -->
+@if (showForm()) {
+  <div class="form-card">
+    <h3 class="form-title">New Teacher</h3>
+
+    <div class="form-grid">
+      <!-- Basic info -->
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text"     placeholder="e.g. Mohamed Ali"      [(ngModel)]="form.name"        [disabled]="addLoading()" />
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email"    placeholder="teacher@example.com"   [(ngModel)]="form.email"       [disabled]="addLoading()" />
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" placeholder="Min 8 characters"      [(ngModel)]="form.password"    [disabled]="addLoading()" />
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text"     placeholder="+201xxxxxxxxx"         [(ngModel)]="form.phoneNumber" [disabled]="addLoading()" />
+      </div>
+    </div>
+
+    <!-- School selector ─────────────────────────── -->
+    <div class="form-group full">
+      <label>School *</label>
+      @if (loadingSchools()) {
+        <app-loading-spinner [isLoading]="true" size="small" />
+      } @else {
+        <select [value]="form.schoolId" (change)="onSchoolChange($any($event.target).value)" [disabled]="addLoading()">
+          <option value="">— Choose school —</option>
+          @for (s of schools(); track s.id) {
+            <option [value]="s.id">{{ s.name }}</option>
+          }
+        </select>
+      }
+    </div>
+
+    <!-- Stages multi-check ──────────────────────── -->
+    @if (selectedSchoolStages().length > 0) {
+      <div class="form-group full">
+        <label>Stages *</label>
+        @if (loadingStages()) {
+          <app-loading-spinner [isLoading]="true" size="small" />
+        } @else if (selectedSchoolStages().length === 0) {
+          <p class="hint">No stages found for this school.</p>
+        } @else {
+          <div class="check-grid">
+            @for (stage of selectedSchoolStages(); track stage.id) {
+              <label class="check-item" [class.checked]="isStageChecked(stage.id)">
+                <input type="checkbox" [checked]="isStageChecked(stage.id)"
+                       (change)="onStageToggle(stage.id, $any($event.target).checked)"
+                       [disabled]="addLoading()" />
+                {{ stage.name }}
+              </label>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Years multi-check ───────────────────────── -->
+    @if (form.stageIds.length > 0) {
+      <div class="form-group full">
+        <label>Years / Grades *</label>
+        @if (loadingYears()) {
+          <app-loading-spinner [isLoading]="true" size="small" />
+        } @else if (years().length === 0) {
+          <p class="hint">No years found for the selected stages.</p>
+        } @else {
+          <div class="check-grid">
+            @for (year of years(); track year.id) {
+              <label class="check-item" [class.checked]="isYearChecked(year.id)">
+                <input type="checkbox" [checked]="isYearChecked(year.id)"
+                       (change)="onYearToggle(year.id, $any($event.target).checked)"
+                       [disabled]="addLoading()" />
+                {{ year.name }}
+              </label>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Submit -->
+    <div class="form-actions">
+      <button class="btn-edusphere-primary" (click)="submit()" [disabled]="!canSubmit()">
+        @if (addLoading()) {
+          <span class="btn-spinner"></span> Adding…
+        } @else {
+          Add Teacher
+        }
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ── Teachers Table ──────────────────────────────────────────────────────── -->
+<div class="card">
+
+  @if (loadingTeachers()) {
+    <div class="center-spinner">
+      <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading teachers…" />
+    </div>
+  } @else {
+
+    <app-pagination [items]="teachersWithCourses()" [itemsPerPage]="10" (pagedItems)="pagedTeachers.set($event)" />
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Courses</th>
+          <th>Students</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (t of pagedTeachers(); track t.id) {
+          <tr>
+            <td class="name-cell">
+              <div class="avatar">{{ (t.name ?? '?').charAt(0).toUpperCase() }}</div>
+              <span>{{ t.name }}</span>
+            </td>
+            <td class="muted">{{ t.email }}</td>
+            <td class="muted">{{ t.phoneNumber || t.mobile || '—' }}</td>
+            <td>{{ t.coursesCount ?? 0 }}</td>
+            <td>{{ t.studentsCount ?? 0 }}</td>
+            <td>
+              <button
+                class="btn-danger"
+                (click)="remove(t)"
+                [disabled]="removeLoadingId() === t.id"
+                title="Remove teacher"
+              >
+                @if (removeLoadingId() === t.id) { … } @else { Remove }
+              </button>
+            </td>
+          </tr>
+        }
+        @if (teachersWithCourses().length === 0) {
+          <tr><td colspan="6" class="empty-row">No teachers found.</td></tr>
+        }
+      </tbody>
+    </table>
+
+  }
+</div>

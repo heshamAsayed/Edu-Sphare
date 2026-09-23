@@ -86,6 +86,63 @@
   cursor: not-allowed;
 }
 
+.image-upload-group {
+  margin-bottom: 8px;
+}
+
+.image-upload-group input[type='file'] {
+  padding: 8px 10px;
+  background: #f8f9fb;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 12px;
+  color: #8a90a0;
+}
+
+.field-error {
+  margin: 0;
+  font-size: 12px;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.image-preview-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.image-preview {
+  width: 160px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+}
+
+.btn-clear-image {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: rgb(68, 73, 85);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-clear-image:hover:not(:disabled) {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

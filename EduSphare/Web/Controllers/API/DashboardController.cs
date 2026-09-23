@@ -123,10 +123,26 @@ namespace EduSphare.Web.Controllers.API
             return Ok(await structureService.GetStagesWithYears());
         }
 
+        [HttpGet("StagesWithYears/{schoolId}")]
+        public async Task<IActionResult> GetStagesWithYearsBySchool(string schoolId)
+        {
+            var allStages = await structureService.GetStagesWithYears();
+            var filtered = allStages.Where(s => s.SchoolId == schoolId).ToList();
+            return Ok(filtered);
+        }
+
         [HttpGet("YearsWithCourses")]
         public async Task<IActionResult> GetYearsWithCourses()
         {
             return Ok(await structureService.GetYearsWithCourses());
+        }
+
+        [HttpGet("YearsWithCourses/{stageId}")]
+        public async Task<IActionResult> GetYearsWithCoursesByStage(string stageId)
+        {
+            var allYears = await structureService.GetYearsWithCourses();
+            var filtered = allYears.Where(y => y.StageId == stageId).ToList();
+            return Ok(filtered);
         }
 
     }

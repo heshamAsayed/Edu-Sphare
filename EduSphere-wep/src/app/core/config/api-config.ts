@@ -2,6 +2,8 @@ export const API_CONFIG = {
   BASE_URL: 'https://edusphare.runasp.net/api',
   TIMEOUT: 10000,
   TOKEN_KEY: 'AlphaGen_Token',
+  /** Must match backend BunnySetting:LibraryID */
+  BUNNY_LIBRARY_ID: '750705',
   HEADERS: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

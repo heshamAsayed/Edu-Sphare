@@ -22,6 +22,8 @@ import { ProfilePage } from './layout/page/profile-page/profile-page';
 import { NotFoundPage } from './layout/page/not-found-page/not-found-page';
 import { ManageCoursesPage } from './layout/page/manage-courses-page/manage-courses-page';
 import { PaymentCallback } from './features/courses/components/payment-callback/payment-callback';
+import { AdminDashboardPage } from './layout/page/admin-dashboard-page/admin-dashboard-page';
+import { TeacherDashboardPage } from './layout/page/teacher-dashboard-page/teacher-dashboard-page';
 
 export const authGuard: CanActivateFn = () => {
     const accountService = inject(AccountService);
@@ -98,19 +100,17 @@ export const routes: Routes = [
         children: [
             {
                 path: 'login',
-                canActivate: [guestGuard],
                 component: FormLogin
             },
             {
                 path: 'register',
-                canActivate: [guestGuard],
                 component: FormRegister
             }
         ]
     },
     {
         path: 'auth/register/completeprofile',
-        canActivate: [guestGuard, registrationGuard],
+        canActivate: [registrationGuard],
         component: CompleteProfile
     },
 
@@ -146,7 +146,13 @@ export const routes: Routes = [
 
     // Teacher Management
     {
+        path: 'teacher-dashboard',
+        canActivate: [authGuard],
+        component: TeacherDashboardPage,
+    },
+    {
         path: 'manage-courses',
+        canActivate: [authGuard],
         component: ManageCoursesPage,
     },
     {
@@ -166,6 +172,12 @@ export const routes: Routes = [
     {
         path: 'assessment/:courseId',
         component: AssessmentPage,
+    },
+
+    // Admin Dashboard (front-end credentials only, no backend auth guard needed)
+    {
+        path: 'dashboard',
+        component: AdminDashboardPage,
     },
 
     // Restricted Access

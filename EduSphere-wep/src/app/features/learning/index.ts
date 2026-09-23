@@ -4,6 +4,7 @@ export * from './models';
 export * from './components/lesson-player/lesson-player';
 export * from './components/lesson-playlist/lesson-playlist';
 export * from './components/lesson-transcription/lesson-transcription';
+export * from './components/lesson-end-quiz/lesson-end-quiz';
 export * from './components/attention-modal/attention-modal';
 export * from './components/teacher-meta-banner/teacher-meta-banner';
 export * from './components/manage-course-list/manage-course-list';

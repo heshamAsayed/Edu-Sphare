@@ -1,0 +1,140 @@
+<!-- ── Stat Cards ──────────────────────────────────────────────────────────── -->
+<div class="stat-grid">
+
+  <div class="stat-card">
+    <p class="stat-label">Total Schools</p>
+    <p class="stat-value">{{ totalSchools() }}</p>
+    <span class="stat-sub">in the platform</span>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Total Teachers</p>
+    <p class="stat-value">{{ totalTeachers() }}</p>
+    <span class="stat-sub">registered</span>
+  </div>
+
+  <div class="stat-card accent">
+    <p class="stat-label">Total Courses</p>
+    <p class="stat-value">{{ totalCourses() }}</p>
+    <span class="stat-sub">published</span>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Total Students</p>
+    <p class="stat-value">{{ totalStudents() }}</p>
+    <span class="stat-sub">enrolled</span>
+  </div>
+
+</div>
+
+<!-- ── Loading ─────────────────────────────────────────────────────────────── -->
+@if (loadingSchools() || loadingTeachers()) {
+  <div class="center-spinner">
+    <p style="text-align: center; color: var(--ag-text-muted);">Loading overview…</p>
+  </div>
+}
+
+@if (!loadingSchools() && !loadingTeachers()) {
+
+  <!-- ── Row 1: Pie + School Legend ─────────────────────────────────────── -->
+  <div class="charts-row">
+
+    <!-- Pie Chart -->
+    <div class="card pie-card">
+      <h3 class="card-title">Students by School</h3>
+      <p class="card-sub">Distribution of enrolled students across schools</p>
+
+      <div class="pie-body">
+
+        <!-- SVG Donut -->
+        <div class="pie-svg-wrap">
+          @if (pieSlices().length) {
+            <svg viewBox="0 0 220 220" class="pie-svg">
+              @for (slice of pieSlices(); track slice.schoolId) {
+                <path
+                  [attr.d]="slice.path"
+                  [attr.fill]="slice.color"
+                  class="pie-slice"
+                  (mouseenter)="onSliceEnter(slice, $event)"
+                  (mousemove)="onSliceMove($event)"
+                  (mouseleave)="onSliceLeave()"
+                />
+              }
+              <!-- donut hole -->
+              <circle cx="110" cy="110" r="52" fill="var(--ag-bg-surface)" />
+              <text x="110" y="106" text-anchor="middle" class="donut-center-label">Schools</text>
+              <text x="110" y="122" text-anchor="middle" class="donut-center-value">{{ totalSchools() }}</text>
+            </svg>
+          } @else {
+            <p class="no-data">No school data available.</p>
+          }
+        </div>
+
+        <!-- Legend -->
+        <ul class="pie-legend">
+          @for (slice of pieSlices(); track slice.schoolId) {
+            <li class="legend-item">
+              <span class="legend-dot" [style.background]="slice.color"></span>
+              <span class="legend-name">{{ slice.schoolName }}</span>
+              <span class="legend-pct">{{ pct(slice.students) }}</span>
+            </li>
+          }
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- Schools detail list -->
+    <div class="card schools-list-card">
+      <h3 class="card-title">School Details</h3>
+      <p class="card-sub">Stages and years per school</p>
+      <div class="schools-list">
+        @for (school of schools(); track school.id) {
+          <div class="school-row">
+            @if (school.imageUrl) {
+              <img [src]="school.imageUrl" [alt]="school.name" class="school-thumb" />
+            } @else {
+              <div class="school-thumb placeholder-thumb">
+                {{ school.name.charAt(0) }}
+              </div>
+            }
+            <div class="school-info">
+              <p class="school-name">{{ school.name }}</p>
+              <p class="school-meta">
+                {{ school.stages?.length ?? 0 }} stage(s) ·
+                {{ school.stages | stageYearCount }} year(s)
+              </p>
+            </div>
+            <div class="school-stages">
+              @for (stage of school.stages; track stage.id) {
+                <span class="stage-chip">{{ stage.name }}</span>
+              }
+            </div>
+          </div>
+        }
+        @if (!schools().length) {
+          <p class="no-data">No schools found.</p>
+        }
+      </div>
+    </div>
+
+  </div>
+
+}
+
+<!-- ── Pie Tooltip (portal-style, position absolute on host) ─────────────── -->
+@if (hoveredSlice()) {
+  <div
+    class="pie-tooltip"
+    [style.left.px]="tooltipX()"
+    [style.top.px]="tooltipY()"
+  >
+    <p class="tt-name">{{ hoveredSlice()!.schoolName }}</p>
+    <table class="tt-table">
+      <tr><td>Students</td><td><strong>{{ hoveredSlice()!.students }}</strong></td></tr>
+      <tr><td>Share</td>   <td><strong>{{ pct(hoveredSlice()!.students) }}</strong></td></tr>
+      <tr><td>Stages</td>  <td><strong>{{ hoveredSlice()!.stages }}</strong></td></tr>
+      <tr><td>Years</td>   <td><strong>{{ hoveredSlice()!.years }}</strong></td></tr>
+    </table>
+  </div>
+}

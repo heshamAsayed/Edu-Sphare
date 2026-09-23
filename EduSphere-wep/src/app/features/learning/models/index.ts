@@ -31,8 +31,11 @@ export interface LessonVideo {
 
 export interface TeacherStatisticsItem {
   videoId: string;
-  views: number;
-  averageWatchPercent: number;
+  enrolledStudentsCount: number;
+  watchedStudentsCount: number;
+  averagePostVideoQuizScore: number;
+  averageFocusPercent: number;
+  absentStudentsCount: number;
 }
 
 export interface LessonResponse {
@@ -120,6 +123,8 @@ export interface CreateCourseRequest {
   stageId: string;
   yearId: string;
   instructorId?: string;
+  /** Optional cover image — sent as multipart field "image" */
+  image?: File | null;
 }
 
 export interface CreateCourseResponse {

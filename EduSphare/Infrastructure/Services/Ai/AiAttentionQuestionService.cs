@@ -44,17 +44,22 @@ namespace EduSphare.Infrastructure.Services.Ai
 مهمتك:
 قم بتوليد سؤال واحد فقط موجه للمخاطب المباشر (تخاطب الطالب بأسلوب ""أنت/أنتِ"" مثل: ""هل تدرس..."" أو ""ما اسم مدرستك؟"" أو ""أين تعيش؟""). لا تبرمج السؤال بأسلوب الغائب مطلقًا.
 
+اختيار موضوع السؤال:
+- اختر بنفسك، وبشكل عشوائي تمامًا في كل مرة، أي عنصر من عناصر بيانات السياق أعلاه (الاسم، المرحلة، السنة، المدرسة، الكورس، التاريخ، اليوم، المنطقة، الدولة) يُبنى عليه السؤال، أو اطرح سؤال عام غير مرتبط ببيانات محددة (مثل مدى تركيز الطالب أو متابعته للدرس).
+- لا تُفضّل موضوعًا معينًا بشكل متكرر (مثل اليوم الحالي)، ونوّع الموضوع في كل طلب قدر الإمكان.
+- ممنوع منعًا باتًا نسخ أو إعادة استخدام أي نص سؤال أو خيارات موجودة في الأمثلة التوضيحية بالأسفل؛ فهذه الأمثلة توضّح فقط الشكل التقني (بنية JSON) وليست نموذجًا لمحتوى السؤال.
+
 أنواع الأسئلة المسموح بها فقط:
 
 1. MCQ (اختيار من متعدد):
 يحتوي على:
-- question: سؤال استفهامي موجه للمخاطب (مثال: ""ما هو اليوم الحالي؟"" أو ""ما اسم مدرستك؟"")
-- options: مصفوفة تحتوي على 4 اختيارات متميزة.
+- question: سؤال استفهامي موجه للمخاطب.
+- options: مصفوفة تحتوي على 4 اختيارات متميزة ومنطقية بالنسبة لموضوع السؤال الذي اخترته.
 - correctAnswer: رقم دليلي للاختيار الصحيح يبدأ من 0.
 
 2. TrueFalse (صح أم خطأ):
 يحتوي على:
-- question: سؤال استفهامي صريح موجه للمخاطب يبدأ بـ ""هل"" (مثال: ""هل تدرس في مدرسة {{SchoolName}}؟"" أو ""هل اليوم هو يوم {{CurrentDay}}؟"")
+- question: سؤال استفهامي صريح موجه للمخاطب يبدأ بـ ""هل"".
 - options: null (بدون اختيارات)
 - correctAnswer: true إذا كانت الإجابة صحيحة، أو false إذا كانت خاطئة.
 
@@ -64,17 +69,17 @@ namespace EduSphare.Infrastructure.Services.Ai
 - اختر نوع السؤال بشكل عشوائي بين MCQ و TrueFalse.
 - أرجع كائن JSON صالح فقط دون أي نص أو شرح خارجي.
 
-صيغ الـ JSON المطلوبة حصريًا:
+الشكل التقني المطلوب حصريًا لبنية الـ JSON (هذا توضيح للبنية فقط وليس محتوى فعلي يجب استخدامه):
 
 في حالة MCQ:
 {
   ""type"": ""MCQ"",
-  ""question"": ""ما هو اليوم الحالي؟"",
+  ""question"": ""<نص السؤال الذي تولّده أنت بناءً على الموضوع الذي اخترته>"",
   ""options"": [
-    ""السبت"",
-    ""الأحد"",
-    ""الاثنين"",
-    ""الثلاثاء""
+    ""<اختيار 1>"",
+    ""<اختيار 2>"",
+    ""<اختيار 3>"",
+    ""<اختيار 4>""
   ],
   ""correctAnswer"": 0
 }
@@ -82,12 +87,12 @@ namespace EduSphare.Infrastructure.Services.Ai
 في حالة TrueFalse:
 {
   ""type"": ""TrueFalse"",
-  ""question"": ""هل تدرس في مدرسة ألفا الجيزة؟"",
+  ""question"": ""<نص سؤال يبدأ بـ هل، تولّده أنت بناءً على الموضوع الذي اخترته>"",
   ""options"": null,
   ""correctAnswer"": true
 }
 
-أرجع كائن JSON واحد فقط مطابق للمواصفات.";
+أرجع كائن JSON واحد فقط مطابق للمواصفات أعلاه، بمحتوى سؤال جديد ومختلف في كل مرة.";
 
         public AiAttentionQuestionService(
             HttpClient httpClient,
@@ -177,7 +182,7 @@ namespace EduSphare.Infrastructure.Services.Ai
                 .Replace("{{CurrentDay}}", currentDay)
                 .Replace("{{Region}}", region)
                 .Replace("{{Country}}", country)
-                + $"\n\n[تنبيه ملزم]: المطلوب حصراً في هذا الطلب هو توليد سؤال من نوع: ({requestedType}).";
+                + $"\n\n[تنبيه ملزم]: المطلوب حصراً في هذا الطلب هو توليد سؤال من نوع: ({requestedType}). اختر موضوع السؤال عشوائيًا كما هو موضح أعلاه، ولا تكرر نفس الموضوع أو نفس الصياغة في كل مرة.";
 
             // ضمان وجود اسم نموذج صالح ومجاني في OpenRouter
             string modelToUse = _aiSettings.ModelName;
@@ -222,7 +227,7 @@ namespace EduSphare.Infrastructure.Services.Ai
                         }
 
                         using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                        timeoutCts.CancelAfter(TimeSpan.FromSeconds(8));
+                        timeoutCts.CancelAfter(TimeSpan.FromSeconds(20));
 
                         var response = await _httpClient.SendAsync(request, timeoutCts.Token);
                         responseBody = await response.Content.ReadAsStringAsync(timeoutCts.Token);
@@ -230,8 +235,8 @@ namespace EduSphare.Infrastructure.Services.Ai
                         if (responseBody.Contains("insufficient_quota", StringComparison.OrdinalIgnoreCase) ||
                             responseBody.Contains("user_not_found", StringComparison.OrdinalIgnoreCase))
                         {
-                            _logger.LogWarning("انتهى رصيد الذكاء الاصطناعي، الانتقال للمولد الاحتياطي السياقي: {Response}", responseBody);
-                            return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                            _logger.LogWarning("انتهى رصيد الذكاء الاصطناعي: {Response}", responseBody);
+                            return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                         }
 
                         if (response.StatusCode == HttpStatusCode.TooManyRequests)
@@ -242,35 +247,35 @@ namespace EduSphare.Infrastructure.Services.Ai
                                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
                                 continue;
                             }
-                            return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                            return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                         }
 
                         if (!response.IsSuccessStatusCode)
                         {
-                            _logger.LogWarning("AI Service returned {StatusCode}. Response: {Response}. الانتقال للمولد الاحتياطي.", (int)response.StatusCode, responseBody);
-                            return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                            _logger.LogWarning("AI Service returned {StatusCode}. Response: {Response}.", (int)response.StatusCode, responseBody);
+                            return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                         }
 
                         break;
                     }
                     catch (OperationCanceledException)
                     {
-                        _logger.LogWarning("انتهت مهلة طلب AI، الانتقال للمولد الاحتياطي.");
-                        return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                        _logger.LogWarning("انتهت مهلة طلب AI.");
+                        return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                     }
                     catch (HttpRequestException ex)
                     {
-                        _logger.LogWarning(ex, "خطأ بالاتصال بخدمة AI. الانتقال للمولد الاحتياطي.");
+                        _logger.LogWarning(ex, "خطأ بالاتصال بخدمة AI.");
                         if (attempt >= 2)
                         {
-                            return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                            return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                         }
                     }
                 }
 
                 if (string.IsNullOrWhiteSpace(responseBody))
                 {
-                    return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                    return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                 }
 
                 using var doc = JsonDocument.Parse(responseBody);
@@ -282,7 +287,7 @@ namespace EduSphare.Infrastructure.Services.Ai
 
                 if (string.IsNullOrWhiteSpace(contentString))
                 {
-                    return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                    return null;
                 }
 
                 // استخراج وتطهير الـ JSON الحقيقي
@@ -321,7 +326,7 @@ namespace EduSphare.Infrastructure.Services.Ai
                         dtoResult.Type = "MCQ";
                         if (dtoResult.Options == null || dtoResult.Options.Count < 2)
                         {
-                            return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+                            return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
                         }
 
                         if (dtoResult.CorrectAnswer is JsonElement elem)
@@ -340,144 +345,83 @@ namespace EduSphare.Infrastructure.Services.Ai
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "حدث استثناء أثناء معالجة رد الذكاء الاصطناعي. استخدام المولد الاحتياطي.");
+                _logger.LogWarning(ex, "حدث استثناء أثناء معالجة رد الذكاء الاصطناعي.");
             }
 
-            return GenerateFallbackAttentionQuestion(studentName, stageName, yearName, schoolName, courseName, currentDay, currentDate);
+            return BuildFallbackAttentionQuestion(studentName, schoolName, stageName, yearName, courseName, currentDay, requestedType);
         }
 
         /// <summary>
-        /// مولد أسئلة انتباه فوري وسياقي فائق الموثوقية (Fallback Generator) يعمل 100% بدون أي اعتماد خارجي.
+        /// أسئلة تركيز محلية عند فشل مزوّد الذكاء الاصطناعي حتى لا يختفي الـ attention check من الواجهة.
         /// </summary>
-        private static AttentionQuestionResponseDto GenerateFallbackAttentionQuestion(
-            string studentName, string stageName, string yearName, string schoolName, string courseName, string currentDay, string currentDate)
+        private static AttentionQuestionResponseDto BuildFallbackAttentionQuestion(
+            string studentName,
+            string schoolName,
+            string stageName,
+            string yearName,
+            string courseName,
+            string currentDay,
+            string requestedType)
         {
-            var daysOfWeek = new List<string> { "السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة" };
-            var wrongDays = daysOfWeek.Where(d => !d.Equals(currentDay, StringComparison.OrdinalIgnoreCase)).ToList();
-            string wrongDay1 = wrongDays.Count > 0 ? wrongDays[Random.Shared.Next(wrongDays.Count)] : "الأحد";
-            string wrongDay2 = wrongDays.Count > 1 ? wrongDays[(wrongDays.IndexOf(wrongDay1) + 1) % wrongDays.Count] : "الاثنين";
-            string wrongDay3 = wrongDays.Count > 2 ? wrongDays[(wrongDays.IndexOf(wrongDay1) + 2) % wrongDays.Count] : "الثلاثاء";
+            var useTrueFalse = requestedType.Equals("TrueFalse", StringComparison.OrdinalIgnoreCase);
 
-            int templateIndex = Random.Shared.Next(0, 7);
-
-            switch (templateIndex)
+            if (useTrueFalse)
             {
-                case 0:
-                    // صح / خطأ: اليوم الحالي
-                    return new AttentionQuestionResponseDto
-                    {
-                        Type = "TrueFalse",
-                        Question = $"هل اليوم هو يوم {currentDay}؟",
-                        Options = null,
-                        CorrectAnswer = true
-                    };
-
-                case 1:
-                    // صح / خطأ: يوم خاطئ
-                    return new AttentionQuestionResponseDto
-                    {
-                        Type = "TrueFalse",
-                        Question = $"هل اليوم هو يوم {wrongDay1}؟",
-                        Options = null,
-                        CorrectAnswer = false
-                    };
-
-                case 2:
-                    // صح / خطأ: اسم الطالب إن وُجد
-                    if (!string.IsNullOrWhiteSpace(studentName) && studentName != "الطالب العزيز")
-                    {
-                        return new AttentionQuestionResponseDto
-                        {
-                            Type = "TrueFalse",
-                            Question = $"هل اسمك المسجل في الأكاديمية هو: ({studentName})؟",
-                            Options = null,
-                            CorrectAnswer = true
-                        };
-                    }
-                    else
-                    {
-                        return new AttentionQuestionResponseDto
-                        {
-                            Type = "TrueFalse",
-                            Question = $"هل تشاهد هذا الدرس في منصة EduSphare؟",
-                            Options = null,
-                            CorrectAnswer = true
-                        };
-                    }
-
-                case 3:
-                    // MCQ: ما هو اليوم الحالي
-                    var mcqDays = new List<string> { currentDay, wrongDay1, wrongDay2, wrongDay3 };
-                    // خلط الخيارات
-                    var shuffledDays = mcqDays.OrderBy(_ => Random.Shared.Next()).ToList();
-                    int correctDayIndex = shuffledDays.IndexOf(currentDay);
-                    return new AttentionQuestionResponseDto
-                    {
-                        Type = "MCQ",
-                        Question = "ما هو اليوم الحالي في الأسبوع؟",
-                        Options = shuffledDays,
-                        CorrectAnswer = correctDayIndex
-                    };
-
-                case 4:
-                    // صح / خطأ: الكورس الحالي
-                    if (!string.IsNullOrWhiteSpace(courseName) && courseName != "عام")
-                    {
-                        return new AttentionQuestionResponseDto
-                        {
-                            Type = "TrueFalse",
-                            Question = $"هل هذا الدرس جزء من كورس ({courseName})؟",
-                            Options = null,
-                            CorrectAnswer = true
-                        };
-                    }
-                    else
-                    {
-                        return new AttentionQuestionResponseDto
-                        {
-                            Type = "TrueFalse",
-                            Question = "هل أنت في كامل تركيزك لمتابعة باقي محتوى الدرس؟",
-                            Options = null,
-                            CorrectAnswer = true
-                        };
-                    }
-
-                case 5:
-                    // صح / خطأ: المرحلة الدراسية
-                    if (!string.IsNullOrWhiteSpace(stageName) && stageName != "غير محدد")
-                    {
-                        return new AttentionQuestionResponseDto
-                        {
-                            Type = "TrueFalse",
-                            Question = $"هل مرحلتك الدراسية الحالية هي: ({stageName})؟",
-                            Options = null,
-                            CorrectAnswer = true
-                        };
-                    }
-                    else
-                    {
-                        return new AttentionQuestionResponseDto
-                        {
-                            Type = "TrueFalse",
-                            Question = "هل قمت بتدوين الملاحظات الهامة أثناء مشاهدة هذا الدرس؟",
-                            Options = null,
-                            CorrectAnswer = true
-                        };
-                    }
-
-                default:
-                    // MCQ: سؤال تركيز سريع
-                    return new AttentionQuestionResponseDto
-                    {
-                        Type = "MCQ",
-                        Question = "ما هو التقييم الحالي لمدى تركيزك في شرح المعلم؟",
-                        Options = new List<string> { "مركز بنسبة 100%", "جيد جداً ومتابع", "أحتاج لمراجعة بسيطة", "مشوش قليلاً" },
-                        CorrectAnswer = 0
-                    };
+                var tfPool = new (string Question, bool Answer)[]
+                {
+                    ($"هل اسمك {studentName}؟", true),
+                    ($"هل تدرس في مدرسة {schoolName}؟", true),
+                    ($"هل مرحلتك الدراسية هي {stageName}؟", true),
+                    ($"هل سنتك الدراسية هي {yearName}؟", true),
+                    ($"هل تتابع الآن درس {courseName}؟", true),
+                    ($"هل اليوم هو يوم {currentDay}؟", true),
+                    ("هل أنت تركز الآن على محتوى الفيديو؟", true),
+                };
+                var pick = tfPool[Random.Shared.Next(tfPool.Length)];
+                return new AttentionQuestionResponseDto
+                {
+                    Type = "TrueFalse",
+                    Question = pick.Question,
+                    Options = null,
+                    CorrectAnswer = pick.Answer
+                };
             }
+
+            var correctSchool = schoolName;
+            var options = new List<string>
+            {
+                correctSchool,
+                "مدرسة النور",
+                "مدرسة الأمل",
+                "مدرسة المستقبل"
+            };
+            // ضمان تميّز الخيارات
+            for (var i = 1; i < options.Count; i++)
+            {
+                if (string.Equals(options[i], correctSchool, StringComparison.OrdinalIgnoreCase))
+                    options[i] = $"مدرسة بديلة {i}";
+            }
+            // خلط الخيارات مع الإبقاء على فهرس الإجابة الصحيحة
+            var correctIndex = 0;
+            for (var i = options.Count - 1; i > 0; i--)
+            {
+                var j = Random.Shared.Next(i + 1);
+                (options[i], options[j]) = (options[j], options[i]);
+            }
+            correctIndex = options.FindIndex(o => string.Equals(o, correctSchool, StringComparison.Ordinal));
+            if (correctIndex < 0) correctIndex = 0;
+
+            return new AttentionQuestionResponseDto
+            {
+                Type = "MCQ",
+                Question = "ما اسم مدرستك؟",
+                Options = options,
+                CorrectAnswer = correctIndex
+            };
         }
 
         private const string VideoQuizPromptTemplate = @"أنت نظام متخصص لتوليد اختبار نهاية درس من نص تفريغ فيديو تعليمي.
+اكتب تعليمات هذا البرومبت بالعربية، ونفّذ المهمة بدقة.
 
 نص تفريغ الفيديو:
 {{TranscriptionText}}
@@ -485,22 +429,32 @@ namespace EduSphare.Infrastructure.Services.Ai
 مهمتك:
 قم بتوليد 10 أسئلة فقط مبنية حصراً على محتوى النص أعلاه، بمزيج من نوعي MCQ و TrueFalse.
 
+قاعدة اللغة (مهمة جداً):
+- حدّد لغة الأسئلة والاختيارات حسب لغة المادة/المحتوى العلمي في التفريغ، وليس بالضرورة حسب لغة الشرح الشفهي فقط.
+- إذا كان المحتوى عربياً → الأسئلة والخيارات بالعربية.
+- إذا كان المحتوى إنجليزياً → الأسئلة والخيارات بالإنجليزية.
+- مثال: درس يشرح مفاهيم إنجليزية (مصطلحات/كود/تعريفات إنجليزية) حتى لو المعلم يتكلم عربي → الأسئلة بالإنجليزية.
+- مثال: درس ديني أو محتوى عربي بالكامل → الأسئلة بالعربية.
+- لا تخلط لغتين داخل نفس السؤال أو داخل الاختيارات إلا إذا كان المحتوى نفسه مختلطاً بشكل ضروري (مثل مصطلح إنجليزي داخل جملة عربية).
+- يجب أن تكون لغة الأسئلة متسقة في كل الأسئلة العشرة.
+
 أنواع الأسئلة المسموح بها فقط:
 
 1. MCQ (اختيار من متعدد):
 - type: ""MCQ""
-- question: سؤال واضح متعلق بالمحتوى
-- options: مصفوفة من 4 اختيارات متميزة
+- question: سؤال واضح متعلق بالمحتوى وبنفس لغة المحتوى
+- options: مصفوفة من 4 اختيارات متميزة وبنفس لغة السؤال
 - correctAnswer: رقم دليلي للاختيار الصحيح يبدأ من 0
 
 2. TrueFalse (صح أم خطأ):
 - type: ""TrueFalse""
-- question: عبارة أو سؤال يمكن الحكم عليه بصح/خطأ بناءً على المحتوى
+- question: عبارة أو سؤال يمكن الحكم عليه بصح/خطأ بناءً على المحتوى وبنفس لغة المحتوى
 - options: null
 - correctAnswer: true أو false
 
 قواعد صارمة:
 - يجب أن تكون الأسئلة مبنية على النص فقط، بلا معلومات خارجية.
+- افهم المادة والمفاهيم الواردة في التفريغ واسأل عنها مباشرة.
 - نوّع بين MCQ و TrueFalse (حوالي نصف ونصف).
 - لا تكرر الأسئلة.
 - أرجع مصفوفة JSON صالحة فقط دون أي نص أو شرح خارجي.

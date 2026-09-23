@@ -418,7 +418,7 @@ ul.social-network li a {
   position: absolute;
   top: calc(100% + 0.8rem);
   right: 0;
-  min-width: 210px;
+  min-width: 270px;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;

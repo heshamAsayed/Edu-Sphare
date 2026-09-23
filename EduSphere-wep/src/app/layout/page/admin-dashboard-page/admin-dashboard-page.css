@@ -1,0 +1,68 @@
+/* ── Full-height side-by-side layout ─────────────────────────────────────── */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.dash-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ag-bg-page);
+}
+
+/* Sidebar host stays fixed to viewport height; only main scrolls */
+app-admin-sidebar {
+  display: block;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  z-index: 20;
+}
+
+/* ── Main scrollable area ─────────────────────────────────────────────────── */
+.dash-main {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.dash-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 28px 48px;
+}
+
+/* ── Responsive: stack vertically on small screens ───────────────────────── */
+@media (max-width: 768px) {
+  .dash-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  app-admin-sidebar {
+    height: auto;
+    position: static;
+    width: 100%;
+  }
+
+  .dash-main {
+    height: auto;
+    overflow: visible;
+  }
+
+  .dash-content { padding: 20px 16px 40px; }
+}
+
+/* ── Print: hide sidebar ─────────────────────────────────────────────────── */
+@media print {
+  app-admin-sidebar { display: none !important; }
+  .dash-main        { padding: 0; height: auto; overflow: visible; }
+  .dash-content     { max-width: 100%; padding: 0; }
+  .dash-layout      { height: auto; overflow: visible; }
+}

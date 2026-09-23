@@ -15,6 +15,7 @@ public class CourseDTo
     public decimal Price { get; set; }
     // Payment info is per-student; include IsPaid here as a convenience (caller can set based on student)
     public bool IsPaid { get; set; }
+    public string? TeacherId { get; set; }
     public string? TeacherName { get; set; }
     public int? VideosCount { get; set; }
     public IReadOnlyCollection<VideoDTo>? Videos { get; set; } = null;

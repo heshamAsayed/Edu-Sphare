@@ -15,9 +15,9 @@
             @if (vid.description) {
               <span>· {{ vid.description }}</span>
             }
-            @if (vid.bunnyVideoId) {
+            <!-- @if (vid.bunnyVideoId) {
               <span>· Bunny: {{ vid.bunnyVideoId }}</span>
-            }
+            } -->
           </div>
 
           @if (transcriptionStatuses()[vid.id]; as tStatus) {

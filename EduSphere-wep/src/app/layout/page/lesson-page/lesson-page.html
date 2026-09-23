@@ -24,18 +24,32 @@
         <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading lesson content..."></app-loading-spinner>
       </div>
     } @else {
-      <!-- Main Learning Grid: Video on right/main, Playlist on left (RTL) -->
       <div class="learning-grid">
         <main class="main-video-col">
-          <app-lesson-player
-            [video]="activeVideo()"
-            [errorMessage]="errorMessage()"
-            [isWatched]="activeVideo()?.isWatched || false"
-            (timeUpdate)="onTimeUpdate($event)"
-            (markWatched)="onMarkWatched($event)">
-          </app-lesson-player>
+          @if (showEndQuiz()) {
+            <app-lesson-end-quiz
+              [videoTitle]="activeVideo()?.title || 'Lesson quiz'"
+              [questions]="quizQuestions()"
+              [loading]="quizLoading()"
+              [errorMessage]="quizError()"
+              [submitting]="quizSubmitting()"
+              [result]="quizResult()"
+              (submitAnswers)="onQuizSubmit($event)"
+              (backToVideo)="onBackToVideo()"
+              (reload)="onReloadQuiz()">
+            </app-lesson-end-quiz>
+          } @else {
+            <app-lesson-player
+              [video]="activeVideo()"
+              [errorMessage]="errorMessage()"
+              (timeUpdate)="onTimeUpdate($event)"
+              (videoPlay)="onVideoPlay()"
+              (videoPause)="onVideoPause()"
+              (videoEnded)="onVideoEnded()">
+            </app-lesson-player>
+          }
 
-          @if (activeVideo()) {
+          @if (activeVideo() && !showEndQuiz()) {
             <app-lesson-transcription
               [transcriptionText]="transcriptionText()"
               [isLoading]="isLoadingTranscription()">
@@ -64,5 +78,3 @@
   (penaltyRecorded)="onPenaltyRecorded($event)"
   (closed)="onAttentionClosed()">
 </app-attention-modal>
-
-

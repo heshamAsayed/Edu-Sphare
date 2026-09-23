@@ -1,15 +1,21 @@
 <div class="courses-page bg-light" dir="ltr">
 
-  <!-- ================== Light School Header ================== -->
-  <div class="bg-white border-bottom">
-    <div class="container py-4">
-      <div class="d-flex align-items-center gap-3">
-        <img [src]="schoolImage || defaultSchoolImage" (error)="onSchoolImageError($event)"
-          class="rounded-3 border object-fit-cover bg-light" style="width: 64px; height: 64px;"
-          [alt]="schoolName()">
-        <div>
-          <h4 class="fw-bold text-heading mb-1">{{ schoolName() }}</h4>
-          <p class="text-muted small mb-0">{{ stageName }} - {{ yearName }}</p>
+  <!-- ================== School Header (school image as background) ================== -->
+  <div
+    class="school-header"
+    [style.background-image]="getSchoolHeaderBackground()">
+    <div class="school-header-overlay">
+      <div class="container school-header-inner">
+        <div class="school-header-badge">
+          <img
+            [src]="schoolImage || defaultSchoolImage"
+            (error)="onSchoolImageError($event)"
+            class="school-header-img"
+            [alt]="schoolName()">
+          <div>
+            <h4 class="school-header-name mb-1">{{ schoolName() }}</h4>
+            <p class="school-header-sub mb-0">{{ stageName }} - {{ yearName }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -29,11 +35,9 @@
   <!-- ================== Courses Grid ================== -->
   <div class="container py-5">
 
-    <!-- Loading Spinner Component -->
     <app-loading-spinner [isLoading]="isLoadingCourses()" size="large" loadingText="Loading...">
     </app-loading-spinner>
 
-    <!-- Courses Grid -->
     @if (!isLoadingCourses()) {
     <h5 class="fw-bold text-heading mb-4">{{ courses().length }} Courses Available</h5>
 
@@ -66,7 +70,6 @@
       }
     </div>
 
-    <!-- Pagination Component -->
     <app-pagination class="d-block mt-4" [items]="courses()" [itemsPerPage]="12" [(currentPage)]="currentPage"
       (pagedItems)="onPagedCourses($event)">
     </app-pagination>

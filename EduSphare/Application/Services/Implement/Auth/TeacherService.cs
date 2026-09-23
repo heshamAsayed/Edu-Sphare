@@ -12,7 +12,7 @@ namespace EduSphare.Application.Services.Implement.Auth
         UserManager<ApplicationUser> userManager,
         IMapper mapper) : ITeacher
     {
-        private static readonly string[] TeacherListRelations = ["ApplicationUser", "School", "TeacherStages.Stage"];
+        private static readonly string[] TeacherListRelations = ["ApplicationUser", "School", "TeacherStages.Stage", "Courses.Videos", "Courses.StudentCoursePaids"];
         private static readonly string[] TeacherDetailsRelations = ["ApplicationUser", "School", "TeacherStages.Stage", "Courses.Videos", "Courses.StudentCoursePaids"];
 
         public async Task<TeacherDetailsDto?> AddTeacher(TeacherDto teacherDto)

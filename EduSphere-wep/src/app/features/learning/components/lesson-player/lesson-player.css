@@ -105,32 +105,6 @@
   margin: 0;
 }
 
-.btn-mark-watched {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: rgb(68, 73, 85);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-mark-watched:hover {
-  border-color: rgb(118, 217, 54);
-  color: rgb(118, 217, 54);
-}
-
-.btn-mark-watched.watched {
-  border-color: rgb(118, 217, 54);
-  color: #ffffff;
-  background: linear-gradient(176deg, rgb(118, 217, 54), rgb(68, 73, 85));
-}
-
 .video-description {
   margin-top: 14px;
   font-size: 14px;

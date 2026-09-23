@@ -1,0 +1,161 @@
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<div class="tab-header no-print">
+  <div>
+    <h2 class="tab-title">Financial Report</h2>
+    <p class="tab-sub">Revenue breakdown by teacher and course</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn-edusphere-outline" (click)="print()">🖨 Print</button>
+    <button class="btn-edusphere-primary" (click)="downloadPdf()" [disabled]="pdfLoading()">
+      @if (pdfLoading()) { <span class="btn-spinner"></span> Generating… } @else { ⬇ Download PDF }
+    </button>
+  </div>
+</div>
+
+<!-- ── Filter Bar ──────────────────────────────────────────────────────────── -->
+<div class="filter-bar no-print">
+
+  <div class="filter-group">
+    <label>Teacher</label>
+    <select [ngModel]="selectedTeacherId()" (ngModelChange)="onTeacherChange($event)">
+      <option value="">All Teachers</option>
+      @for (t of teachers(); track t.id) {
+        <option [value]="t.id">{{ t.name }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Course</label>
+    <select [ngModel]="selectedCourseId()" (ngModelChange)="onCourseChange($event)">
+      <option value="">All Courses</option>
+      @for (c of filteredCourses(); track c.id) {
+        <option [value]="c.id">{{ c.name }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>From Date</label>
+    <input type="date" [(ngModel)]="fromDate" />
+  </div>
+
+  <div class="filter-actions">
+    <button class="btn-edusphere-primary" (click)="fetch()" [disabled]="loading()">
+      @if (loading()) { <span class="btn-spinner"></span> } Apply
+    </button>
+    @if (hasFilter()) {
+      <button class="btn-edusphere-outline" (click)="reset()">Clear</button>
+    }
+  </div>
+
+</div>
+
+<!-- ── Loading ─────────────────────────────────────────────────────────────── -->
+@if (loading()) {
+  <div class="center-spinner">
+    <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading report…" />
+  </div>
+}
+
+<!-- ── Error ───────────────────────────────────────────────────────────────── -->
+@if (errorMsg()) {
+  <div class="alert alert-error no-print">{{ errorMsg() }}</div>
+}
+
+<!-- ══════════════  REPORT  ══════════════ -->
+@if (!loading() && report()) {
+
+  <!-- Summary Cards -->
+  <div class="summary-grid printable">
+    <div class="summary-card">
+      <p class="sc-label">Total Revenue</p>
+      <p class="sc-value">{{ (summary()?.totalAmount ?? 0) | number:'1.0-0' }} EGP</p>
+    </div>
+    <div class="summary-card">
+      <p class="sc-label">Payments</p>
+      <p class="sc-value">{{ summary()?.totalPayments ?? 0 }}</p>
+    </div>
+    <div class="summary-card">
+      <p class="sc-label">Students</p>
+      <p class="sc-value">{{ summary()?.uniqueStudents ?? 0 }}</p>
+    </div>
+    <div class="summary-card">
+      <p class="sc-label">Courses</p>
+      <p class="sc-value">{{ summary()?.uniqueCourses ?? 0 }}</p>
+    </div>
+    <div class="summary-card">
+      <p class="sc-label">Teachers</p>
+      <p class="sc-value">{{ summary()?.uniqueTeachers ?? 0 }}</p>
+    </div>
+  </div>
+
+  <!-- Teacher / Course Table -->
+  <div class="report-card printable">
+
+    <div class="report-card-header no-print">
+      <h3 class="card-title">
+        @if (selectedTeacherId()) { Teacher Detail }
+        @else { All Teachers }
+      </h3>
+      <p class="card-sub print-hint">This section will be included in the printed / downloaded report.</p>
+    </div>
+
+    @if (teacherRows().length === 0) {
+      <p class="empty-msg">No data matches the current filters.</p>
+    } @else {
+
+      <app-pagination [items]="teacherRows()" [itemsPerPage]="10" (pagedItems)="pagedTeachers.set($event)" class="no-print" />
+
+      @for (teacher of pagedTeachers(); track teacher.teacherId) {
+
+        <!-- Teacher header row -->
+        <div class="teacher-header-row">
+          <div class="teacher-avatar">{{ (teacher.teacherName ?? '?').charAt(0).toUpperCase() }}</div>
+          <div class="teacher-info">
+            <p class="teacher-name">{{ teacher.teacherName }}</p>
+            <p class="teacher-email">{{ teacher.teacherEmail }}</p>
+          </div>
+          <div class="teacher-totals">
+            <span class="total-chip">{{ teacher.studentsCount }} students</span>
+            <span class="total-chip">{{ teacher.coursesCount }} courses</span>
+            <span class="total-chip highlight">{{ (teacher.totalAmount ?? 0) | number:'1.0-0' }} EGP</span>
+          </div>
+        </div>
+
+        <!-- Course breakdown -->
+        @if (teacher.courses?.length) {
+          <table class="course-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Students</th>
+                <th>Price</th>
+                <th>Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of teacher.courses; track c.courseId) {
+                <tr>
+                  <td>{{ c.courseName }}</td>
+                  <td>{{ c.studentsCount }}</td>
+                  <td>{{ c.price | number:'1.0-0' }} EGP</td>
+                  <td class="revenue">{{ c.totalAmount | number:'1.0-0' }} EGP</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+
+        <div class="teacher-divider"></div>
+
+      }
+
+    }
+  </div>
+
+}
+
+@if (!loading() && !report() && !errorMsg()) {
+  <p class="empty-msg center">No report loaded yet. Click Apply to load.</p>
+}

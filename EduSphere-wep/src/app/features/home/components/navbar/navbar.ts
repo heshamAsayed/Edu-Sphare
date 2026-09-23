@@ -47,7 +47,7 @@ export class Navbar {
     this.closeProfileMenu();
     this.closeMobileMenu();
     if (this.isTeacher()) {
-      this.router.navigate(['/manage-courses']);
+      this.router.navigate(['/profile']);
     } else {
       this.router.navigate(['/my-courses']);
     }

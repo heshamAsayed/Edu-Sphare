@@ -1,0 +1,221 @@
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<div class="tab-header">
+  <div>
+    <h2 class="tab-title">Site Structure</h2>
+    <p class="tab-sub">Manage schools, stages, and years</p>
+  </div>
+</div>
+
+<!-- ── Alerts ─────────────────────────────────────────────────────────────── -->
+@if (errorMsg()) {
+  <div class="alert alert-error">{{ errorMsg() }}</div>
+}
+@if (successMsg()) {
+  <div class="alert alert-success">{{ successMsg() }}</div>
+}
+
+<!-- ── Sub-tabs ────────────────────────────────────────────────────────────── -->
+<div class="sub-tabs">
+  <button class="sub-tab" [class.active]="activeSection() === 'schools'" (click)="activeSection.set('schools')">Schools</button>
+  <button class="sub-tab" [class.active]="activeSection() === 'stages'"  (click)="activeSection.set('stages')">Stages</button>
+  <button class="sub-tab" [class.active]="activeSection() === 'years'"   (click)="activeSection.set('years')">Years</button>
+</div>
+
+<!-- ══════════════  SCHOOLS  ══════════════ -->
+@if (activeSection() === 'schools') {
+  <div class="section-body">
+
+    <!-- Add School Form -->
+    <div class="inline-form card">
+      <h3 class="form-section-title">Add School</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>School Name *</label>
+          <input type="text" placeholder="e.g. Al-Azhar School" [(ngModel)]="newSchoolName" [disabled]="saving()" />
+        </div>
+        <div class="form-group">
+          <label>Cover Image (optional)</label>
+          <input type="file" accept="image/*" (change)="onImagePick($event)" [disabled]="saving()" />
+        </div>
+        <div class="form-group align-end">
+          <button class="btn-edusphere-primary" (click)="addSchool()" [disabled]="!newSchoolName.trim() || saving()">
+            @if (saving()) { <span class="btn-spinner"></span> } Add School
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schools list -->
+    <div class="card">
+      <h3 class="form-section-title">All Schools</h3>
+      @if (loadingSchools()) {
+        <div class="center-spinner">
+          <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading schools…" />
+        </div>
+      } @else if (schools().length === 0) {
+        <p class="empty-msg">No schools yet.</p>
+      } @else {
+        <div class="school-grid">
+          @for (s of schools(); track s.id) {
+            <div class="school-tile">
+              @if (s.imageUrl) {
+                <img [src]="s.imageUrl" [alt]="s.name" class="school-tile-img" />
+              } @else {
+                <div class="school-tile-placeholder">{{ s.name.charAt(0) }}</div>
+              }
+              <p class="school-tile-name">{{ s.name }}</p>
+              <p class="school-tile-meta">{{ s.stages?.length ?? 0 }} stage(s)</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+}
+
+<!-- ══════════════  STAGES  ══════════════ -->
+@if (activeSection() === 'stages') {
+  <div class="section-body">
+
+    <!-- Add Stage Form -->
+    <div class="inline-form card">
+      <h3 class="form-section-title">Add Stage</h3>
+      <div class="form-row">
+
+        <div class="form-group">
+          <label>School *</label>
+          <select [value]="selectedSchoolId()" (change)="onSchoolSelect($any($event.target).value)" [disabled]="saving()">
+            <option value="">— Choose school —</option>
+            @for (s of schools(); track s.id) {
+              <option [value]="s.id">{{ s.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Stage Name *</label>
+          <input type="text"   placeholder="e.g. Secondary" [(ngModel)]="newStageName"  [disabled]="saving() || !selectedSchoolId()" />
+        </div>
+
+        <div class="form-group narrow">
+          <label>Order</label>
+          <input type="number" min="1" [(ngModel)]="newStageOrder" [disabled]="saving() || !selectedSchoolId()" />
+        </div>
+
+        <div class="form-group align-end">
+          <button class="btn-edusphere-primary"
+            (click)="addStage()"
+            [disabled]="!newStageName.trim() || !selectedSchoolId() || saving()">
+            @if (saving()) { <span class="btn-spinner"></span> } Add Stage
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stages list -->
+    <div class="card">
+      <h3 class="form-section-title">Stages for selected school</h3>
+      @if (!selectedSchoolId()) {
+        <p class="empty-msg hint">Select a school above to view its stages.</p>
+      } @else if (loadingSchools()) {
+        <div class="center-spinner">
+          <app-loading-spinner [isLoading]="true" size="large" />
+        </div>
+      } @else if (filteredStages.length === 0) {
+        <p class="empty-msg">No stages found.</p>
+      } @else {
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Stage Name</th><th>Years</th></tr></thead>
+          <tbody>
+            @for (s of filteredStages; track s.id) {
+              <tr>
+                <td class="muted">{{ s.orderNo ?? '—' }}</td>
+                <td>{{ s.name }}</td>
+                <td>{{ s.years?.length ?? 0 }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+  </div>
+}
+
+<!-- ══════════════  YEARS  ══════════════ -->
+@if (activeSection() === 'years') {
+  <div class="section-body">
+
+    <!-- Add Year Form -->
+    <div class="inline-form card">
+      <h3 class="form-section-title">Add Year / Grade</h3>
+      <div class="form-row">
+
+        <div class="form-group">
+          <label>School *</label>
+          <select [value]="selectedSchoolId()" (change)="onSchoolSelect($any($event.target).value)" [disabled]="saving()">
+            <option value="">— Choose school —</option>
+            @for (s of schools(); track s.id) {
+              <option [value]="s.id">{{ s.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Stage *</label>
+          <select [value]="selectedStageId()" (change)="onStageSelect($any($event.target).value)"
+                  [disabled]="saving() || !selectedSchoolId()">
+            <option value="">— Choose stage —</option>
+            @for (s of filteredStages; track s.id) {
+              <option [value]="s.id">{{ s.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Year Name *</label>
+          <input type="text"   placeholder="e.g. Grade 10" [(ngModel)]="newYearName"  [disabled]="saving() || !selectedStageId()" />
+        </div>
+
+        <div class="form-group narrow">
+          <label>Order</label>
+          <input type="number" min="1" [(ngModel)]="newYearOrder" [disabled]="saving() || !selectedStageId()" />
+        </div>
+
+        <div class="form-group align-end">
+          <button class="btn-edusphere-primary"
+            (click)="addYear()"
+            [disabled]="!newYearName.trim() || !selectedStageId() || saving()">
+            @if (saving()) { <span class="btn-spinner"></span> } Add Year
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Years list -->
+    <div class="card">
+      <h3 class="form-section-title">Years for selected stage</h3>
+      @if (!selectedStageId()) {
+        <p class="empty-msg hint">Select a school then a stage to view its years.</p>
+      } @else if (filteredYears.length === 0) {
+        <p class="empty-msg">No years found.</p>
+      } @else {
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Year / Grade Name</th></tr></thead>
+          <tbody>
+            @for (y of filteredYears; track y.id) {
+              <tr>
+                <td class="muted">{{ y.orderNo ?? '—' }}</td>
+                <td>{{ y.name }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+  </div>
+}

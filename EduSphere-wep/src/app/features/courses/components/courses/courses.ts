@@ -252,6 +252,11 @@ export class Courses implements OnInit {
     }
   }
 
+  getSchoolHeaderBackground(): string {
+    const url = this.schoolImage || this.defaultSchoolImage;
+    return `url('${url}')`;
+  }
+
   onCourseImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
 

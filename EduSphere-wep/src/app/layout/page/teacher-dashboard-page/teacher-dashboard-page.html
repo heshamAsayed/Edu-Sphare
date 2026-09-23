@@ -1,0 +1,273 @@
+<main class="studio">
+  <header class="studio-nav">
+    <a class="brand" (click)="activeTab.set('overview')"><span>TS</span> Teacher Studio</a>
+    <nav>
+      <button [class.active]="activeTab()==='overview'" (click)="activeTab.set('overview')">Overview</button>
+      <button [class.active]="activeTab()==='courses'" (click)="activeTab.set('courses')">My Courses</button>
+      <a routerLink="/upload-course">Upload</a>
+      <button [class.active]="activeTab()==='performance'" (click)="activeTab.set('performance')">Performance</button>
+      <button [class.active]="activeTab()==='attendance'" (click)="activeTab.set('attendance')">Attendance</button>
+      <button [class.active]="activeTab()==='income'" (click)="activeTab.set('income')">Income</button>
+    </nav>
+    <div class="profile">
+      <button class="avatar" (click)="profileMenuOpen.set(!profileMenuOpen())">
+        {{ teacherName().slice(0, 2).toUpperCase() }}
+      </button>
+      @if (profileMenuOpen()) {
+        <div class="profile-menu">
+          <b>{{ teacherName() }}</b>
+          <small>{{ teacherEmail() || 'Teacher account' }}</small>
+          <a routerLink="/home">Home</a>
+          <button (click)="logout()">Log out</button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <section class="page-head">
+    <div>
+      <h1>Welcome back, {{ teacherName() }}</h1>
+      <p>A concise view of your courses, students, and progress.</p>
+    </div>
+    <a routerLink="/upload-course" class="primary-action">Create course</a>
+  </section>
+
+  @if (activeTab() === 'overview') {
+    <section class="metrics">
+      <article>
+        <span>Total courses</span>
+        <strong>{{ courses().length }}</strong>
+      </article>
+      <article>
+        <span>Total students</span>
+        <strong>{{ totalStudents() | number }}</strong>
+      </article>
+      <article>
+        <span>Avg. focus</span>
+        <strong>{{ avgFocus() }}%</strong>
+      </article>
+      <article>
+        <span>Total income</span>
+        <strong>{{ totalIncome() | number }} EGP</strong>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="panel-title">
+          <div>
+            <h2>Student focus</h2>
+            <p>Average focus across the selected course.</p>
+          </div>
+          <select (change)="selectCourse($event)">
+            <option value="all">All courses</option>
+            @for (c of courses(); track c.id) {
+              <option [value]="c.id">{{ courseName(c) }}</option>
+            }
+          </select>
+        </div>
+        @if (coursesLoading()) {
+          <app-loading-spinner [isLoading]="true" loadingText="Loading focus data…" />
+        } @else {
+          <div class="donut" [style.--value]="avgFocus() + '%'">
+            <strong>{{ avgFocus() }}%</strong>
+            <span>focus score</span>
+          </div>
+        }
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">
+          <div>
+            <h2>Course income</h2>
+            <p>Income by course.</p>
+          </div>
+          <button class="link" (click)="activeTab.set('income')">View all</button>
+        </div>
+        @if (financialLoading()) {
+          <app-loading-spinner [isLoading]="true" loadingText="Loading income…" />
+        } @else if (financialCourses().length === 0) {
+          <p class="empty-hint">No courses yet.</p>
+        } @else {
+          @for (item of financialCourses().slice(0, 5); track item.courseId) {
+            <div class="row">
+              <span>
+                <b>{{ item.courseName }}</b>
+                <small>{{ item.studentsCount }} students · {{ item.price | number }} EGP</small>
+              </span>
+              <b>{{ item.totalAmount | number }} EGP</b>
+            </div>
+          }
+        }
+      </article>
+    </section>
+
+    <article class="panel full">
+      <div class="panel-title">
+        <div>
+          <h2>My courses</h2>
+          <p>Your first five courses.</p>
+        </div>
+        <button class="link" (click)="activeTab.set('courses')">Manage all</button>
+      </div>
+      @if (coursesLoading()) {
+        <app-loading-spinner [isLoading]="true" loadingText="Loading courses…" />
+      } @else {
+        @for (c of courses().slice(0, 5); track c.id) {
+          <div class="course-row">
+            <span>
+              <b>{{ courseName(c) }}</b>
+              <small>{{ c.videos }} lessons</small>
+            </span>
+            <span>{{ c.loading ? 'Loading…' : c.students + ' students' }}</span>
+            <span>{{ c.focus }}% focus</span>
+            <button (click)="openCourse(c)">Manage</button>
+          </div>
+        }
+      }
+    </article>
+  }
+
+  @if (activeTab() === 'courses') {
+    <article class="panel full">
+      <div class="panel-title">
+        <div>
+          <h2>My courses</h2>
+          <p>Manage all course content and student insights.</p>
+        </div>
+        <a routerLink="/manage-courses" class="primary-action">Open course manager</a>
+      </div>
+      @if (coursesLoading()) {
+        <app-loading-spinner [isLoading]="true" loadingText="Loading courses…" />
+      } @else {
+        @for (c of courses(); track c.id) {
+          <div class="course-row">
+            <span>
+              <b>{{ courseName(c) }}</b>
+              <small>{{ c.videos }} lessons · {{ c.averageGrade }} avg. grade</small>
+            </span>
+            <span>{{ c.students }} students</span>
+            <span>{{ c.focus }}% focus</span>
+            <button (click)="openCourse(c)">Edit</button>
+          </div>
+        }
+      }
+    </article>
+  }
+
+  @if (activeTab() === 'performance') {
+    <section class="performance-stack">
+      <article class="panel">
+        <div class="panel-title">
+          <div>
+            <h2>Focus score</h2>
+            <p>Average student focus.</p>
+          </div>
+          <select (change)="selectCourse($event)">
+            <option value="all">All courses</option>
+            @for (c of courses(); track c.id) {
+              <option [value]="c.id">{{ courseName(c) }}</option>
+            }
+          </select>
+        </div>
+        @if (coursesLoading() || insightsLoading()) {
+          <app-loading-spinner [isLoading]="true" loadingText="Loading performance…" />
+        } @else {
+          <div class="donut large" [style.--value]="avgFocus() + '%'">
+            <strong>{{ avgFocus() }}%</strong>
+            <span>focus score</span>
+          </div>
+        }
+      </article>
+
+      <article class="panel">
+        <h2>Average grades</h2>
+        <p>
+          {{ selectedCourseId() === 'all'
+            ? 'Average quiz grade for each course.'
+            : 'Average quiz grade for every video in the selected course.' }}
+        </p>
+        @if (coursesLoading() || insightsLoading()) {
+          <app-loading-spinner [isLoading]="true" loadingText="Loading grades…" />
+        } @else if (!gradeItems().length) {
+          <p class="empty-hint">No grade data yet.</p>
+        } @else {
+          <div class="grade-chart">
+            <svg viewBox="0 0 100 110" preserveAspectRatio="none">
+              <line x1="0" x2="100" y1="100" y2="100" />
+              <polyline [attr.points]="gradePoints()" />
+            </svg>
+            <div class="labels">
+              @for (item of gradeItems(); track $index) {
+                <span [title]="item.label">{{ chartLabel($index) }}</span>
+              }
+            </div>
+          </div>
+        }
+      </article>
+    </section>
+  }
+
+  @if (activeTab() === 'attendance') {
+    <article class="panel full">
+      <h2>Attendance</h2>
+      <p>Students who watched available lessons.</p>
+      <div class="donut" [style.--value]="avgAttendance() + '%'">
+        <strong>{{ avgAttendance() }}%</strong>
+        <span>attendance</span>
+      </div>
+      @for (c of courses(); track c.id) {
+        <div class="attendance">
+          <span>{{ courseName(c) }}</span>
+          <i><b [style.width.%]="c.attendance"></b></i>
+          <strong>{{ c.attendance }}%</strong>
+        </div>
+      }
+    </article>
+  }
+
+  @if (activeTab() === 'income') {
+    <article class="panel full">
+      <div class="panel-title">
+        <div>
+          <h2>Financial report</h2>
+          <p>Your courses only — students, original price, and income.</p>
+        </div>
+        <button class="primary-action" (click)="downloadReport()">Download PDF</button>
+      </div>
+
+      @if (financialLoading() || coursesLoading()) {
+        <app-loading-spinner [isLoading]="true" size="large" loadingText="Loading financial report…" />
+      } @else if (financialCourses().length === 0) {
+        <p class="empty-hint">You have no courses yet.</p>
+      } @else {
+        <div class="income-head">
+          <span>Course</span>
+          <span>Students</span>
+          <span>Price</span>
+          <span>Income</span>
+        </div>
+
+        @for (item of visibleFinancialCourses(); track item.courseId) {
+          <div class="income-row">
+            <span><b>{{ item.courseName }}</b></span>
+            <span>{{ item.studentsCount }} students</span>
+            <span>{{ item.price | number }} EGP</span>
+            <b>{{ item.totalAmount | number }} EGP</b>
+          </div>
+        }
+
+        @if (financialCourses().length > 10) {
+          <button class="link" (click)="showAllCourses.set(!showAllCourses())">
+            {{ showAllCourses() ? 'Show less' : 'Show all courses' }}
+          </button>
+        }
+
+        <div class="income-total">
+          <span>Total income</span>
+          <strong>{{ totalIncome() | number }} EGP</strong>
+        </div>
+      }
+    </article>
+  }
+</main>

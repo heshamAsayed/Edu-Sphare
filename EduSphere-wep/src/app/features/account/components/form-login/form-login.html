@@ -13,47 +13,42 @@
             <!-- Email -->
             <div class="form-group">
                 <label for="email">Email address</label>
-                <input type="email" id="email" placeholder="you@example.com" formControlName="email" required>
-                
+                <input type="email" id="email" placeholder="you@example.com" formControlName="email" required
+                       [attr.aria-invalid]="!!modelError()">
             </div>
 
             <!-- Password -->
             <div class="form-group">
                 <label for="password">Password</label>
-
-                <input type="password" id="password" placeholder="••••••••" formControlName="password" required>
+                <input type="password" id="password" placeholder="••••••••" formControlName="password" required
+                       [attr.aria-invalid]="!!modelError()">
             </div>
 
             <!-- Remember + Forgot -->
             <div class="form-options">
-
                 <label class="remember">
                     <input type="checkbox">
                     <span>Remember me</span>
                 </label>
-
-                <a href="#" class="forgot-password">
-                    Forgot password?
-                </a>
-
+                <a href="#" class="forgot-password">Forgot password?</a>
             </div>
+
+            <!-- Error Message — shown immediately above submit -->
+            @if (modelError(); as err) {
+              <div class="error-message" role="alert" aria-live="assertive">
+                {{ err }}
+              </div>
+            }
 
             <!-- Submit -->
-            <button type="submit" [disabled]="isLoading">
-                @if (isLoading) {
-                <span class="button-spinner" aria-hidden="true"></span>
-                Signing in...
+            <button type="submit" [disabled]="isLoading()">
+                @if (isLoading()) {
+                  <span class="button-spinner" aria-hidden="true"></span>
+                  Signing in...
                 } @else {
-                Sign in
+                  Sign in
                 }
             </button>
-
-            <!-- Error Message -->
-            @if (modelError) {
-            <div class="error-message">
-                {{ modelError }}
-            </div>
-            }
 
         </form>
 
