@@ -13,10 +13,13 @@ import { LoadingSpinner } from '../../../shared/components/loading-spinner/loadi
 
 interface CourseInsight extends TeacherCourse {
   students: number;
-  focus: number;
+  /** Course focus averaged only over videos that have watchers; null = no watched videos yet */
+  focus: number | null;
   attendance: number;
   averageGrade: number;
   videoGrades: { label: string; value: number }[];
+  /** Per-video focus; value is null when the video has no watchers yet */
+  videoFocus: { label: string; value: number | null; watchedCount: number }[];
   videos: number;
   loading: boolean;
 }
@@ -87,9 +90,15 @@ export class TeacherDashboardPage implements OnInit {
     this.courses().reduce((sum, c) => sum + c.students, 0)
   );
 
-  readonly avgFocus = computed(() =>
-    this.averageOrZero(this.selectedCourses().map(c => c.focus))
-  );
+  readonly avgFocus = computed(() => {
+    // Only courses/videos that actually have watch-based focus data
+    const values = this.selectedCourses()
+      .map(c => c.focus)
+      .filter((v): v is number => v != null && Number.isFinite(v));
+    return values.length
+      ? Math.round(values.reduce((a, b) => a + b, 0) / values.length)
+      : null;
+  });
 
   readonly avgAttendance = computed(() =>
     this.averageOrZero(this.selectedCourses().map(c => c.attendance))
@@ -100,6 +109,18 @@ export class TeacherDashboardPage implements OnInit {
       ? this.courses().map(c => ({ label: this.courseName(c), value: c.averageGrade }))
       : this.selectedCourses()[0]?.videoGrades || []
   );
+
+  /** All courses → course focus; one course → every video's focus in that course */
+  readonly focusItems = computed(() => {
+    if (this.selectedCourseId() === 'all') {
+      return this.courses().map(c => ({
+        label: this.courseName(c),
+        value: c.focus,
+        watchedCount: -1,
+      }));
+    }
+    return this.selectedCourses()[0]?.videoFocus || [];
+  });
 
   readonly gradePoints = computed(() => {
     const items = this.gradeItems();
@@ -161,10 +182,11 @@ export class TeacherDashboardPage implements OnInit {
           list.map(c => ({
             ...c,
             students: 0,
-            focus: 0,
+            focus: null,
             attendance: 0,
             averageGrade: 0,
             videoGrades: [],
+            videoFocus: [],
             videos: c.videosCount || 0,
             loading: true,
           }))
@@ -227,10 +249,11 @@ export class TeacherDashboardPage implements OnInit {
                 ? {
                     ...c,
                     students: 0,
-                    focus: 0,
+                    focus: null,
                     attendance: 0,
                     averageGrade: 0,
                     videoGrades: [],
+                    videoFocus: [],
                     videos: c.videosCount || 0,
                     loading: false,
                   }
@@ -245,8 +268,8 @@ export class TeacherDashboardPage implements OnInit {
 
   /**
    * Maps Learning/Lesson response → dashboard metrics.
-   * API returns null averages when nobody watched / no quiz scores.
-   * No videos or empty stats ⇒ 0 (not "—").
+   * Focus is averaged ONLY over videos that have at least one watcher
+   * (unwatched videos are excluded — not treated as 0%).
    */
   private toInsight(
     course: TeacherCourse,
@@ -259,15 +282,29 @@ export class TeacherDashboardPage implements OnInit {
     const enrolled = stats.map(s => s.enrolledStudentsCount || 0);
     const students = enrolled.length ? Math.max(...enrolled) : 0;
 
-    // No videos ⇒ nothing to evaluate ⇒ all zeros
+    const videoFocus = videos.map((v, i) => {
+      const s = byVideo.get(v.id);
+      const watchedCount = s?.watchedStudentsCount ?? 0;
+      const rawFocus = this.toNumber(s?.averageFocusPercent);
+      // Unwatched video → null (excluded from course average)
+      const value = watchedCount > 0 && rawFocus != null ? rawFocus : null;
+      return {
+        label: v.title || `Video ${i + 1}`,
+        value,
+        watchedCount,
+      };
+    });
+
+    // No videos ⇒ nothing to evaluate
     if (!videos.length && !stats.length) {
       return {
         ...course,
         students,
-        focus: 0,
+        focus: null,
         attendance: 0,
         averageGrade: 0,
         videoGrades: [],
+        videoFocus: [],
         videos: 0,
         price: course.price ?? lesson.course?.price ?? 0,
         name: course.name || lesson.course?.name || course.title,
@@ -278,18 +315,30 @@ export class TeacherDashboardPage implements OnInit {
     return {
       ...course,
       students,
-      focus: this.averageOrZero(stats.map(s => s.averageFocusPercent)),
+      focus: this.averageWatchedFocus(videoFocus),
       attendance: this.attendancePercent(stats),
       averageGrade: this.averageOrZero(stats.map(s => s.averagePostVideoQuizScore)),
       videoGrades: videos.map((v, i) => ({
         label: v.title || `Video ${i + 1}`,
         value: this.toNumber(byVideo.get(v.id)?.averagePostVideoQuizScore) ?? 0,
       })),
+      videoFocus,
       videos: videos.length || course.videosCount || 0,
       price: course.price ?? lesson.course?.price ?? 0,
       name: course.name || lesson.course?.name || course.title,
       title: course.title || lesson.course?.title || course.name,
     };
+  }
+
+  /** Mean focus across videos that were actually watched; null if none. */
+  private averageWatchedFocus(
+    videoFocus: Array<{ value: number | null }>
+  ): number | null {
+    const values = videoFocus
+      .map(v => v.value)
+      .filter((v): v is number => v != null && Number.isFinite(v));
+    if (!values.length) return null;
+    return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
   }
 
   /** Attendance = watched / enrolled × 100. No enrollments ⇒ 0. */
@@ -322,6 +371,10 @@ export class TeacherDashboardPage implements OnInit {
     if (value == null || value === '') return null;
     const n = typeof value === 'number' ? value : Number(value);
     return Number.isFinite(n) ? n : null;
+  }
+
+  formatFocus(value: number | null | undefined): string {
+    return value == null ? '—' : `${value}%`;
   }
 
   courseName(course: TeacherCourse): string {

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, catchError, of, switchMap } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AccountService } from '../../../features/account/services/account.service';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { AttentionQuestionService } from '../../../features/attention-question/attention-question.service';
@@ -78,11 +79,26 @@ export class LessonPage implements OnInit, OnDestroy {
 
   /** True only while the student is actively playing the video */
   private isPlaying = false;
-  private attentionTriggerSec: number | null = null;
-  private attentionHandled = false;
   private videoDuration = 0;
+  private lastCurrentTime = 0;
   private markedWatchedIds = new Set<string>();
   private markingInFlight = false;
+
+  /**
+   * Attention flow:
+   * 1) Call API as soon as the video is selected / play starts
+   * 2) Keep API results in memory
+   * 3) Show at fixed times inside the middle third (early in that window)
+   */
+  private static readonly ATTENTION_LONG_VIDEO_SEC = 20 * 60;
+  private apiAttentionQueue: AttentionQuestion[] = [];
+  private attentionTriggersSec: number[] = [];
+  private attentionShownCount = 0;
+  private attentionTargetCount = 1;
+  private attentionFetchInFlight = false;
+  private attentionFetchVideoId: string | null = null;
+  private attentionFailCount = 0;
+  private attentionSub: Subscription | null = null;
 
   /**
    * Video id for which end-quiz was already opened in the current viewing session.
@@ -92,7 +108,6 @@ export class LessonPage implements OnInit, OnDestroy {
   private quizGateVideoId: string | null = null;
   private quizRequestId = 0;
   private quizSub: Subscription | null = null;
-  private attentionSub: Subscription | null = null;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -123,6 +138,7 @@ export class LessonPage implements OnInit, OnDestroy {
 
         if (initialActive) {
           this.loadTranscription(initialActive.id);
+          this.startAttentionForVideo(initialActive.id);
         }
       },
       error: (err) => {
@@ -144,6 +160,8 @@ export class LessonPage implements OnInit, OnDestroy {
     this.resetAttentionState();
     this.isPlaying = false;
     this.loadTranscription(video.id);
+    // Start API fetch immediately — don't wait for play / middle third
+    this.startAttentionForVideo(video.id);
   }
 
   loadTranscription(videoId: string): void {
@@ -164,6 +182,8 @@ export class LessonPage implements OnInit, OnDestroy {
 
   onVideoPlay(): void {
     this.isPlaying = true;
+    this.ensureAttentionApiFilled();
+    this.tryShowDueAttention();
   }
 
   onVideoPause(): void {
@@ -172,39 +192,34 @@ export class LessonPage implements OnInit, OnDestroy {
 
   /**
    * Auto-mark watched at ≥90% of real duration.
-   * Attention question only while playing, near mid or last third.
+   * Attention: API fetch starts on select; show at early middle-third times.
    * Near end (≥98%) also opens the end-of-video quiz (Bunny ended is unreliable).
    */
   onTimeUpdate(event: { currentTime: number; duration: number; progressPercent: number }): void {
     const { currentTime, duration, progressPercent } = event;
     if (!duration || duration <= 0) return;
 
-    // Bunny/Player.js often emits timeupdate without a prior play event if the
-    // listener attached after the user already hit play — sync from progress.
+    this.lastCurrentTime = currentTime;
+
+    // Bunny/Player.js often emits timeupdate without a prior play event
     if (currentTime > 0.25 && progressPercent < 99.5) {
       this.isPlaying = true;
     }
 
-    if (this.videoDuration !== duration || this.attentionTriggerSec == null) {
+    if (this.videoDuration !== duration) {
       this.videoDuration = duration;
-      this.setupAttentionTrigger(duration);
+      this.setupAttentionTriggers(duration);
+      this.ensureAttentionApiFilled();
+    } else if (this.attentionTriggersSec.length === 0) {
+      this.setupAttentionTriggers(duration);
     }
 
     if (progressPercent >= 90) {
       this.autoMarkWatched();
     }
 
-    if (
-      this.isPlaying &&
-      !this.attentionHandled &&
-      !this.isGeneratingQuestion() &&
-      !this.isAttentionModalOpen() &&
-      !this.showEndQuiz() &&
-      this.attentionTriggerSec != null &&
-      currentTime >= this.attentionTriggerSec
-    ) {
-      this.triggerAttentionCheck();
-    }
+    this.ensureAttentionApiFilled();
+    this.tryShowDueAttention();
 
     if (progressPercent >= 98) {
       this.openEndOfVideoQuiz();
@@ -398,54 +413,145 @@ export class LessonPage implements OnInit, OnDestroy {
     });
   }
 
-  private setupAttentionTrigger(duration: number): void {
-    if (this.attentionTriggerSec != null) return;
-    const useLastThird = Math.random() < 0.5;
-    const startRatio = useLastThird ? 0.66 : 0.4;
-    const endRatio = useLastThird ? 0.9 : 0.55;
-    const start = Math.max(5, Math.floor(duration * startRatio));
-    const end = Math.max(start + 1, Math.floor(duration * endRatio));
-    this.attentionTriggerSec = Math.floor(start + Math.random() * (end - start));
+  /**
+   * Middle third only. Fixed early times so it never feels "at the end":
+   * - 1 question → 40% of duration
+   * - 2 questions (>20 min) → 40% and 55%
+   */
+  private setupAttentionTriggers(duration: number): void {
+    if (duration <= 0) return;
+
+    const needed = duration > LessonPage.ATTENTION_LONG_VIDEO_SEC ? 2 : 1;
+    this.attentionTargetCount = needed;
+
+    if (this.attentionTriggersSec.length === needed) return;
+
+    if (needed === 1) {
+      this.attentionTriggersSec = [Math.floor(duration * 0.4)];
+    } else if (this.attentionTriggersSec.length === 0) {
+      this.attentionTriggersSec = [Math.floor(duration * 0.4), Math.floor(duration * 0.55)];
+    } else if (this.attentionTriggersSec.length === 1 && needed === 2) {
+      this.attentionTriggersSec = [this.attentionTriggersSec[0], Math.floor(duration * 0.55)];
+    }
   }
 
-  private triggerAttentionCheck(): void {
-    if (this.isAttentionModalOpen() || this.isGeneratingQuestion() || this.attentionHandled) return;
-    if (!this.isPlaying || this.showEndQuiz()) return;
+  private startAttentionForVideo(videoId: string): void {
+    this.attentionFetchVideoId = videoId;
+    this.apiAttentionQueue = [];
+    this.attentionShownCount = 0;
+    this.attentionFailCount = 0;
+    this.ensureAttentionApiFilled();
+  }
 
-    this.attentionHandled = true;
+  /** Fetch from API one-by-one until we have enough questions for this video. */
+  private ensureAttentionApiFilled(): void {
+    const videoId = this.activeVideo()?.id;
+    if (!videoId || this.showEndQuiz()) return;
+
+    if (this.attentionFetchVideoId !== videoId) {
+      this.startAttentionForVideo(videoId);
+      return;
+    }
+
+    if (this.apiAttentionQueue.length >= this.attentionTargetCount) return;
+    if (this.attentionFetchInFlight) return;
+
+    this.attentionFetchInFlight = true;
     this.isGeneratingQuestion.set(true);
     this.attentionSub?.unsubscribe();
 
-    this.attentionSub = this.attentionQuestionService.generateQuestion().subscribe({
-      next: (raw) => {
+    this.attentionSub = this.attentionQuestionService.generateQuestion().pipe(
+      map((raw) => this.normalizeAttentionQuestion(raw)),
+      catchError((err) => {
+        console.error('Attention API failed:', err);
+        return of(null);
+      })
+    ).subscribe({
+      next: (q) => {
+        this.attentionFetchInFlight = false;
         this.isGeneratingQuestion.set(false);
-        const q = this.normalizeAttentionQuestion(raw);
-        if (q?.question) {
-          this.currentAttentionQuestion.set(q);
-          this.isAttentionModalOpen.set(true);
+        if (this.activeVideo()?.id !== videoId) return;
+
+        if (q) {
+          this.attentionFailCount = 0;
+          this.apiAttentionQueue.push(q);
+          // Show immediately if trigger time already passed
+          this.tryShowDueAttention();
+          // Need another question (long video)?
+          if (this.apiAttentionQueue.length < this.attentionTargetCount) {
+            this.ensureAttentionApiFilled();
+          }
         } else {
-          // Soft retry ~20s later in the same watch session
-          this.scheduleAttentionRetry(20);
+          this.attentionFailCount++;
+          if (this.attentionFailCount >= 2) {
+            // Last resort so the check still appears if API keeps failing
+            this.apiAttentionQueue.push(this.buildLocalFallbackQuestion());
+            this.tryShowDueAttention();
+            if (this.apiAttentionQueue.length < this.attentionTargetCount) {
+              this.apiAttentionQueue.push(this.buildLocalFallbackQuestion());
+            }
+          } else {
+            setTimeout(() => this.ensureAttentionApiFilled(), 800);
+          }
         }
       },
-      error: (err) => {
-        console.error('Could not generate attention question:', err);
+      error: () => {
+        this.attentionFetchInFlight = false;
         this.isGeneratingQuestion.set(false);
-        this.scheduleAttentionRetry(20);
+        this.attentionFailCount++;
+        setTimeout(() => this.ensureAttentionApiFilled(), 800);
       },
     });
   }
 
-  private scheduleAttentionRetry(delaySec: number): void {
-    this.attentionHandled = false;
-    const base = this.attentionTriggerSec ?? Math.floor(this.videoDuration * 0.5);
-    const nextAt = base + delaySec;
-    // Don't schedule past the quiz window
-    if (this.videoDuration > 0 && nextAt >= this.videoDuration * 0.95) {
-      this.attentionHandled = true;
+  /**
+   * Show next due question as soon as:
+   * - playback is active
+   * - current time >= trigger
+   * - API question is already in memory
+   */
+  private tryShowDueAttention(): void {
+    if (!this.isPlaying || this.isAttentionModalOpen() || this.showEndQuiz()) return;
+    if (this.attentionShownCount >= this.attentionTriggersSec.length) return;
+
+    const triggerAt = this.attentionTriggersSec[this.attentionShownCount];
+    if (triggerAt == null || this.lastCurrentTime < triggerAt) return;
+
+    const q = this.apiAttentionQueue[this.attentionShownCount];
+    if (!q) {
+      // Due now but API still loading — keep requesting
+      this.ensureAttentionApiFilled();
       return;
     }
-    this.attentionTriggerSec = nextAt;
+
+    this.attentionShownCount += 1;
+    this.currentAttentionQuestion.set(q);
+    this.isAttentionModalOpen.set(true);
+  }
+
+  private buildLocalFallbackQuestion(): AttentionQuestion {
+    const school = this.schoolName();
+    const name = this.accountService.currentUser()?.name || 'الطالب';
+    const useTf = Math.random() < 0.5;
+    if (useTf) {
+      return {
+        type: 'TrueFalse',
+        question: `هل تتابع الدرس الآن يا ${name}؟`,
+        options: undefined,
+        correctAnswer: true,
+      };
+    }
+    const options = [school, 'مدرسة النور', 'مدرسة الأمل', 'مدرسة المستقبل'];
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+    return {
+      type: 'MCQ',
+      question: 'ما اسم مدرستك؟',
+      options,
+      correctAnswer: options.indexOf(school),
+    };
   }
 
   private normalizeAttentionQuestion(raw: any): AttentionQuestion | null {
@@ -463,9 +569,15 @@ export class LessonPage implements OnInit, OnDestroy {
   private resetAttentionState(): void {
     this.attentionSub?.unsubscribe();
     this.attentionSub = null;
-    this.attentionTriggerSec = null;
-    this.attentionHandled = false;
+    this.attentionFetchInFlight = false;
+    this.attentionFetchVideoId = null;
+    this.apiAttentionQueue = [];
+    this.attentionTriggersSec = [];
+    this.attentionShownCount = 0;
+    this.attentionTargetCount = 1;
+    this.attentionFailCount = 0;
     this.videoDuration = 0;
+    this.lastCurrentTime = 0;
     this.isGeneratingQuestion.set(false);
     this.isAttentionModalOpen.set(false);
     this.currentAttentionQuestion.set(null);
@@ -498,6 +610,8 @@ export class LessonPage implements OnInit, OnDestroy {
   onAttentionClosed(): void {
     this.isAttentionModalOpen.set(false);
     this.currentAttentionQuestion.set(null);
+    // After closing Q1, immediately check if Q2 is already due
+    this.tryShowDueAttention();
   }
 
   ngOnDestroy(): void {

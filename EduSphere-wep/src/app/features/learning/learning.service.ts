@@ -254,9 +254,9 @@ export class LearningService {
       videoId: String(s?.videoId ?? s?.VideoId ?? ''),
       enrolledStudentsCount: this.toNumber(s?.enrolledStudentsCount ?? s?.EnrolledStudentsCount) ?? 0,
       watchedStudentsCount: this.toNumber(s?.watchedStudentsCount ?? s?.WatchedStudentsCount) ?? 0,
-      // Backend returns null when there is nothing to score yet → treat as 0 for UI
+      // Backend returns null when nobody watched / nothing to score yet — keep null for focus
       averagePostVideoQuizScore: this.toNumber(s?.averagePostVideoQuizScore ?? s?.AveragePostVideoQuizScore) ?? 0,
-      averageFocusPercent: this.toNumber(s?.averageFocusPercent ?? s?.AverageFocusPercent) ?? 0,
+      averageFocusPercent: this.toNumber(s?.averageFocusPercent ?? s?.AverageFocusPercent),
       absentStudentsCount: this.toNumber(s?.absentStudentsCount ?? s?.AbsentStudentsCount) ?? 0,
     }));
   }

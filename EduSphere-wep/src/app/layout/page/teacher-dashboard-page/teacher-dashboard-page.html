@@ -44,7 +44,7 @@
       </article>
       <article>
         <span>Avg. focus</span>
-        <strong>{{ avgFocus() }}%</strong>
+        <strong>{{ formatFocus(avgFocus()) }}</strong>
       </article>
       <article>
         <span>Total income</span>
@@ -57,9 +57,13 @@
         <div class="panel-title">
           <div>
             <h2>Student focus</h2>
-            <p>Average focus across the selected course.</p>
+            <p>
+              {{ selectedCourseId() === 'all'
+                ? 'Average focus per course (watched videos only).'
+                : 'Focus per video — unwatched videos are excluded from the average.' }}
+            </p>
           </div>
-          <select (change)="selectCourse($event)">
+          <select [value]="selectedCourseId()" (change)="selectCourse($event)">
             <option value="all">All courses</option>
             @for (c of courses(); track c.id) {
               <option [value]="c.id">{{ courseName(c) }}</option>
@@ -69,10 +73,28 @@
         @if (coursesLoading()) {
           <app-loading-spinner [isLoading]="true" loadingText="Loading focus data…" />
         } @else {
-          <div class="donut" [style.--value]="avgFocus() + '%'">
-            <strong>{{ avgFocus() }}%</strong>
+          <div class="donut" [style.--value]="(avgFocus() ?? 0) + '%'">
+            <strong>{{ formatFocus(avgFocus()) }}</strong>
             <span>focus score</span>
           </div>
+          @if (focusItems().length) {
+            <div class="focus-list">
+              @for (item of focusItems(); track $index) {
+                <div class="focus-row">
+                  <span>
+                    <b>{{ item.label }}</b>
+                    @if (item.watchedCount >= 0) {
+                      <small>
+                        {{ item.watchedCount === 0 ? 'Not watched yet' : item.watchedCount + ' watched' }}
+                      </small>
+                    }
+                  </span>
+                  <i aria-hidden="true"><b [style.width.%]="item.value ?? 0"></b></i>
+                  <strong>{{ formatFocus(item.value) }}</strong>
+                </div>
+              }
+            </div>
+          }
         }
       </article>
 
@@ -120,7 +142,7 @@
               <small>{{ c.videos }} lessons</small>
             </span>
             <span>{{ c.loading ? 'Loading…' : c.students + ' students' }}</span>
-            <span>{{ c.focus }}% focus</span>
+            <span>{{ formatFocus(c.focus) }} focus</span>
             <button (click)="openCourse(c)">Manage</button>
           </div>
         }
@@ -147,7 +169,7 @@
               <small>{{ c.videos }} lessons · {{ c.averageGrade }} avg. grade</small>
             </span>
             <span>{{ c.students }} students</span>
-            <span>{{ c.focus }}% focus</span>
+            <span>{{ formatFocus(c.focus) }} focus</span>
             <button (click)="openCourse(c)">Edit</button>
           </div>
         }
@@ -161,9 +183,13 @@
         <div class="panel-title">
           <div>
             <h2>Focus score</h2>
-            <p>Average student focus.</p>
+            <p>
+              {{ selectedCourseId() === 'all'
+                ? 'Average focus across courses (watched videos only).'
+                : 'Course average from watched videos only — details per video below.' }}
+            </p>
           </div>
-          <select (change)="selectCourse($event)">
+          <select [value]="selectedCourseId()" (change)="selectCourse($event)">
             <option value="all">All courses</option>
             @for (c of courses(); track c.id) {
               <option [value]="c.id">{{ courseName(c) }}</option>
@@ -173,9 +199,44 @@
         @if (coursesLoading() || insightsLoading()) {
           <app-loading-spinner [isLoading]="true" loadingText="Loading performance…" />
         } @else {
-          <div class="donut large" [style.--value]="avgFocus() + '%'">
-            <strong>{{ avgFocus() }}%</strong>
+          <div class="donut large" [style.--value]="(avgFocus() ?? 0) + '%'">
+            <strong>{{ formatFocus(avgFocus()) }}</strong>
             <span>focus score</span>
+          </div>
+        }
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">
+          <div>
+            <h2>{{ selectedCourseId() === 'all' ? 'Focus by course' : 'Focus by video' }}</h2>
+            <p>
+              {{ selectedCourseId() === 'all'
+                ? 'Average focus for each course (watched videos only).'
+                : 'Average student focus for every video in the selected course.' }}
+            </p>
+          </div>
+        </div>
+        @if (coursesLoading() || insightsLoading()) {
+          <app-loading-spinner [isLoading]="true" loadingText="Loading focus…" />
+        } @else if (!focusItems().length) {
+          <p class="empty-hint">No focus data yet.</p>
+        } @else {
+          <div class="focus-list">
+            @for (item of focusItems(); track $index) {
+              <div class="focus-row">
+                <span>
+                  <b>{{ item.label }}</b>
+                  @if (selectedCourseId() !== 'all') {
+                    <small>
+                      {{ item.watchedCount === 0 ? 'Not watched yet' : item.watchedCount + ' student(s) watched' }}
+                    </small>
+                  }
+                </span>
+                <i aria-hidden="true"><b [style.width.%]="item.value ?? 0"></b></i>
+                <strong>{{ formatFocus(item.value) }}</strong>
+              </div>
+            }
           </div>
         }
       </article>

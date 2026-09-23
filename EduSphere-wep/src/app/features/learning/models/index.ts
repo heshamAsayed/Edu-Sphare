@@ -34,7 +34,8 @@ export interface TeacherStatisticsItem {
   enrolledStudentsCount: number;
   watchedStudentsCount: number;
   averagePostVideoQuizScore: number;
-  averageFocusPercent: number;
+  /** null when nobody has watched this video yet */
+  averageFocusPercent: number | null;
   absentStudentsCount: number;
 }
 
